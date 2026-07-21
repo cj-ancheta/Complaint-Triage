@@ -1,0 +1,96 @@
+{
+  "_meta": {
+    "break_points": {},
+    "has_data_issue": false,
+    "is_data_stale": false,
+    "is_narrative_stale": false,
+    "last_indexed": "2024-01-04T00:00:00Z",
+    "last_updated": "2024-01-03T00:00:00Z",
+    "license": "CC0",
+    "total_record_count": 3
+  },
+  "hits": {
+    "hits": [
+      {
+        "_id": "SYN-0001",
+        "_index": "complaints-synthetic",
+        "_score": null,
+        "_source": {
+          "company": "SYNTHETIC COMPANY A",
+          "company_public_response": null,
+          "company_response": "SYNTHETIC RESPONSE A",
+          "complaint_id": "SYN-0001",
+          "complaint_what_happened": "SYNTHETIC TEST RECORD. A fictional customer says an unfamiliar entry appeared in a fictional report and asks for a correction.",
+          "date_received": "2024-01-02",
+          "date_sent_to_company": "01/03/24",
+          "has_narrative": true,
+          "issue": "SYNTHETIC_ISSUE_A",
+          "product": "SYNTHETIC_PRODUCT_A",
+          "state": "ZZ",
+          "submitted_via": "SYNTHETIC_CHANNEL",
+          "sub_issue": null,
+          "sub_product": null,
+          "tags": null,
+          "timely": "SYNTHETIC_TIMELINESS",
+          "zip_code": null
+        },
+        "sort": [1704153600000, "SYN-0001"]
+      },
+      {
+        "_id": "SYN-0002",
+        "_index": "complaints-synthetic",
+        "_score": null,
+        "_source": {
+          "company": "SYNTHETIC COMPANY B",
+          "company_public_response": "SYNTHETIC PUBLIC RESPONSE",
+          "company_response": "SYNTHETIC RESPONSE B",
+          "complaint_id": "SYN-0002",
+          "complaint_what_happened": "SYNTHETIC TEST RECORD. A fictional customer says a fictional collector contacted them about an account they do not recognize.",
+          "date_received": "2024-01-02",
+          "date_sent_to_company": "01/03/24",
+          "has_narrative": true,
+          "issue": "SYNTHETIC_ISSUE_B",
+          "product": "SYNTHETIC_PRODUCT_B",
+          "state": null,
+          "submitted_via": "SYNTHETIC_CHANNEL",
+          "sub_issue": "SYNTHETIC_SUB_ISSUE_B",
+          "sub_product": "SYNTHETIC_SUB_PRODUCT_B",
+          "tags": "Older American",
+          "timely": "SYNTHETIC_TIMELINESS",
+          "zip_code": null
+        },
+        "sort": [1704153600000, "SYN-0002"]
+      },
+      {
+        "_id": "SYN-0003",
+        "_index": "complaints-synthetic",
+        "_score": null,
+        "_source": {
+          "company": "SYNTHETIC COMPANY C",
+          "company_public_response": null,
+          "company_response": "SYNTHETIC RESPONSE C",
+          "complaint_id": "SYN-0003",
+          "complaint_what_happened": "SYNTHETIC TEST RECORD. A fictional customer says a fictional card payment was recorded twice and asks for review — no real account is involved.",
+          "date_received": "2024-01-02",
+          "date_sent_to_company": "01/03/24",
+          "has_narrative": true,
+          "issue": "SYNTHETIC_ISSUE_C",
+          "product": "SYNTHETIC_PRODUCT_C",
+          "state": "ZZ",
+          "submitted_via": "SYNTHETIC_CHANNEL",
+          "sub_issue": null,
+          "sub_product": "SYNTHETIC_SUB_PRODUCT_C",
+          "tags": null,
+          "timely": "SYNTHETIC_TIMELINESS",
+          "zip_code": "00000"
+        },
+        "sort": [1704153600000, "SYN-0003"]
+      }
+    ],
+    "max_score": null,
+    "total": {
+      "relation": "eq",
+      "value": 3
+    }
+  }
+}

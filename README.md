@@ -4,9 +4,14 @@ An educational portfolio project exploring how a human-in-the-loop NLP system ca
 
 ## Current status
 
-**Phase 1 source research: CT-101 is at the review checkpoint.**
+**Phase 1 source research: CT-102 is at the review checkpoint.**
 
-The official CFPB API contract and source risks have been inventoried, but no source data has been ingested and no model has been trained. Any future metric must be generated from a versioned evaluation artifact before it appears here or in the portfolio.
+The official CFPB API contract and source risks have been inventoried. A bounded
+five-record profiling request and synthetic test contract are ready for review,
+but the live endpoint still returns CDN 403 from this execution environment. No
+source data has been ingested and no model has been trained. Any future metric
+must be generated from a versioned evaluation artifact before it appears here or
+in the portfolio.
 
 ## Intended use
 
@@ -31,6 +36,7 @@ This project will not:
 - [Implementation backlog](BACKLOG.md)
 - [Phase 0 review and open decisions](docs/phase_0_review.md)
 - [CFPB source inventory](docs/cfpb_source_inventory.md)
+- [CFPB bounded profile contract](docs/cfpb_bounded_profile_plan.md)
 - [Architecture](docs/architecture.md)
 - [Learning log](docs/learning_log.md)
 

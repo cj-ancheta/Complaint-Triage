@@ -6,15 +6,15 @@ This backlog converts `SPEC.md` into bounded delivery issues. Status values are 
 
 | ID | Issue | Status | Exit evidence |
 |---|---|---|---|
-| CT-000 | Establish repository, specification, workflow, and Phase 0 documentation | review | Local validation passes and user reviews the uncommitted diff |
+| CT-000 | Establish repository, specification, workflow, and Phase 0 documentation | complete | Local validation passes and user reviews the uncommitted diff |
 | CT-001 | Record environment and dependency-management decision | complete | ADR 0002 and reproducible setup commands |
 
 ## Phase 1: source profiling and ingestion
 
 | ID | Issue | Status | Exit evidence |
 |---|---|---|---|
-| CT-101 | Investigate current CFPB API/export schema without downloading the full dataset | review | `docs/cfpb_source_inventory.md` with versioned fields, risks, access finding, and bounded follow-up |
-| CT-102 | Define bounded profiling query and fixture strategy | pending | Approved query boundary and non-sensitive test fixtures |
+| CT-101 | Investigate current CFPB API/export schema without downloading the full dataset | complete | `docs/cfpb_source_inventory.md` with versioned fields, risks, access finding, and bounded follow-up |
+| CT-102 | Define bounded profiling query and fixture strategy | review | Approved query boundary and non-sensitive test fixtures |
 | CT-103 | Implement source metadata and bounded profiling command | pending | Deterministic report and mocked network tests |
 | CT-104 | Decide local raw-data manifest and checksum format | pending | Approved manifest contract |
 | CT-105 | Introduce PostgreSQL through a documented ADR | pending | Local database starts and readiness check passes |
@@ -38,6 +38,7 @@ Later phases remain defined in `SPEC.md`. Expand them into issue-level detail on
 
 ## Current next issue
 
-After CT-101 is reviewed and committed, proceed with **CT-102: define the bounded profiling query and fixture strategy**.
+Review **CT-102: define the bounded profiling query and fixture strategy** before
+starting implementation of CT-103.
 
 CT-102 must validate a five-record-or-smaller request from an environment that can reach the CFPB API, suppress narrative values from logs, and define non-sensitive fixtures. It must not implement database ingestion or modelling.

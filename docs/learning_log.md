@@ -82,3 +82,45 @@ Draft for Charles: why `product` is only a candidate target, why issue/sub-issue
 - Does the deployed field set exactly match the current OpenAPI contract?
 - Which fixed historical date gives a small but non-empty bounded sample?
 - What sanitized fixture strategy best supports deterministic tests?
+
+---
+
+## Draft CT-102: bounded profile contract and fixtures
+
+**Date:** 2026-07-21
+
+**What the AI generated**
+
+A fixed-date, five-record CFPB request contract; client-side safety invariants;
+allowed and forbidden profiling output; a hand-authored synthetic response
+fixture; and automated tests that enforce its field shape and visible synthetic
+markers. The exact request was attempted once and received CDN HTTP 403 without
+logging or saving the response body.
+
+**How I verified it**
+
+Draft for Charles to complete after reviewing
+`docs/cfpb_bounded_profile_plan.md`, inspecting the three synthetic records, and
+running the repository validation commands. The deployed HTTP 200 response shape
+still needs verification from a network environment accepted by the CFPB CDN.
+
+**What can fail in production**
+
+The deployed API can disagree with both its OpenAPI contract and source code,
+optional fields can be null, complaint IDs can change type, additive fields can
+appear, the endpoint can throttle or block a deployment network, and an unsafe
+logger can expose narrative or company values even when the extraction itself is
+bounded.
+
+**What I can explain in an interview**
+
+Draft for Charles: why `format` is deliberately absent, why the project applies a
+client-side five-record limit despite permissive server code, why tests use
+clearly synthetic narratives, and why a 403 is recorded as evidence rather than
+bypassed.
+
+**Questions still open**
+
+- Does the deployed API return all 17 expected fields for the pinned query?
+- Does the deployed API represent `complaint_id` as a string or integer today?
+- Which additive OpenSearch hit metadata is present in the live response?
