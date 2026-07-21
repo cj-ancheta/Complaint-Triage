@@ -124,3 +124,46 @@ bypassed.
 - Does the deployed API return all 17 expected fields for the pinned query?
 - Does the deployed API represent `complaint_id` as a string or integer today?
 - Which additive OpenSearch hit metadata is present in the live response?
+
+---
+
+## Draft CT-103: bounded source profiling command
+
+**Date:** 2026-07-21
+
+**What the AI generated**
+
+A standard-library command that makes one exact, five-hit CFPB contract request,
+rejects URL or query drift, caps the body size, validates the response envelope,
+and emits only derived metadata. It also generated fake-transport tests for
+network, schema, limit, and privacy failure paths plus CLI serialization tests.
+
+**How I verified it**
+
+Draft for Charles to complete after inspecting `src/complaint_triage/cfpb_profile.py`,
+reviewing `docs/cfpb_profile_command.md`, and running the focused and full test
+suites. The live smoke test returned a controlled `network_error` after the
+10-second timeout and did not print or save a response body.
+
+**What can fail in production**
+
+The endpoint can remain blocked, redirect, throttle, time out, return non-JSON,
+exceed the byte or hit limit, change its response envelope, omit expected fields,
+or change field types. A future developer could also weaken privacy by logging
+the raw exception or response, so the privacy regression tests must remain.
+
+**What I can explain in an interview**
+
+Draft for Charles: why the command has no configurable extraction arguments, why
+request strictness differs from additive-schema tolerance, why response-derived
+aggregates are safer than redacted rows, why pagination cursors are excluded, and
+how dependency injection keeps network tests deterministic.
+
+**Questions still open**
+
+- Can the command obtain HTTP 200 from the user's browser or another accepted
+  network without changing its request boundary?
+- What exact live types are returned for `complaint_id`, dates, tags, and nullable
+  fields?
+- Which batch-manifest and checksum contract should CT-104 use before any raw
+  response is retained?

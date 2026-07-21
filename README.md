@@ -4,14 +4,14 @@ An educational portfolio project exploring how a human-in-the-loop NLP system ca
 
 ## Current status
 
-**Phase 1 source research: CT-102 is at the review checkpoint.**
+**Phase 1 source research: CT-103 is complete; CT-104 is next.**
 
-The official CFPB API contract and source risks have been inventoried. A bounded
-five-record profiling request and synthetic test contract are ready for review,
-but the live endpoint still returns CDN 403 from this execution environment. No
-source data has been ingested and no model has been trained. Any future metric
-must be generated from a versioned evaluation artifact before it appears here or
-in the portfolio.
+The repository now includes a privacy-safe, five-record CFPB source profiler with
+mocked network and contract tests. The live endpoint remains inaccessible from
+this execution environment, so a successful deployed response check is still
+outstanding. No source data has been ingested and no model has been trained. Any
+future metric must be generated from a versioned evaluation artifact before it
+appears here or in the portfolio.
 
 ## Intended use
 
@@ -37,6 +37,7 @@ This project will not:
 - [Phase 0 review and open decisions](docs/phase_0_review.md)
 - [CFPB source inventory](docs/cfpb_source_inventory.md)
 - [CFPB bounded profile contract](docs/cfpb_bounded_profile_plan.md)
+- [CFPB profiling command](docs/cfpb_profile_command.md)
 - [Architecture](docs/architecture.md)
 - [Learning log](docs/learning_log.md)
 
@@ -58,6 +59,12 @@ Run validation:
 .\.venv\Scripts\python.exe -m ruff check .
 .\.venv\Scripts\python.exe -m ruff format --check .
 .\.venv\Scripts\python.exe -m pytest
+```
+
+Run the bounded source-contract profiler:
+
+```powershell
+.\.venv\Scripts\python.exe -m complaint_triage profile-cfpb
 ```
 
 ## Repository boundary

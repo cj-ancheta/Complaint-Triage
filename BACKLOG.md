@@ -14,8 +14,8 @@ This backlog converts `SPEC.md` into bounded delivery issues. Status values are 
 | ID | Issue | Status | Exit evidence |
 |---|---|---|---|
 | CT-101 | Investigate current CFPB API/export schema without downloading the full dataset | complete | `docs/cfpb_source_inventory.md` with versioned fields, risks, access finding, and bounded follow-up |
-| CT-102 | Define bounded profiling query and fixture strategy | review | Approved query boundary and non-sensitive test fixtures |
-| CT-103 | Implement source metadata and bounded profiling command | pending | Deterministic report and mocked network tests |
+| CT-102 | Define bounded profiling query and fixture strategy | complete | Approved query boundary and non-sensitive test fixtures |
+| CT-103 | Implement source metadata and bounded profiling command | complete | Deterministic report and mocked network tests |
 | CT-104 | Decide local raw-data manifest and checksum format | pending | Approved manifest contract |
 | CT-105 | Introduce PostgreSQL through a documented ADR | pending | Local database starts and readiness check passes |
 | CT-106 | Implement append-only raw ingestion with batch metadata | pending | Idempotency and row-count tests |
@@ -38,7 +38,8 @@ Later phases remain defined in `SPEC.md`. Expand them into issue-level detail on
 
 ## Current next issue
 
-Review **CT-102: define the bounded profiling query and fixture strategy** before
-starting implementation of CT-103.
+Proceed with **CT-104: decide the local raw-data manifest and checksum format**.
 
-CT-102 must validate a five-record-or-smaller request from an environment that can reach the CFPB API, suppress narrative values from logs, and define non-sensitive fixtures. It must not implement database ingestion or modelling.
+CT-104 must define lineage, content addressing, checksum scope, safe manifest
+fields, and append-only behavior before any raw response is retained. It must not
+download CFPB data, implement database ingestion, or begin modelling.

@@ -14,6 +14,9 @@ authors = [
 ]
 dependencies = []
 
+[project.scripts]
+complaint-triage = "complaint_triage.cli:main"
+
 [project.optional-dependencies]
 dev = [
   "pytest>=8.3,<9",
@@ -47,4 +50,3 @@ select = ["E", "F", "I", "B", "UP", "RUF"]
 [tool.ruff.format]
 quote-style = "double"
 indent-style = "space"
-

@@ -1,7 +1,7 @@
 # CFPB Bounded Profile Contract
 
 - Issue: CT-102
-- Status: review
+- Status: complete with documented endpoint-access limitation
 - Prepared: 2026-07-21
 - Scope: one bounded source-contract check and a synthetic fixture strategy
 - Raw CFPB records retained: none
@@ -267,10 +267,11 @@ saved. The CDN restriction was not bypassed.
 - [x] Automated fixture safety and shape tests added.
 - [x] Exact bounded live attempt made without retaining a body.
 - [ ] HTTP 200 response contract verified from an accepted network environment.
-- [ ] User reviews and approves the boundary before CT-103 begins.
+- [x] User reviewed and approved the boundary before CT-103 began.
 
-## Decision needed at review
+## Review decision
 
-Approve the pinned request and synthetic fixture approach. If approved, CT-103
-can implement a small metadata-only profiling command with mocked network tests.
-The first successful live run will close the remaining deployed-contract check.
+Charles approved the pinned request and synthetic fixture approach on 2026-07-21.
+CT-103 may implement the metadata-only profiling command with mocked network
+tests. The first successful live run will close the remaining deployed-contract
+check.
