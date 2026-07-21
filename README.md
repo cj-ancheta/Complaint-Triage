@@ -4,9 +4,9 @@ An educational portfolio project exploring how a human-in-the-loop NLP system ca
 
 ## Current status
 
-**Phase 0: repository foundation.**
+**Phase 1 source research: CT-101 is at the review checkpoint.**
 
-No source data has been ingested and no model has been trained. Any future metric must be generated from a versioned evaluation artifact before it appears here or in the portfolio.
+The official CFPB API contract and source risks have been inventoried, but no source data has been ingested and no model has been trained. Any future metric must be generated from a versioned evaluation artifact before it appears here or in the portfolio.
 
 ## Intended use
 
@@ -30,6 +30,7 @@ This project will not:
 - [Controlled AI-assisted workflow](WORKFLOW.md)
 - [Implementation backlog](BACKLOG.md)
 - [Phase 0 review and open decisions](docs/phase_0_review.md)
+- [CFPB source inventory](docs/cfpb_source_inventory.md)
 - [Architecture](docs/architecture.md)
 - [Learning log](docs/learning_log.md)
 
@@ -66,4 +67,3 @@ The planned source is the public CFPB Consumer Complaint Database. Raw complaint
 ## License
 
 No open-source license has been selected. All rights are reserved until that decision is made deliberately.
-

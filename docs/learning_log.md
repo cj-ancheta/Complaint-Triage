@@ -54,3 +54,31 @@ Draft for Charles: why the backend and Lovable frontend are separate, why no dat
 
 See `docs/phase_0_review.md`.
 
+---
+
+## Draft CT-101: CFPB source inventory
+
+**Date:** 2026-07-21
+
+**What the AI generated**
+
+A versioned inventory of official CFPB API fields, endpoints, bounded-search parameters, publication limitations, recent schema changes, leakage risks, privacy risks, and a proposed CT-102 live-contract check. It also recorded that the current execution environment received a CDN 403 without retrieving complaint data.
+
+**How I verified it**
+
+Draft for Charles to complete after reviewing `docs/cfpb_source_inventory.md` and following its links to the CFPB database, OpenAPI definition, field reference, release notes, and data-sharing page.
+
+**What can fail in production**
+
+The deployed API can diverge from the OpenAPI file, official pages can lag behind release changes, historical taxonomies can shift, recent narratives can be incomplete, and the endpoint can be blocked or unavailable from a deployment network.
+
+**What I can explain in an interview**
+
+Draft for Charles: why `product` is only a candidate target, why issue/sub-issue and response fields would leak information, why the database is not representative, and why a bounded request must omit the `format` parameter.
+
+**Questions still open**
+
+- Which `has_narrative` representation is accepted by the deployed API?
+- Does the deployed field set exactly match the current OpenAPI contract?
+- Which fixed historical date gives a small but non-empty bounded sample?
+- What sanitized fixture strategy best supports deterministic tests?

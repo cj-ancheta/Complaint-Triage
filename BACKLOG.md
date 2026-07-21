@@ -13,7 +13,7 @@ This backlog converts `SPEC.md` into bounded delivery issues. Status values are 
 
 | ID | Issue | Status | Exit evidence |
 |---|---|---|---|
-| CT-101 | Investigate current CFPB API/export schema without downloading the full dataset | pending | Versioned field inventory and source-risk notes |
+| CT-101 | Investigate current CFPB API/export schema without downloading the full dataset | review | `docs/cfpb_source_inventory.md` with versioned fields, risks, access finding, and bounded follow-up |
 | CT-102 | Define bounded profiling query and fixture strategy | pending | Approved query boundary and non-sensitive test fixtures |
 | CT-103 | Implement source metadata and bounded profiling command | pending | Deterministic report and mocked network tests |
 | CT-104 | Decide local raw-data manifest and checksum format | pending | Approved manifest contract |
@@ -38,7 +38,6 @@ Later phases remain defined in `SPEC.md`. Expand them into issue-level detail on
 
 ## Current next issue
 
-After CT-000 is reviewed and committed, proceed with **CT-101: investigate the current CFPB API/export schema without downloading the full dataset**.
+After CT-101 is reviewed and committed, proceed with **CT-102: define the bounded profiling query and fixture strategy**.
 
-CT-101 is research and profiling only. It must not implement database ingestion or modelling.
-
+CT-102 must validate a five-record-or-smaller request from an environment that can reach the CFPB API, suppress narrative values from logs, and define non-sensitive fixtures. It must not implement database ingestion or modelling.
