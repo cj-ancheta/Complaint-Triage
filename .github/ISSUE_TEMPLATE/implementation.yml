@@ -1,0 +1,48 @@
+name: Bounded implementation issue
+description: Implement one testable outcome without crossing a phase gate.
+title: "[CT-XXX] "
+labels: [implementation]
+body:
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Observable outcome
+      description: State one behavior or artifact that will exist when the issue is complete.
+    validations:
+      required: true
+
+  - type: textarea
+    id: requirements
+    attributes:
+      label: Relevant specification sections
+      description: Link the exact sections of SPEC.md and related decision records.
+    validations:
+      required: true
+
+  - type: textarea
+    id: exclusions
+    attributes:
+      label: Explicit exclusions
+      description: State what this issue must not implement.
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance evidence
+      description: List automated tests, generated reports, and manual checks.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: gates
+    attributes:
+      label: Phase-gate review
+      options:
+        - label: This issue does not silently change the data target or taxonomy.
+          required: true
+        - label: This issue does not silently change privacy, retention, authentication, or security boundaries.
+          required: true
+        - label: This issue does not add unverified public metrics or impact claims.
+          required: true

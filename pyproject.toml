@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "complaint-triage"
+version = "0.1.0"
+description = "Human-in-the-loop financial complaint triage research and portfolio project."
+readme = "README.md"
+requires-python = ">=3.12,<3.14"
+license = { text = "All rights reserved" }
+authors = [
+  { name = "Charles Jr Ancheta" },
+]
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.3,<9",
+  "pytest-cov>=6,<7",
+  "ruff>=0.11,<1",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+addopts = "--strict-markers --strict-config -ra"
+testpaths = ["tests"]
+
+[tool.coverage.run]
+branch = true
+source = ["complaint_triage"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "RUF"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
