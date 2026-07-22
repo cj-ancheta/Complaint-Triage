@@ -33,10 +33,13 @@ This is a planned architecture, not a claim that the components already exist.
 
 ## Current implemented boundary
 
-Only the installable Python package, documentation, validation configuration, and smoke test exist in Phase 0.
+The repository now includes the controlled CFPB source profiler, raw batch
+manifest contract, and a local PostgreSQL Compose service. PostgreSQL has no
+application tables yet; ingestion and migrations remain future work.
 
 ## Architecture decisions
 
 - [ADR 0001: Separate ML backend and Lovable frontend](decisions/0001-separate-backend-and-frontend.md)
 - [ADR 0002: Standard Python environment for Phase 0](decisions/0002-standard-python-environment.md)
-
+- [ADR 0003: Content-address raw CFPB batches](decisions/0003-content-addressed-raw-batches.md)
+- [ADR 0004: Local PostgreSQL with Docker Compose](decisions/0004-local-postgresql-compose.md)

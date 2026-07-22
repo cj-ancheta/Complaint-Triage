@@ -211,3 +211,45 @@ and why atomic append-only writes improve recoverability.
 - Will a future paginated acquisition need a separate run-level manifest?
 - Should raw artifacts remain local-only or move to encrypted object storage for
   a later deployment?
+
+---
+
+## Draft CT-105: local PostgreSQL service
+
+**Date:** 2026-07-22
+
+**What the AI generated**
+
+A proposed PostgreSQL ADR, pinned Docker Compose service, loopback-only port,
+named volume, required environment credentials, container health check, Compose
+contract tests, setup and lifecycle guide, and updated architecture status. It
+also started the real service and ran readiness, version, encoding, and empty
+user-table checks.
+
+**How I verified it**
+
+Draft for Charles to complete after reviewing `compose.yaml` and
+`docs/postgresql_local.md`, running `docker compose config --quiet`, starting the
+service with `--wait`, checking `docker compose ps`, and repeating the documented
+`pg_isready` and SQL probes.
+
+**What can fail in production**
+
+Docker Desktop can be stopped, the host port can collide, an image pull can fail,
+the named volume can be deleted, an exact tag can become outdated, initialization
+variables do not update existing roles, a local superuser is inappropriate for
+deployment, and a healthy server can still lack required migrations.
+
+**What I can explain in an interview**
+
+Draft for Charles: why the database is containerized, why the image tag and host
+binding are explicit, how health differs from application readiness, how the
+named volume preserves state, why `.env` is ignored, and why production would use
+least-privilege roles rather than the local initialization superuser.
+
+**Questions still open**
+
+- Which SQLAlchemy, Alembic, and Psycopg versions should CT-106 select?
+- What raw-artifact retention policy must be approved before real ingestion?
+- Which schemas, role grants, and migration boundaries should the first database
+  migration establish?

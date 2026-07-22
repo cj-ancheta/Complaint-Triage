@@ -4,15 +4,16 @@ An educational portfolio project exploring how a human-in-the-loop NLP system ca
 
 ## Current status
 
-**Phase 1 data lineage: CT-104 is complete; CT-105 is next.**
+**Phase 1 infrastructure: CT-105 is complete; CT-106 is next.**
 
 The repository now includes a privacy-safe, five-record CFPB source profiler with
 mocked network and contract tests. The live endpoint remains inaccessible from
 this execution environment, so a successful deployed response check is still
 outstanding. A versioned raw-batch manifest and exact-byte SHA-256 contract are
-ready for review. No source data has been ingested and no model has been trained.
-Any future metric must be generated from a versioned evaluation artifact before
-it appears here or in the portfolio.
+approved, and a loopback-only PostgreSQL 18.4 service now passes real health and
+SQL readiness checks. No source data has been ingested and no model has been
+trained. Any future metric must be generated from a versioned evaluation artifact
+before it appears here or in the portfolio.
 
 ## Intended use
 
@@ -41,6 +42,7 @@ This project will not:
 - [CFPB profiling command](docs/cfpb_profile_command.md)
 - [CFPB raw batch manifest](docs/cfpb_raw_batch_manifest.md)
 - [Raw batch JSON Schema](contracts/cfpb-raw-batch-manifest.schema.json)
+- [Local PostgreSQL guide](docs/postgresql_local.md)
 - [Architecture](docs/architecture.md)
 - [Learning log](docs/learning_log.md)
 
@@ -68,6 +70,13 @@ Run the bounded source-contract profiler:
 
 ```powershell
 .\.venv\Scripts\python.exe -m complaint_triage profile-cfpb
+```
+
+Start the local PostgreSQL service after copying `.env.example` to ignored
+`.env` and replacing its example password:
+
+```powershell
+docker compose up -d --wait postgres
 ```
 
 ## Repository boundary
