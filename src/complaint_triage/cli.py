@@ -14,6 +14,7 @@ from complaint_triage.raw_ingestion import (
     ingest_raw_batch,
     safe_ingestion_error,
 )
+from complaint_triage.staging import StagingError, safe_staging_error, stage_raw_batch
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -33,6 +34,11 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
         help="Manifest under data/manifests/cfpb/.",
     )
+    stage_parser = subcommands.add_parser(
+        "stage-raw-batch",
+        help="Create versioned staging outcomes for one ingested raw batch.",
+    )
+    stage_parser.add_argument("--batch-id", required=True, help="Raw ingestion batch ID.")
     return parser
 
 
@@ -54,6 +60,32 @@ def main(argv: Sequence[str] | None = None) -> int:
             report = ingest_raw_batch(args.manifest)
         except RawIngestionError as error:
             print(json.dumps(safe_ingestion_error(error), indent=2, sort_keys=True))
+            return 1
+        except DatabaseSettingsError:
+            print(
+                json.dumps(
+                    {
+                        "status": "error",
+                        "error": {"code": "database_configuration_invalid"},
+                        "privacy": {
+                            "source_values_logged": False,
+                            "raw_payload_logged": False,
+                        },
+                    },
+                    indent=2,
+                    sort_keys=True,
+                )
+            )
+            return 1
+
+        print(json.dumps(report, indent=2, sort_keys=True))
+        return 0
+
+    if args.command == "stage-raw-batch":
+        try:
+            report = stage_raw_batch(args.batch_id)
+        except StagingError as error:
+            print(json.dumps(safe_staging_error(error), indent=2, sort_keys=True))
             return 1
         except DatabaseSettingsError:
             print(

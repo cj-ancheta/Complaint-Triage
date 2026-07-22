@@ -3,6 +3,7 @@ import json
 from complaint_triage import cli
 from complaint_triage.cfpb_profile import ProfileError
 from complaint_triage.raw_ingestion import RawIngestionError
+from complaint_triage.staging import StagingError
 
 
 def test_profile_command_prints_safe_json(monkeypatch, capsys) -> None:
@@ -76,4 +77,40 @@ def test_ingest_command_returns_controlled_error(monkeypatch, capsys) -> None:
 
     assert exit_code == 1
     assert output["error"]["code"] == "artifact_checksum_mismatch"
+    assert output["privacy"]["raw_payload_logged"] is False
+
+
+def test_stage_command_prints_reconciled_counts(monkeypatch, capsys) -> None:
+    monkeypatch.setattr(
+        cli,
+        "stage_raw_batch",
+        lambda _batch_id: {
+            "status": "staged",
+            "input_record_count": 3,
+            "accepted_record_count": 2,
+            "quarantined_record_count": 1,
+            "inserted_record_count": 3,
+        },
+    )
+
+    exit_code = cli.main(["stage-raw-batch", "--batch-id", "cfpb-20260722T000000Z-aaaaaaaaaaaa"])
+    output = json.loads(capsys.readouterr().out)
+
+    assert exit_code == 0
+    assert output["input_record_count"] == (
+        output["accepted_record_count"] + output["quarantined_record_count"]
+    )
+
+
+def test_stage_command_returns_controlled_error(monkeypatch, capsys) -> None:
+    def fail(_batch_id) -> None:
+        raise StagingError("raw_batch_not_found")
+
+    monkeypatch.setattr(cli, "stage_raw_batch", fail)
+
+    exit_code = cli.main(["stage-raw-batch", "--batch-id", "cfpb-20260722T000000Z-aaaaaaaaaaaa"])
+    output = json.loads(capsys.readouterr().out)
+
+    assert exit_code == 1
+    assert output["error"]["code"] == "raw_batch_not_found"
     assert output["privacy"]["raw_payload_logged"] is False

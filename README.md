@@ -4,7 +4,7 @@ An educational portfolio project exploring how a human-in-the-loop NLP system ca
 
 ## Current status
 
-**Phase 1 ingestion: CT-106 is complete; CT-107 is next.**
+**Phase 1 ingestion is complete; the Phase 2 transition awaits approval.**
 
 The repository now includes a privacy-safe, five-record CFPB source profiler with
 mocked network and contract tests. The live endpoint remains inaccessible from
@@ -14,9 +14,10 @@ approved, and a loopback-only PostgreSQL 18.4 service now passes real health and
 SQL readiness checks. The accepted CT-106 migration and loader validate and load
 the three-record synthetic fixture atomically, reject replays and mutations, and
 unconditionally block real data while retention remains undecided. No real source
-data has been ingested and no model has been trained. Any future metric must be
-generated from a versioned evaluation artifact before it appears here or in the
-portfolio.
+data has been ingested. The accepted CT-107 staging layer assigns every raw row a
+versioned accepted or quarantined outcome without selecting a modelling taxonomy
+or population. No model has been trained. Any future metric must be generated
+from a versioned evaluation artifact before it appears here or in the portfolio.
 
 ## Intended use
 
@@ -47,6 +48,7 @@ This project will not:
 - [Raw batch JSON Schema](contracts/cfpb-raw-batch-manifest.schema.json)
 - [Local PostgreSQL guide](docs/postgresql_local.md)
 - [Append-only raw ingestion guide](docs/raw_ingestion.md)
+- [Versioned staging transformation guide](docs/staging_transformations.md)
 - [Architecture](docs/architecture.md)
 - [Learning log](docs/learning_log.md)
 

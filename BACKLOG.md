@@ -19,7 +19,7 @@ This backlog converts `SPEC.md` into bounded delivery issues. Status values are 
 | CT-104 | Decide local raw-data manifest and checksum format | complete | Approved manifest contract |
 | CT-105 | Introduce PostgreSQL through a documented ADR | complete | Local database starts and readiness check passes |
 | CT-106 | Implement append-only raw ingestion with batch metadata | complete | Disposable PostgreSQL test proves rollback, idempotency, row-count reconciliation, and mutation rejection |
-| CT-107 | Implement staging transformations and quarantine reasons | pending | Data-contract and reconciliation tests |
+| CT-107 | Implement staging transformations and quarantine reasons | complete | Versioned outcome contract and PostgreSQL acceptance/quarantine reconciliation tests |
 
 ## Phase 2: analytical dataset and baseline
 
@@ -38,9 +38,11 @@ Later phases remain defined in `SPEC.md`. Expand them into issue-level detail on
 
 ## Current next issue
 
-Proceed with **CT-107: implement staging transformations and quarantine reasons**.
+Phase 1 is complete. Await explicit approval to transition into **Phase 2:
+analytical dataset and baseline**.
 
-CT-107 must preserve raw rows, create deterministic source-aligned staging
-outputs, record explicit quarantine reasons, and reconcile every raw row to
-exactly one staged outcome. It must not select the modelling population or
-finalize a target taxonomy.
+The accepted implementation leaves raw rows unchanged, records exactly one
+versioned accepted or quarantined outcome for every input, and does not select the
+modelling population or taxonomy. The Phase 2 transition must be approved before
+CT-201 begins because it leads to proposals for the final taxonomy and date
+window, which are separate phase-gated decisions.

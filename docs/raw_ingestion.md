@@ -129,5 +129,5 @@ are otherwise valid. Before that changes, the project must approve and document:
 - backup and derived-data behavior; and
 - how local development differs from a future deployed environment.
 
-CT-107 can build staging behavior from synthetic raw rows without crossing that
-decision gate.
+The proposed CT-107 staging behavior uses only synthetic raw rows and does not
+cross that decision gate. See `docs/staging_transformations.md`.

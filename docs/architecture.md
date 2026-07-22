@@ -40,6 +40,11 @@ lineage before atomically inserting `raw.ingestion_batches` and
 `raw.complaints`. Database triggers enforce append-only behavior. Real-data
 loading is blocked until a retention policy is separately approved.
 
+The proposed CT-107 staging layer adds versioned, append-only transformation
+batches and one accepted or quarantined outcome per raw row. It normalizes
+source-quality fields but deliberately preserves `product_raw`; modelling
+population, canonical taxonomy, and temporal rules remain undecided.
+
 ## Architecture decisions
 
 - [ADR 0001: Separate ML backend and Lovable frontend](decisions/0001-separate-backend-and-frontend.md)
@@ -47,3 +52,4 @@ loading is blocked until a retention policy is separately approved.
 - [ADR 0003: Content-address raw CFPB batches](decisions/0003-content-addressed-raw-batches.md)
 - [ADR 0004: Local PostgreSQL with Docker Compose](decisions/0004-local-postgresql-compose.md)
 - [ADR 0005: Append-only raw ingestion through validated manifests](decisions/0005-append-only-raw-ingestion.md)
+- [ADR 0006: Versioned staging outcomes with explicit quarantine reasons](decisions/0006-versioned-staging-outcomes.md)

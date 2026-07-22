@@ -304,3 +304,50 @@ the technical loader works.
   real CFPB artifacts and database rows?
 - Should deployment split migration-owner and append-only writer roles?
 - Should CT-107 quarantine schema-drifted rows or fail the complete staged batch?
+
+---
+
+## Draft CT-107: versioned staging outcomes
+
+**Date:** 2026-07-22
+
+**What the AI generated**
+
+A proposed staging ADR, second Alembic migration, typed and deterministic
+normalization module, closed quarantine-reason enum, aggregate-only CLI command,
+shared disposable-database test fixture, unit tests, real PostgreSQL acceptance
+and quarantine tests, and an operator/learning guide. No dependency was added.
+
+**How I verified it**
+
+Draft for Charles to complete after reviewing
+`docs/decisions/0006-versioned-staging-outcomes.md`, comparing the reason table to
+`src/complaint_triage/staging.py`, following the synthetic command in
+`docs/staging_transformations.md`, and running the documented checks. The
+PostgreSQL tests force rollback, accept three clean fixture rows, replay with zero
+inserts, store malformed and duplicate rows with explicit reasons, reconcile all
+counts, and reject updates and deletes.
+
+**What can fail in production**
+
+A source type can drift beyond the reason vocabulary, a transformation version
+can be changed without a migration or documentation update, local storage can
+grow because normalized narratives are duplicated, a database owner can disable
+append-only triggers, canonical JSON behavior can be changed inconsistently,
+and consumers can mistakenly treat staging acceptance as modelling eligibility.
+Cross-batch and near-duplicate leakage remain unresolved by design.
+
+**What I can explain in an interview**
+
+Draft for Charles: why every raw row receives one outcome; why quarantine is a
+data-quality result rather than an exception; how database checks encode count
+reconciliation; why transformations are versioned and append-only; why Unicode,
+line endings, nulls, dates, and hashes are normalized; why all within-batch
+duplicates are quarantined; and why `product_raw` is not yet a canonical target.
+
+**Questions still open**
+
+- Which taxonomy versions and modelling window are stable enough to propose in
+  Phase 2?
+- How should cross-batch exact duplicates be assigned without temporal leakage?
+- Which staging quarantine reasons, if any, should support a remediation flow?
