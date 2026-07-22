@@ -253,3 +253,54 @@ least-privilege roles rather than the local initialization superuser.
 - What raw-artifact retention policy must be approved before real ingestion?
 - Which schemas, role grants, and migration boundaries should the first database
   migration establish?
+
+---
+
+## Draft CT-106: append-only raw ingestion
+
+**Date:** 2026-07-22
+
+**What the AI generated**
+
+A proposed raw-ingestion ADR; shared, redacted database settings; an Alembic
+migration for batch and complaint JSONB tables; database mutation-rejection
+triggers; a schema-, checksum-, lineage-, and reconciliation-validating loader;
+safe CLI output; unit tests; a real disposable-PostgreSQL integration test; and a
+CI PostgreSQL service. It selected current compatible Alembic, SQLAlchemy, and
+Psycopg release lines and moved `jsonschema` into runtime dependencies because
+every batch now depends on manifest validation.
+
+**How I verified it**
+
+Draft for Charles to complete after reviewing
+`docs/decisions/0005-append-only-raw-ingestion.md`, following the synthetic
+rehearsal in `docs/raw_ingestion.md`, inspecting the database counts, and running
+the documented validation commands. The automated integration test created and
+dropped a uniquely named database, forced a failure on the second record to prove
+rollback, loaded three synthetic records, replayed the batch with zero new rows,
+and confirmed that updates and deletes raise an append-only exception.
+
+**What can fail in production**
+
+A migration can be applied to the wrong database, database-owner credentials can
+alter the append-only controls, concurrent writers can reveal an untested identity
+edge case, local storage can fill, an evolving source envelope can fail strict
+reconciliation, operational backups can outlive a future deletion, and future
+code could misclassify real bytes as synthetic if marker checks are weakened. The
+local initialization role is not suitable as a production application role.
+
+**What I can explain in an interview**
+
+Draft for Charles: why validation occurs before connecting; how exact-byte,
+request, batch, and per-record hashes serve different purposes; why one database
+transaction gives all-or-nothing ingestion; how conflict handling makes replay
+idempotent; why JSONB belongs in the raw layer; why triggers complement rather
+than replace application logic; and why real data remains blocked even though
+the technical loader works.
+
+**Questions still open**
+
+- What retention duration, deletion evidence, and backup behavior should govern
+  real CFPB artifacts and database rows?
+- Should deployment split migration-owner and append-only writer roles?
+- Should CT-107 quarantine schema-drifted rows or fail the complete staged batch?

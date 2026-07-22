@@ -134,9 +134,9 @@ postgresql://complaint_triage:<password>@127.0.0.1:55432/complaint_triage
 Do not commit a populated DSN. Do not put this database password in the Lovable
 frontend or any `VITE_*` variable.
 
-CT-105 deliberately does not add a Python PostgreSQL driver. CT-106 should choose
-the driver together with SQLAlchemy/Alembic requirements rather than adding a
-client before any application database behavior exists.
+CT-105 deliberately did not add a Python PostgreSQL driver. The proposed CT-106
+implementation now uses Psycopg for transactional loading and SQLAlchemy/Alembic
+for ordered migrations; the rationale is recorded in ADR 0005.
 
 ## Lifecycle commands
 
@@ -268,8 +268,9 @@ or future row-level data.
 - [x] No ingestion or schema migration implemented.
 - [x] User approved the ADR and CT-105 diff on 2026-07-22.
 
-## Next bounded issue
+## CT-106 follow-up
 
-After approval, CT-106 can design and implement append-only raw ingestion with
-batch metadata. Before it retains any real response, it must also resolve the
-open raw-artifact retention policy from CT-104.
+CT-106 now proposes append-only raw ingestion with batch metadata and a disposable
+database test. It remains synthetic-only. Before any real response is retained,
+the open raw-artifact and database-row retention policy from CT-104 must be
+approved separately.

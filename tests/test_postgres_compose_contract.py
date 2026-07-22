@@ -30,6 +30,7 @@ def test_environment_example_uses_a_local_only_placeholder() -> None:
     assert "POSTGRES_DB=complaint_triage" in env_text
     assert "POSTGRES_USER=complaint_triage" in env_text
     assert "POSTGRES_PASSWORD=change-me-local-only" in env_text
+    assert "POSTGRES_HOST=127.0.0.1" in env_text
     assert "POSTGRES_PORT=55432" in env_text
     assert ".env" in (REPOSITORY_ROOT / ".gitignore").read_text(encoding="utf-8").splitlines()
 

@@ -119,6 +119,11 @@ CT-106 should implement this sequence without weakening it:
 An interrupted response must not produce a completed batch manifest. Temporary
 file cleanup behavior belongs to CT-106 and must use explicitly validated paths.
 
+CT-106 implements the database-loading half of this contract for an already
+materialized synthetic manifest/artifact pair. Network acquisition and the
+temporary-file publication sequence remain blocked with real-data retention, so
+the loader does not claim to have implemented steps 1-9 above.
+
 ## Request fingerprint
 
 The request fingerprint input is a JSON object containing:

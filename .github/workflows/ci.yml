@@ -12,6 +12,28 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    env:
+      POSTGRES_DB: complaint_triage
+      POSTGRES_USER: complaint_triage
+      POSTGRES_PASSWORD: ci-disposable-only
+      POSTGRES_HOST: 127.0.0.1
+      POSTGRES_PORT: 55432
+      RUN_POSTGRES_TESTS: "1"
+
+    services:
+      postgres:
+        image: postgres:18.4-alpine3.23
+        env:
+          POSTGRES_DB: complaint_triage
+          POSTGRES_USER: complaint_triage
+          POSTGRES_PASSWORD: ci-disposable-only
+        ports:
+          - 55432:5432
+        options: >-
+          --health-cmd "pg_isready -U complaint_triage -d complaint_triage"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
 
     steps:
       - name: Check out repository
@@ -34,4 +56,3 @@ jobs:
 
       - name: Test
         run: python -m pytest --cov=complaint_triage --cov-report=term-missing --cov-report=xml
-

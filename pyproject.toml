@@ -12,14 +12,18 @@ license = { text = "All rights reserved" }
 authors = [
   { name = "Charles Jr Ancheta" },
 ]
-dependencies = []
+dependencies = [
+  "alembic>=1.18.5,<1.19",
+  "jsonschema>=4.23,<5",
+  "psycopg[binary]>=3.3.4,<3.4",
+  "SQLAlchemy>=2.0.51,<2.1",
+]
 
 [project.scripts]
 complaint-triage = "complaint_triage.cli:main"
 
 [project.optional-dependencies]
 dev = [
-  "jsonschema>=4.23,<5",
   "pytest>=8.3,<9",
   "pytest-cov>=6,<7",
   "ruff>=0.11,<1",
@@ -31,6 +35,9 @@ where = ["src"]
 [tool.pytest.ini_options]
 addopts = "--strict-markers --strict-config -ra"
 testpaths = ["tests"]
+markers = [
+  "postgres: requires a reachable disposable PostgreSQL service",
+]
 
 [tool.coverage.run]
 branch = true

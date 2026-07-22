@@ -18,7 +18,7 @@ This backlog converts `SPEC.md` into bounded delivery issues. Status values are 
 | CT-103 | Implement source metadata and bounded profiling command | complete | Deterministic report and mocked network tests |
 | CT-104 | Decide local raw-data manifest and checksum format | complete | Approved manifest contract |
 | CT-105 | Introduce PostgreSQL through a documented ADR | complete | Local database starts and readiness check passes |
-| CT-106 | Implement append-only raw ingestion with batch metadata | pending | Idempotency and row-count tests |
+| CT-106 | Implement append-only raw ingestion with batch metadata | complete | Disposable PostgreSQL test proves rollback, idempotency, row-count reconciliation, and mutation rejection |
 | CT-107 | Implement staging transformations and quarantine reasons | pending | Data-contract and reconciliation tests |
 
 ## Phase 2: analytical dataset and baseline
@@ -38,8 +38,9 @@ Later phases remain defined in `SPEC.md`. Expand them into issue-level detail on
 
 ## Current next issue
 
-Proceed with **CT-106: implement append-only raw ingestion with batch metadata**.
+Proceed with **CT-107: implement staging transformations and quarantine reasons**.
 
-CT-104 must define lineage, content addressing, checksum scope, safe manifest
-fields, and append-only behavior before any raw response is retained. It must not
-download CFPB data, implement database ingestion, or begin modelling.
+CT-107 must preserve raw rows, create deterministic source-aligned staging
+outputs, record explicit quarantine reasons, and reconcile every raw row to
+exactly one staged outcome. It must not select the modelling population or
+finalize a target taxonomy.

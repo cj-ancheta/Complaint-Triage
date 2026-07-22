@@ -34,8 +34,11 @@ This is a planned architecture, not a claim that the components already exist.
 ## Current implemented boundary
 
 The repository now includes the controlled CFPB source profiler, raw batch
-manifest contract, and a local PostgreSQL Compose service. PostgreSQL has no
-application tables yet; ingestion and migrations remain future work.
+manifest contract, local PostgreSQL Compose service, first Alembic migration, and
+a proposed synthetic-only raw loader. The loader validates exact bytes and
+lineage before atomically inserting `raw.ingestion_batches` and
+`raw.complaints`. Database triggers enforce append-only behavior. Real-data
+loading is blocked until a retention policy is separately approved.
 
 ## Architecture decisions
 
@@ -43,3 +46,4 @@ application tables yet; ingestion and migrations remain future work.
 - [ADR 0002: Standard Python environment for Phase 0](decisions/0002-standard-python-environment.md)
 - [ADR 0003: Content-address raw CFPB batches](decisions/0003-content-addressed-raw-batches.md)
 - [ADR 0004: Local PostgreSQL with Docker Compose](decisions/0004-local-postgresql-compose.md)
+- [ADR 0005: Append-only raw ingestion through validated manifests](decisions/0005-append-only-raw-ingestion.md)

@@ -5,8 +5,15 @@ from __future__ import annotations
 import argparse
 import json
 from collections.abc import Sequence
+from pathlib import Path
 
 from complaint_triage.cfpb_profile import ProfileError, fetch_cfpb_profile, safe_error_report
+from complaint_triage.db import DatabaseSettingsError
+from complaint_triage.raw_ingestion import (
+    RawIngestionError,
+    ingest_raw_batch,
+    safe_ingestion_error,
+)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -15,6 +22,16 @@ def build_parser() -> argparse.ArgumentParser:
     subcommands.add_parser(
         "profile-cfpb",
         help="Run one fixed, five-hit CFPB source-contract check.",
+    )
+    ingest_parser = subcommands.add_parser(
+        "ingest-raw-batch",
+        help="Validate and load one content-addressed CFPB raw batch.",
+    )
+    ingest_parser.add_argument(
+        "--manifest",
+        type=Path,
+        required=True,
+        help="Manifest under data/manifests/cfpb/.",
     )
     return parser
 
@@ -27,6 +44,32 @@ def main(argv: Sequence[str] | None = None) -> int:
             report = fetch_cfpb_profile()
         except ProfileError as error:
             print(json.dumps(safe_error_report(error), indent=2, sort_keys=True))
+            return 1
+
+        print(json.dumps(report, indent=2, sort_keys=True))
+        return 0
+
+    if args.command == "ingest-raw-batch":
+        try:
+            report = ingest_raw_batch(args.manifest)
+        except RawIngestionError as error:
+            print(json.dumps(safe_ingestion_error(error), indent=2, sort_keys=True))
+            return 1
+        except DatabaseSettingsError:
+            print(
+                json.dumps(
+                    {
+                        "status": "error",
+                        "error": {"code": "database_configuration_invalid"},
+                        "privacy": {
+                            "source_values_logged": False,
+                            "raw_payload_logged": False,
+                        },
+                    },
+                    indent=2,
+                    sort_keys=True,
+                )
+            )
             return 1
 
         print(json.dumps(report, indent=2, sort_keys=True))

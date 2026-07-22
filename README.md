@@ -4,16 +4,19 @@ An educational portfolio project exploring how a human-in-the-loop NLP system ca
 
 ## Current status
 
-**Phase 1 infrastructure: CT-105 is complete; CT-106 is next.**
+**Phase 1 ingestion: CT-106 is complete; CT-107 is next.**
 
 The repository now includes a privacy-safe, five-record CFPB source profiler with
 mocked network and contract tests. The live endpoint remains inaccessible from
 this execution environment, so a successful deployed response check is still
 outstanding. A versioned raw-batch manifest and exact-byte SHA-256 contract are
 approved, and a loopback-only PostgreSQL 18.4 service now passes real health and
-SQL readiness checks. No source data has been ingested and no model has been
-trained. Any future metric must be generated from a versioned evaluation artifact
-before it appears here or in the portfolio.
+SQL readiness checks. The accepted CT-106 migration and loader validate and load
+the three-record synthetic fixture atomically, reject replays and mutations, and
+unconditionally block real data while retention remains undecided. No real source
+data has been ingested and no model has been trained. Any future metric must be
+generated from a versioned evaluation artifact before it appears here or in the
+portfolio.
 
 ## Intended use
 
@@ -43,6 +46,7 @@ This project will not:
 - [CFPB raw batch manifest](docs/cfpb_raw_batch_manifest.md)
 - [Raw batch JSON Schema](contracts/cfpb-raw-batch-manifest.schema.json)
 - [Local PostgreSQL guide](docs/postgresql_local.md)
+- [Append-only raw ingestion guide](docs/raw_ingestion.md)
 - [Architecture](docs/architecture.md)
 - [Learning log](docs/learning_log.md)
 
@@ -77,6 +81,7 @@ Start the local PostgreSQL service after copying `.env.example` to ignored
 
 ```powershell
 docker compose up -d --wait postgres
+.\.venv\Scripts\python.exe -m alembic upgrade head
 ```
 
 ## Repository boundary
@@ -87,7 +92,10 @@ The Lovable React interface will live in a separate `complaint-triage-web` repos
 
 ## Data and privacy
 
-The planned source is the public CFPB Consumer Complaint Database. Raw complaint narratives, generated model artifacts, secrets, and local experiment stores are excluded from Git. A bounded profiling step and source-risk review must occur before ingestion is implemented.
+The planned source is the public CFPB Consumer Complaint Database. Raw complaint
+narratives, generated model artifacts, secrets, and local experiment stores are
+excluded from Git. CT-106 can load only explicit synthetic fixture batches; real
+raw ingestion stays disabled until a retention policy is approved.
 
 ## License
 
