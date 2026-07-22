@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import shutil
 import subprocess
+import time
 from collections.abc import Callable, Mapping
 from datetime import UTC, datetime
 from pathlib import Path
@@ -40,6 +41,7 @@ USER_AGENT = "complaint-triage-monthly-export/1.0"
 DEFAULT_TIMEOUT_SECONDS = 180.0
 CHUNK_SIZE = 64 * 1024
 MIN_FREE_BYTES = 20 * 1024 * 1024 * 1024
+MIN_EXPORT_START_INTERVAL_SECONDS = 35.0
 
 
 class ResponseLike(Protocol):
@@ -119,6 +121,8 @@ def acquire_real_run(
     lineage_reader: Callable[[Path], tuple[str, bool]] = read_git_lineage,
     free_space_reader: Callable[[Path], int] = lambda path: shutil.disk_usage(path).free,
     now: Callable[[], datetime] = lambda: datetime.now(UTC),
+    monotonic: Callable[[], float] = time.monotonic,
+    sleeper: Callable[[float], None] = time.sleep,
 ) -> dict[str, Any]:
     """Preflight and stream the exact approved run, returning aggregate evidence."""
 
@@ -155,8 +159,10 @@ def acquire_real_run(
     timestamp = started_at.replace(microsecond=0).strftime("%Y%m%dT%H%M%SZ")
     run_id = f"cfpb-run-{timestamp}-{run_suffix}"
     transport = opener or build_opener(NoRedirectHandler())
+    pace_live_transport = opener is None
 
     published: list[PublishedShard] = []
+    previous_request_started: float | None = None
     try:
         for spec in approved_monthly_shards():
             expected_count = counts[spec.month]
@@ -167,6 +173,11 @@ def acquire_real_run(
                 headers={"Accept": "application/json", "User-Agent": USER_AGENT},
                 method="GET",
             )
+            if pace_live_transport and previous_request_started is not None:
+                delay = _required_pacing_delay(previous_request_started, monotonic())
+                if delay > 0:
+                    sleeper(delay)
+            previous_request_started = monotonic()
             with transport.open(request, timeout=timeout_seconds) as response:
                 content_type = _header(response.headers, "Content-Type")
                 content_encoding = _header(response.headers, "Content-Encoding").lower()
@@ -281,3 +292,7 @@ def _rollback_incomplete_run(
 
 def _header(headers: Any, name: str) -> str:
     return str(headers.get(name, "")) if hasattr(headers, "get") else ""
+
+
+def _required_pacing_delay(previous_started: float, current: float) -> float:
+    return max(0.0, MIN_EXPORT_START_INTERVAL_SECONDS - (current - previous_started))

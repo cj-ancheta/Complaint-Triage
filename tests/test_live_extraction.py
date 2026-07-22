@@ -8,7 +8,9 @@ import pytest
 
 from complaint_triage.live_extraction import (
     CFPB_EXPORT_PATH,
+    MIN_EXPORT_START_INTERVAL_SECONDS,
     MIN_FREE_BYTES,
+    _required_pacing_delay,
     acquire_real_run,
     build_export_url,
     safe_live_result,
@@ -238,6 +240,11 @@ def test_disk_capacity_fails_before_preflight_or_network(tmp_path: Path) -> None
             now=lambda: NOW,
         )
     assert opener.requests == []
+
+
+def test_live_transport_pacing_respects_official_two_per_minute_limit() -> None:
+    assert _required_pacing_delay(100.0, 105.0) == MIN_EXPORT_START_INTERVAL_SECONDS - 5
+    assert _required_pacing_delay(100.0, 140.0) == 0
 
 
 def test_live_error_report_contains_no_response_body() -> None:

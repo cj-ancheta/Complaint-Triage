@@ -7,7 +7,8 @@ HTTPS adapter, but it fails before preflight or download unless the working tree
 is clean, HEAD is a full commit, at least 20 GiB is free, and the operator types
 the accepted retention policy ID. The adapter fixes the host, path, method, and
 query; rejects redirects and compressed/non-JSON responses; and does not log
-response bodies.
+response bodies. Live export starts are separated by at least 35 seconds to stay
+below the pinned API's two-anonymous-exports-per-minute throttle.
 
 Real data is authorized only under ADR 0009. It must remain under
 `data/raw/cfpb/` and in the loopback-only Compose PostgreSQL volume. Do not copy

@@ -41,3 +41,9 @@ uses an ISO date-time representation rather than the normal API's date-only
 representation. Raw ingestion and staging now preserve that source string while
 normalizing its calendar component for manifest reconciliation and typed dates.
 The failed attempt again retained no JSON artifact or manifest.
+
+The third attempt passed both source-shape checks and completed several shards,
+then received HTTP 429. The pinned server throttle is two anonymous exports per
+minute. The attempt rolled back, and the live adapter now spaces export starts
+by at least 35 seconds rather than relying on download duration as implicit
+pacing.
