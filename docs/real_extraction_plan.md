@@ -60,9 +60,9 @@ Monthly filtered exports are preferable to:
 - 100-row pagination, which would require roughly 10,000 requests and create an
   unnecessarily complicated consistency window.
 
-## Required CT-109 controls before download
+## Accepted CT-109 implementation
 
-The next bounded issue should:
+CT-109 implements the following controls without adding a live HTTP transport:
 
 1. define a run manifest grouping all 16 monthly shards;
 2. generate only fixed month boundaries and approved query parameters;
@@ -77,4 +77,17 @@ The next bounded issue should:
 9. require a clean committed CT-109 implementation before the live command can
    run.
 
-No live request should occur while any of these controls is only documented.
+The API's `date_received_max` becomes an inclusive OpenSearch `to` bound. The
+code therefore represents each approved month as a half-open interval but sends
+the last calendar day as the API maximum. This prevents adjacent shards from
+overlapping.
+
+The fixed per-shard ceiling is 1 GiB. Bytes are written and hashed incrementally;
+`ijson` then validates each array item without materializing the full array. The
+cap is a safety boundary, not an expected payload-size claim. CT-110 must stop
+for review if a legitimate shard reaches it.
+
+Charles accepted the 1 GiB shard ceiling and synthetic cleanup boundary on
+2026-07-22. See `docs/real_extraction.md` for the operator and cleanup workflow.
+No live request should occur until this implementation is committed and the
+CT-110 adapter re-verifies a clean working tree.

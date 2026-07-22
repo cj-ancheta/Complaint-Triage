@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/cj-ancheta/Complaint-Triage/contracts/cfpb-extraction-run-manifest.schema.json",
+  "title": "CFPB monthly extraction run manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "run_manifest_version",
+    "run_id",
+    "created_at_utc",
+    "policy",
+    "lineage",
+    "partition",
+    "database_volume",
+    "shards",
+    "privacy"
+  ],
+  "properties": {
+    "run_manifest_version": { "const": "1.0.0" },
+    "run_id": { "type": "string", "pattern": "^cfpb-run-[0-9]{8}T[0-9]{6}Z-[0-9a-f]{12}$" },
+    "created_at_utc": { "$ref": "#/$defs/utcTimestamp" },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["retention_policy_id", "expires_at_utc"],
+      "properties": {
+        "retention_policy_id": { "const": "cfpb-local-120d-v1" },
+        "expires_at_utc": { "$ref": "#/$defs/utcTimestamp" }
+      }
+    },
+    "lineage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code_commit_sha", "working_tree_clean", "api_contract_commit_sha"],
+      "properties": {
+        "code_commit_sha": { "$ref": "#/$defs/gitCommitSha" },
+        "working_tree_clean": { "const": true },
+        "api_contract_commit_sha": { "const": "f10324b3e42c146fc6de1caacfb0bb63691e6b4a" }
+      }
+    },
+    "partition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["window_start_inclusive", "window_end_exclusive", "shard_count", "export_record_limit", "shard_byte_limit"],
+      "properties": {
+        "window_start_inclusive": { "const": "2023-09-01" },
+        "window_end_exclusive": { "const": "2025-01-01" },
+        "shard_count": { "const": 16 },
+        "export_record_limit": { "const": 100000 },
+        "shard_byte_limit": { "const": 1073741824 }
+      }
+    },
+    "database_volume": { "const": "complaint-triage-ml_postgres_data" },
+    "shards": {
+      "type": "array",
+      "minItems": 16,
+      "maxItems": 16,
+      "items": { "$ref": "#/$defs/shard" }
+    },
+    "privacy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["contains_row_values", "git_tracking_allowed"],
+      "properties": {
+        "contains_row_values": { "const": false },
+        "git_tracking_allowed": { "const": true }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "gitCommitSha": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "utcTimestamp": { "type": "string", "format": "date-time", "pattern": "Z$" },
+    "shard": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ordinal", "month", "start_inclusive", "end_exclusive", "api_date_received_min",
+        "api_date_received_max", "preflight_count", "batch_id", "manifest_relative_path",
+        "artifact_relative_path", "artifact_sha256", "artifact_byte_count", "returned_record_count"
+      ],
+      "properties": {
+        "ordinal": { "type": "integer", "minimum": 0, "maximum": 15 },
+        "month": { "type": "string", "pattern": "^20[0-9]{2}-(0[1-9]|1[0-2])$" },
+        "start_inclusive": { "type": "string", "format": "date" },
+        "end_exclusive": { "type": "string", "format": "date" },
+        "api_date_received_min": { "type": "string", "format": "date" },
+        "api_date_received_max": { "type": "string", "format": "date" },
+        "preflight_count": { "type": "integer", "minimum": 1, "maximum": 99999 },
+        "batch_id": { "type": "string", "pattern": "^cfpb-[0-9]{8}T[0-9]{6}Z-[0-9a-f]{12}$" },
+        "manifest_relative_path": { "type": "string", "pattern": "^data/manifests/cfpb/cfpb-[0-9]{8}T[0-9]{6}Z-[0-9a-f]{12}[.]json$" },
+        "artifact_relative_path": { "type": "string", "pattern": "^data/raw/cfpb/sha256/[0-9a-f]{2}/[0-9a-f]{64}[.]json$" },
+        "artifact_sha256": { "$ref": "#/$defs/sha256" },
+        "artifact_byte_count": { "type": "integer", "minimum": 1, "maximum": 1073741824 },
+        "returned_record_count": { "type": "integer", "minimum": 1, "maximum": 99999 }
+      }
+    }
+  }
+}

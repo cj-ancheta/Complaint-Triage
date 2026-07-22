@@ -21,7 +21,7 @@ This backlog converts `SPEC.md` into bounded delivery issues. Status values are 
 | CT-106 | Implement append-only raw ingestion with batch metadata | complete | Disposable PostgreSQL test proves rollback, idempotency, row-count reconciliation, and mutation rejection |
 | CT-107 | Implement staging transformations and quarantine reasons | complete | Versioned outcome contract and PostgreSQL acceptance/quarantine reconciliation tests |
 | CT-108 | Enforce approved retention on real batch manifests | complete | Approved version/expiry/window enforcement and 16-month export design |
-| CT-109 | Implement monthly streamed export and cleanup rehearsal | pending | Tested writer, 16-shard run contract, and safe cleanup evidence |
+| CT-109 | Implement monthly streamed export and cleanup rehearsal | complete | Accepted tested writer, 16-shard run contract, 1 GiB shard cap, and safe cleanup evidence |
 | CT-110 | Acquire, ingest, stage, and profile first real run | pending | Reconciled real aggregate population report under ADR 0009 |
 
 ## Phase 2: analytical dataset and baseline
@@ -45,6 +45,8 @@ Phase 2 is authorized and **CT-202 is complete**. ADR 0008 accepts a versioned
 English-language eligibility funnel over the accepted taxonomy/window. ADR 0009
 authorizes local real-data retention through 2026-11-19. CT-108 is complete with
 fail-closed policy enforcement and an approved monthly export design. CT-109 is
-the next bounded issue: implement and test the streamed writer and cleanup
-rehearsal before CT-110 makes the first live request. Do not begin CT-203 until a
+complete with an accepted network-disabled streamed writer, exact run contract,
+1 GiB shard cap, and dry-run-by-default cleanup rehearsal. CT-110 is the next
+bounded issue: add the live adapter, acquire and reconcile the approved run, then
+produce the first real aggregate population report. Do not begin CT-203 until a
 real eligible population exists.

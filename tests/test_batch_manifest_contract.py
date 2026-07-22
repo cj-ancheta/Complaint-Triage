@@ -78,16 +78,20 @@ def test_synthetic_manifest_validates_against_json_schema() -> None:
     assert errors == []
 
 
-def test_schema_rejects_export_format_and_oversized_request() -> None:
+def test_schema_separates_bounded_profile_and_real_export_parameters() -> None:
     schema = load_json(SCHEMA_PATH)
     validator = Draft202012Validator(schema, format_checker=FormatChecker())
     manifest_with_export = deepcopy(load_json(MANIFEST_PATH))
     manifest_with_export["request"]["parameters"]["format"] = "json"
     manifest_with_oversized_request = deepcopy(load_json(MANIFEST_PATH))
     manifest_with_oversized_request["request"]["parameters"]["size"] = "101"
+    real_export = deepcopy(manifest_with_export)
+    real_export["manifest_version"] = "2.0.0"
+    real_export["request"]["parameters"]["size"] = "101"
 
     assert list(validator.iter_errors(manifest_with_export))
     assert list(validator.iter_errors(manifest_with_oversized_request))
+    assert list(validator.iter_errors(real_export)) == []
 
 
 def test_artifact_checksum_covers_exact_fixture_bytes() -> None:

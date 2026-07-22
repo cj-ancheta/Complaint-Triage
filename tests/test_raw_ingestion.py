@@ -9,6 +9,7 @@ import pytest
 
 from complaint_triage.raw_ingestion import (
     RawIngestionError,
+    _reconcile_export_records,
     prepare_raw_batch,
     safe_ingestion_error,
 )
@@ -203,3 +204,27 @@ def test_safe_error_never_contains_raw_narrative() -> None:
 
     assert narrative not in json.dumps(report)
     assert report["privacy"]["raw_payload_logged"] is False
+
+
+def test_export_record_date_must_be_inside_its_inclusive_api_request() -> None:
+    manifest = {
+        "request": {
+            "parameters": {
+                "date_received_min": "2023-09-01",
+                "date_received_max": "2023-09-30",
+            }
+        }
+    }
+    response = [
+        {
+            "_source": {
+                "complaint_id": "SYN-OUTSIDE",
+                "date_received": "2023-10-01",
+            }
+        }
+    ]
+
+    with pytest.raises(RawIngestionError) as raised:
+        _reconcile_export_records(manifest, response)
+
+    assert raised.value.code == "date_received_outside_request"

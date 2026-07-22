@@ -5,7 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 from dataclasses import dataclass
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime
 from pathlib import Path, PurePosixPath
 from typing import Any
 
@@ -116,8 +116,13 @@ def prepare_raw_batch(
     if manifest["batch_id"] != expected_batch_id:
         raise RawIngestionError("batch_id_mismatch")
 
-    response = _decode_json_object(raw_bytes, "artifact")
-    records = _reconcile_records(manifest, response)
+    response = _decode_json_value(raw_bytes, "artifact")
+    if manifest["request"]["parameters"].get("format") == "json":
+        records = _reconcile_export_records(manifest, response)
+    else:
+        if not isinstance(response, dict):
+            raise RawIngestionError("artifact_json_invalid")
+        records = _reconcile_records(manifest, response)
     if manifest["is_synthetic"]:
         _validate_synthetic_markers(response, records)
     return PreparedRawBatch(manifest=manifest, records=records)
@@ -389,6 +394,88 @@ def _reconcile_records(manifest: dict[str, Any], response: dict[str, Any]) -> tu
     return tuple(raw_records)
 
 
+def _reconcile_export_records(manifest: dict[str, Any], response: Any) -> tuple[RawRecord, ...]:
+    if not isinstance(response, list):
+        raise RawIngestionError("artifact_envelope_invalid")
+    sources: list[dict[str, Any]] = []
+    complaint_ids: list[str] = []
+    complaint_id_types: set[str] = set()
+    dates: list[str] = []
+    raw_records: list[RawRecord] = []
+    parameters = manifest["request"]["parameters"]
+    requested_min = str(parameters["date_received_min"])
+    requested_max = str(parameters["date_received_max"])
+    for ordinal, hit in enumerate(response):
+        if not isinstance(hit, dict) or not isinstance(hit.get("_source"), dict):
+            raise RawIngestionError("artifact_record_invalid", source_row_ordinal=ordinal)
+        source = hit["_source"]
+        complaint_id = source.get("complaint_id")
+        if isinstance(complaint_id, bool) or not isinstance(complaint_id, (str, int)):
+            raise RawIngestionError("complaint_id_invalid", source_row_ordinal=ordinal)
+        received_date = source.get("date_received")
+        if not isinstance(received_date, str):
+            raise RawIngestionError("date_received_invalid", source_row_ordinal=ordinal)
+        try:
+            parsed_received = date.fromisoformat(received_date)
+        except ValueError as error:
+            raise RawIngestionError("date_received_invalid", source_row_ordinal=ordinal) from error
+        if (
+            not date.fromisoformat(requested_min)
+            <= parsed_received
+            <= date.fromisoformat(requested_max)
+        ):
+            raise RawIngestionError("date_received_outside_request", source_row_ordinal=ordinal)
+        complaint_ids.append(str(complaint_id))
+        complaint_id_types.add("integer" if isinstance(complaint_id, int) else "string")
+        dates.append(received_date)
+        sources.append(source)
+        source_bytes = json.dumps(
+            source,
+            ensure_ascii=False,
+            allow_nan=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode("utf-8")
+        raw_records.append(
+            RawRecord(
+                ordinal=ordinal,
+                complaint_id=str(complaint_id),
+                sha256=hashlib.sha256(source_bytes).hexdigest(),
+                payload=source,
+            )
+        )
+
+    records = manifest["records"]
+    narratives = [
+        source.get("complaint_what_happened")
+        for source in sources
+        if isinstance(source.get("complaint_what_happened"), str)
+        and source["complaint_what_happened"].strip()
+    ]
+    expected_values = {
+        "returned_record_count": len(sources),
+        "matching_total": len(sources),
+        "matching_total_relation": "eq",
+        "unique_complaint_id_count": len(set(complaint_ids)),
+        "duplicate_complaint_id_count": len(complaint_ids) - len(set(complaint_ids)),
+        "non_empty_narrative_count": len(narratives),
+        "observed_date_received_min": min(dates) if dates else None,
+        "observed_date_received_max": max(dates) if dates else None,
+    }
+    for field, expected in expected_values.items():
+        if records.get(field) != expected:
+            raise RawIngestionError("record_reconciliation_failed", field=field)
+    schema_observation = manifest["schema_observation"]
+    observed_fields = sorted({field for source in sources for field in source})
+    if schema_observation["source_fields"] != observed_fields:
+        raise RawIngestionError("schema_observation_mismatch", field="source_fields")
+    if schema_observation["field_count"] != len(observed_fields):
+        raise RawIngestionError("schema_observation_mismatch", field="field_count")
+    if sorted(schema_observation["complaint_id_observed_types"]) != sorted(complaint_id_types):
+        raise RawIngestionError("schema_observation_mismatch", field="complaint_id_observed_types")
+    return tuple(raw_records)
+
+
 def _validate_synthetic_markers(response: dict[str, Any], records: tuple[RawRecord, ...]) -> None:
     hits = response["hits"]["hits"]
     for ordinal, (hit, record) in enumerate(zip(hits, records, strict=True)):
@@ -439,6 +526,13 @@ def _read_bytes(path: Path) -> bytes:
 
 
 def _decode_json_object(raw_bytes: bytes, kind: str) -> dict[str, Any]:
+    value = _decode_json_value(raw_bytes, kind)
+    if not isinstance(value, dict):
+        raise RawIngestionError(f"{kind}_json_invalid")
+    return value
+
+
+def _decode_json_value(raw_bytes: bytes, kind: str) -> Any:
     try:
         value = json.loads(
             raw_bytes,
@@ -446,6 +540,4 @@ def _decode_json_object(raw_bytes: bytes, kind: str) -> dict[str, Any]:
         )
     except (UnicodeDecodeError, json.JSONDecodeError, ValueError) as error:
         raise RawIngestionError(f"{kind}_json_invalid") from error
-    if not isinstance(value, dict):
-        raise RawIngestionError(f"{kind}_json_invalid")
     return value

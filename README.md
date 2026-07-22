@@ -22,8 +22,8 @@ offline, records closed exclusion reasons and length metadata, and never copies
 narratives into the analytical schema. Current report evidence is synthetic only.
 ADR 0009 authorizes local retention for the first real extract through 19
 November 2026. CT-108 provides accepted manifest-level retention enforcement;
-no real download occurs until the streamed monthly writer and cleanup rehearsal
-pass CT-109 review.
+CT-109 provides an accepted synthetic-tested monthly writer and cleanup
+workflow. No live network acquisition command exists yet.
 
 ## Intended use
 
@@ -61,8 +61,16 @@ This project will not:
 - [Accepted analytical-population ADR](docs/decisions/0008-proposed-analytical-population.md)
 - [Local real-data retention ADR](docs/decisions/0009-local-real-data-retention.md)
 - [Retention-controlled real extraction plan](docs/real_extraction_plan.md)
+- [Monthly extraction and cleanup operator guide](docs/real_extraction.md)
 - [Architecture](docs/architecture.md)
 - [Learning log](docs/learning_log.md)
+
+Cleanup inventory is dry-run-only unless the exact run ID is supplied with
+`--execute`:
+
+```powershell
+complaint-triage cleanup-real-data --run-manifest data/manifests/cfpb/runs/<run-id>.json
+```
 
 Future coding agents must also read [AGENTS.md](AGENTS.md) before making changes.
 

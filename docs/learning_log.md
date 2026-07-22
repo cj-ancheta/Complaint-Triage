@@ -485,3 +485,54 @@ shortcut through the old response parser.
 
 - What byte cap and interruption-cleanup evidence should the synthetic writer
   tests establish before the first live request?
+
+---
+
+## CT-109: streamed monthly export and cleanup rehearsal
+
+**Date:** 2026-07-22
+
+Charles accepted the 1 GiB per-shard safety ceiling and the isolated synthetic
+cleanup rehearsal on 2026-07-22.
+
+**What the AI generated**
+
+A fixed 16-month partition; inclusive-API-date mapping; all-month preflight
+validation; a 1 GiB streamed hashing boundary; iterative JSON-array inspection;
+atomic content-addressed artifact and safe-manifest publication; an exact run
+contract; export-array ingestion support; and a dry-run-by-default cleanup CLI
+with explicit confirmation, Compose-volume removal, verification, and safe
+deletion evidence. No live HTTP adapter or real download was added.
+
+**How I verified it**
+
+Draft for Charles: review `docs/real_extraction.md`, inspect
+`src/complaint_triage/real_extraction.py`, and run
+`python -m pytest tests/test_real_extraction.py`. The tests use chunked synthetic
+arrays and an isolated temporary repository. Docker calls are replaced with a
+fake command boundary, so the rehearsal cannot remove the development database.
+
+**What can fail in production**
+
+Counts can change between preflight and export; a shard can reach the CFPB limit
+or local byte cap; the upstream hit/source shape can change; disk space can run
+out before atomic publication; machine clock or Git lineage can be wrong; Docker
+may fail to remove a volume or container; and an external backup/sync tool can
+violate ADR 0009 outside application control. The current raw loader still
+materializes a prepared shard for transactional insertion, so CT-110 must measure
+memory before loading all 16 batches.
+
+**What I can explain in an interview**
+
+Draft for Charles: why half-open analytical months map to inclusive API end
+dates; why preflight and response counts must reconcile; why hashing while
+writing does not replace structural validation; how a temporary file plus atomic
+rename prevents partial publication; why content-addressing makes replay safe;
+why deletion requires positive target identity and post-action verification; and
+why HTTP transport remains gated until the boundary is reviewed from a clean
+commit.
+
+**Questions still open**
+
+- How much memory does the current raw loader use for the largest real shard,
+  and must CT-110 stream database insertion before processing the full run?

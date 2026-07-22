@@ -19,6 +19,11 @@ from complaint_triage.raw_ingestion import (
     ingest_raw_batch,
     safe_ingestion_error,
 )
+from complaint_triage.real_extraction import (
+    ExtractionError,
+    cleanup_real_data,
+    safe_extraction_error,
+)
 from complaint_triage.staging import StagingError, safe_staging_error, stage_raw_batch
 from complaint_triage.taxonomy_profile import (
     TaxonomyProfileError,
@@ -58,6 +63,13 @@ def build_parser() -> argparse.ArgumentParser:
         help="Create a versioned aggregate analytical-population report.",
     )
     population_parser.add_argument("--batch-id", required=True, help="Staged raw batch ID.")
+    cleanup_parser = subcommands.add_parser(
+        "cleanup-real-data",
+        help="Inventory an extraction run, or delete it with exact confirmation.",
+    )
+    cleanup_parser.add_argument("--run-manifest", type=Path, required=True)
+    cleanup_parser.add_argument("--execute", action="store_true")
+    cleanup_parser.add_argument("--confirmation")
     return parser
 
 
@@ -160,6 +172,24 @@ def main(argv: Sequence[str] | None = None) -> int:
             )
             return 1
 
+        print(json.dumps(report, indent=2, sort_keys=True))
+        return 0
+
+    if args.command == "cleanup-real-data":
+        try:
+            report = cleanup_real_data(
+                args.run_manifest,
+                execute=args.execute,
+                confirmation=args.confirmation,
+            )
+        except (ExtractionError, OSError, json.JSONDecodeError) as error:
+            controlled = (
+                error
+                if isinstance(error, ExtractionError)
+                else ExtractionError("cleanup_manifest_unreadable")
+            )
+            print(json.dumps(safe_extraction_error(controlled), indent=2, sort_keys=True))
+            return 1
         print(json.dumps(report, indent=2, sort_keys=True))
         return 0
 

@@ -82,46 +82,14 @@
           "const": "https://www.consumerfinance.gov/data-research/consumer-complaints/search/api/v1/"
         },
         "parameters": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "date_received_min",
-            "date_received_max",
-            "has_narrative",
-            "no_aggs",
-            "no_highlight",
-            "size",
-            "sort"
-          ],
-          "properties": {
-            "date_received_min": {
-              "type": "string",
-              "format": "date"
+          "oneOf": [
+            {
+              "$ref": "#/$defs/profileParameters"
             },
-            "date_received_max": {
-              "type": "string",
-              "format": "date"
-            },
-            "has_narrative": {
-              "const": "true"
-            },
-            "no_aggs": {
-              "const": "true"
-            },
-            "no_highlight": {
-              "const": "true"
-            },
-            "size": {
-              "type": "string",
-              "pattern": "^(?:[1-9]|[1-9][0-9]|100)$"
-            },
-            "sort": {
-              "enum": [
-                "created_date_asc",
-                "created_date_desc"
-              ]
+            {
+              "$ref": "#/$defs/exportParameters"
             }
-          }
+          ]
         },
         "fingerprint_schema": {
           "const": "complaint-triage-request-fingerprint-v1"
@@ -156,7 +124,7 @@
         },
         "content_type": {
           "type": "string",
-          "pattern": "^(application/json|application/[A-Za-z0-9.+-]+[+]json)$"
+          "pattern": "^(text/json|application/json|application/[A-Za-z0-9.+-]+[+]json)$"
         },
         "content_encoding": {
           "const": "identity"
@@ -377,7 +345,128 @@
       }
     }
   },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "manifest_version": {
+            "const": "1.0.0"
+          }
+        },
+        "required": [
+          "manifest_version"
+        ]
+      },
+      "then": {
+        "properties": {
+          "request": {
+            "properties": {
+              "parameters": {
+                "$ref": "#/$defs/profileParameters"
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
   "$defs": {
+    "commonParameters": {
+      "type": "object",
+      "properties": {
+        "date_received_min": {
+          "type": "string",
+          "format": "date"
+        },
+        "date_received_max": {
+          "type": "string",
+          "format": "date"
+        },
+        "has_narrative": {
+          "const": "true"
+        },
+        "no_aggs": {
+          "const": "true"
+        },
+        "no_highlight": {
+          "const": "true"
+        },
+        "sort": {
+          "enum": [
+            "created_date_asc",
+            "created_date_desc"
+          ]
+        }
+      }
+    },
+    "profileParameters": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/commonParameters"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "date_received_min",
+            "date_received_max",
+            "has_narrative",
+            "no_aggs",
+            "no_highlight",
+            "size",
+            "sort"
+          ],
+          "properties": {
+            "date_received_min": true,
+            "date_received_max": true,
+            "has_narrative": true,
+            "no_aggs": true,
+            "no_highlight": true,
+            "size": {
+              "type": "string",
+              "pattern": "^(?:[1-9]|[1-9][0-9]|100)$"
+            },
+            "sort": true
+          }
+        }
+      ]
+    },
+    "exportParameters": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/commonParameters"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "date_received_min",
+            "date_received_max",
+            "format",
+            "has_narrative",
+            "no_aggs",
+            "no_highlight",
+            "size",
+            "sort"
+          ],
+          "properties": {
+            "date_received_min": true,
+            "date_received_max": true,
+            "format": {
+              "const": "json"
+            },
+            "has_narrative": true,
+            "no_aggs": true,
+            "no_highlight": true,
+            "size": {
+              "type": "string",
+              "pattern": "^[1-9][0-9]{0,4}$"
+            },
+            "sort": true
+          }
+        }
+      ]
+    },
     "sha256": {
       "type": "string",
       "pattern": "^[0-9a-f]{64}$"

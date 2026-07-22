@@ -4,6 +4,7 @@ from complaint_triage import cli
 from complaint_triage.analytical_population import PopulationError
 from complaint_triage.cfpb_profile import ProfileError
 from complaint_triage.raw_ingestion import RawIngestionError
+from complaint_triage.real_extraction import ExtractionError
 from complaint_triage.staging import StagingError
 from complaint_triage.taxonomy_profile import TaxonomyProfileError
 
@@ -188,3 +189,43 @@ def test_population_report_command_returns_controlled_error(monkeypatch, capsys)
     assert exit_code == 1
     assert output["error"] == {"code": "staging_batch_not_found"}
     assert output["privacy"]["narratives_in_report"] is False
+
+
+def test_cleanup_command_is_dry_run_by_default(monkeypatch, capsys) -> None:
+    calls = []
+
+    def cleanup(path, *, execute, confirmation):
+        calls.append((path, execute, confirmation))
+        return {"status": "dry_run", "artifact_files_found": 16}
+
+    monkeypatch.setattr(cli, "cleanup_real_data", cleanup)
+    exit_code = cli.main(
+        ["cleanup-real-data", "--run-manifest", "data/manifests/cfpb/runs/run.json"]
+    )
+    output = json.loads(capsys.readouterr().out)
+
+    assert exit_code == 0
+    assert output["status"] == "dry_run"
+    assert calls[0][1:] == (False, None)
+
+
+def test_cleanup_command_prints_safe_controlled_error(monkeypatch, capsys) -> None:
+    def fail(_path, *, execute, confirmation) -> None:
+        raise ExtractionError("cleanup_confirmation_invalid")
+
+    monkeypatch.setattr(cli, "cleanup_real_data", fail)
+    exit_code = cli.main(
+        [
+            "cleanup-real-data",
+            "--run-manifest",
+            "data/manifests/cfpb/runs/run.json",
+            "--execute",
+            "--confirmation",
+            "wrong",
+        ]
+    )
+    output = json.loads(capsys.readouterr().out)
+
+    assert exit_code == 1
+    assert output["error"]["code"] == "cleanup_confirmation_invalid"
+    assert output["privacy"]["response_body_logged"] is False
