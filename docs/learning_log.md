@@ -167,3 +167,47 @@ how dependency injection keeps network tests deterministic.
   fields?
 - Which batch-manifest and checksum contract should CT-104 use before any raw
   response is retained?
+
+---
+
+## Draft CT-104: raw batch manifest and checksum contract
+
+**Date:** 2026-07-21
+
+**What the AI generated**
+
+A proposed content-addressed raw-storage ADR, a Draft 2020-12 manifest schema, a
+comprehensive field and checksum contract, a synthetic manifest linked to the
+existing synthetic response bytes, and tests for schema validity, exact-byte
+SHA-256, canonical request fingerprints, aggregate reconciliation, safe relative
+paths, and exclusion of individual source values.
+
+**How I verified it**
+
+Draft for Charles to complete after reviewing
+`docs/cfpb_raw_batch_manifest.md`, comparing the synthetic manifest with its
+schema, and running `tests/test_batch_manifest_contract.py` plus the full suite.
+No live endpoint request or raw CFPB download was made in CT-104.
+
+**What can fail in production**
+
+An interrupted write can leave temporary bytes, a developer can hash reserialized
+instead of stored JSON, line-ending or compression changes can alter exact-byte
+digests, manifests can drift from their artifacts, unsafe row values can leak
+into tracked metadata, concurrent acquisitions can race, and retention cleanup
+can fail or delete the wrong path if CT-106 does not validate targets carefully.
+
+**What I can explain in an interview**
+
+Draft for Charles: why one batch, request, and artifact need different identities;
+why exact-byte hashing differs from logical-JSON hashing; how content addressing
+deduplicates bytes; why manifests are tracked while raw narratives are ignored;
+and why atomic append-only writes improve recoverability.
+
+**Questions still open**
+
+- What retention policy ID and deletion behavior should apply to real raw CFPB
+  artifacts?
+- Will a future paginated acquisition need a separate run-level manifest?
+- Should raw artifacts remain local-only or move to encrypted object storage for
+  a later deployment?

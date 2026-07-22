@@ -16,7 +16,7 @@ This backlog converts `SPEC.md` into bounded delivery issues. Status values are 
 | CT-101 | Investigate current CFPB API/export schema without downloading the full dataset | complete | `docs/cfpb_source_inventory.md` with versioned fields, risks, access finding, and bounded follow-up |
 | CT-102 | Define bounded profiling query and fixture strategy | complete | Approved query boundary and non-sensitive test fixtures |
 | CT-103 | Implement source metadata and bounded profiling command | complete | Deterministic report and mocked network tests |
-| CT-104 | Decide local raw-data manifest and checksum format | pending | Approved manifest contract |
+| CT-104 | Decide local raw-data manifest and checksum format | complete | Approved manifest contract |
 | CT-105 | Introduce PostgreSQL through a documented ADR | pending | Local database starts and readiness check passes |
 | CT-106 | Implement append-only raw ingestion with batch metadata | pending | Idempotency and row-count tests |
 | CT-107 | Implement staging transformations and quarantine reasons | pending | Data-contract and reconciliation tests |
@@ -38,7 +38,7 @@ Later phases remain defined in `SPEC.md`. Expand them into issue-level detail on
 
 ## Current next issue
 
-Proceed with **CT-104: decide the local raw-data manifest and checksum format**.
+Proceed with **CT-105: introduce PostgreSQL through a documented ADR**.
 
 CT-104 must define lineage, content addressing, checksum scope, safe manifest
 fields, and append-only behavior before any raw response is retained. It must not

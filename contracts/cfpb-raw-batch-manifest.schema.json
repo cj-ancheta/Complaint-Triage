@@ -1,0 +1,401 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/cj-ancheta/Complaint-Triage/contracts/cfpb-raw-batch-manifest.schema.json",
+  "title": "CFPB raw batch manifest",
+  "description": "Commit-safe lineage for one content-addressed CFPB response artifact.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "manifest_version",
+    "batch_id",
+    "is_synthetic",
+    "created_at_utc",
+    "source",
+    "request",
+    "response",
+    "artifact",
+    "records",
+    "schema_observation",
+    "lineage",
+    "privacy"
+  ],
+  "properties": {
+    "manifest_version": {
+      "const": "1.0.0"
+    },
+    "batch_id": {
+      "type": "string",
+      "pattern": "^cfpb-[0-9]{8}T[0-9]{6}Z-[0-9a-f]{12}$"
+    },
+    "is_synthetic": {
+      "type": "boolean"
+    },
+    "created_at_utc": {
+      "$ref": "#/$defs/utcTimestamp"
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "provider",
+        "dataset",
+        "endpoint_id",
+        "api_contract_repository",
+        "api_contract_commit_sha"
+      ],
+      "properties": {
+        "provider": {
+          "const": "Consumer Financial Protection Bureau"
+        },
+        "dataset": {
+          "const": "Consumer Complaint Database"
+        },
+        "endpoint_id": {
+          "const": "cfpb_complaint_search_v1"
+        },
+        "api_contract_repository": {
+          "const": "https://github.com/cfpb/ccdb5-api"
+        },
+        "api_contract_commit_sha": {
+          "$ref": "#/$defs/gitCommitSha"
+        }
+      }
+    },
+    "request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "method",
+        "base_url",
+        "parameters",
+        "fingerprint_schema",
+        "request_fingerprint_sha256"
+      ],
+      "properties": {
+        "method": {
+          "const": "GET"
+        },
+        "base_url": {
+          "const": "https://www.consumerfinance.gov/data-research/consumer-complaints/search/api/v1/"
+        },
+        "parameters": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "date_received_min",
+            "date_received_max",
+            "has_narrative",
+            "no_aggs",
+            "no_highlight",
+            "size",
+            "sort"
+          ],
+          "properties": {
+            "date_received_min": {
+              "type": "string",
+              "format": "date"
+            },
+            "date_received_max": {
+              "type": "string",
+              "format": "date"
+            },
+            "has_narrative": {
+              "const": "true"
+            },
+            "no_aggs": {
+              "const": "true"
+            },
+            "no_highlight": {
+              "const": "true"
+            },
+            "size": {
+              "type": "string",
+              "pattern": "^(?:[1-9]|[1-9][0-9]|100)$"
+            },
+            "sort": {
+              "enum": [
+                "created_date_asc",
+                "created_date_desc"
+              ]
+            }
+          }
+        },
+        "fingerprint_schema": {
+          "const": "complaint-triage-request-fingerprint-v1"
+        },
+        "request_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "response": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "retrieved_at_utc",
+        "http_status",
+        "content_type",
+        "content_encoding",
+        "source_last_indexed",
+        "source_last_updated",
+        "source_license",
+        "total_record_count",
+        "has_data_issue",
+        "is_data_stale",
+        "is_narrative_stale"
+      ],
+      "properties": {
+        "retrieved_at_utc": {
+          "$ref": "#/$defs/utcTimestamp"
+        },
+        "http_status": {
+          "const": 200
+        },
+        "content_type": {
+          "type": "string",
+          "pattern": "^(application/json|application/[A-Za-z0-9.+-]+[+]json)$"
+        },
+        "content_encoding": {
+          "const": "identity"
+        },
+        "source_last_indexed": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "source_last_updated": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "source_license": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "total_record_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "has_data_issue": {
+          "$ref": "#/$defs/nullableBoolean"
+        },
+        "is_data_stale": {
+          "$ref": "#/$defs/nullableBoolean"
+        },
+        "is_narrative_stale": {
+          "$ref": "#/$defs/nullableBoolean"
+        }
+      }
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "relative_path",
+        "media_type",
+        "content_encoding",
+        "byte_count",
+        "hash_algorithm",
+        "hash_scope",
+        "sha256"
+      ],
+      "properties": {
+        "relative_path": {
+          "type": "string",
+          "pattern": "^data/raw/cfpb/sha256/[0-9a-f]{2}/[0-9a-f]{64}[.]json$"
+        },
+        "media_type": {
+          "const": "application/json"
+        },
+        "content_encoding": {
+          "const": "identity"
+        },
+        "byte_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "hash_algorithm": {
+          "const": "SHA-256"
+        },
+        "hash_scope": {
+          "const": "stored_bytes"
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "records": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "returned_record_count",
+        "matching_total",
+        "matching_total_relation",
+        "unique_complaint_id_count",
+        "duplicate_complaint_id_count",
+        "non_empty_narrative_count",
+        "observed_date_received_min",
+        "observed_date_received_max"
+      ],
+      "properties": {
+        "returned_record_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "matching_total": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "matching_total_relation": {
+          "enum": [
+            "eq",
+            "gte"
+          ]
+        },
+        "unique_complaint_id_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "duplicate_complaint_id_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "non_empty_narrative_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "observed_date_received_min": {
+          "type": "string",
+          "format": "date"
+        },
+        "observed_date_received_max": {
+          "type": "string",
+          "format": "date"
+        }
+      }
+    },
+    "schema_observation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "field_count",
+        "source_fields",
+        "complaint_id_observed_types"
+      ],
+      "properties": {
+        "field_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "source_fields": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "complaint_id_observed_types": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "integer",
+              "string"
+            ]
+          }
+        }
+      }
+    },
+    "lineage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "extractor_name",
+        "extractor_version",
+        "code_commit_sha",
+        "working_tree_clean",
+        "python_version"
+      ],
+      "properties": {
+        "extractor_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "extractor_version": {
+          "type": "string",
+          "pattern": "^[0-9]+[.][0-9]+[.][0-9]+$"
+        },
+        "code_commit_sha": {
+          "$ref": "#/$defs/gitCommitSha"
+        },
+        "working_tree_clean": {
+          "type": "boolean"
+        },
+        "python_version": {
+          "type": "string",
+          "pattern": "^[0-9]+[.][0-9]+([.][0-9]+)?$"
+        }
+      }
+    },
+    "privacy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "raw_artifact_contains_public_narratives",
+        "raw_artifact_git_tracked",
+        "manifest_contains_row_values",
+        "manifest_git_tracking_allowed",
+        "retention_policy_id"
+      ],
+      "properties": {
+        "raw_artifact_contains_public_narratives": {
+          "const": true
+        },
+        "raw_artifact_git_tracked": {
+          "const": false
+        },
+        "manifest_contains_row_values": {
+          "const": false
+        },
+        "manifest_git_tracking_allowed": {
+          "const": true
+        },
+        "retention_policy_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "gitCommitSha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "utcTimestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "nullableString": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "nullableBoolean": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    }
+  }
+}

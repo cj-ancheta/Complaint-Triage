@@ -1,0 +1,99 @@
+{
+  "manifest_version": "1.0.0",
+  "batch_id": "cfpb-20260721T050000Z-53db3b7b07c8",
+  "is_synthetic": true,
+  "created_at_utc": "2026-07-21T05:00:00Z",
+  "source": {
+    "provider": "Consumer Financial Protection Bureau",
+    "dataset": "Consumer Complaint Database",
+    "endpoint_id": "cfpb_complaint_search_v1",
+    "api_contract_repository": "https://github.com/cfpb/ccdb5-api",
+    "api_contract_commit_sha": "b4f292524c40e4fd154b9350bf8335ade3e0b5e9"
+  },
+  "request": {
+    "method": "GET",
+    "base_url": "https://www.consumerfinance.gov/data-research/consumer-complaints/search/api/v1/",
+    "parameters": {
+      "date_received_min": "2024-01-02",
+      "date_received_max": "2024-01-03",
+      "has_narrative": "true",
+      "no_aggs": "true",
+      "no_highlight": "true",
+      "size": "5",
+      "sort": "created_date_desc"
+    },
+    "fingerprint_schema": "complaint-triage-request-fingerprint-v1",
+    "request_fingerprint_sha256": "8230b7b531ae329c7f3da39993840c9e3d862a68a1f1c62db857672d2e4f7d87"
+  },
+  "response": {
+    "retrieved_at_utc": "2026-07-21T05:00:00Z",
+    "http_status": 200,
+    "content_type": "application/json",
+    "content_encoding": "identity",
+    "source_last_indexed": "2024-01-04T00:00:00Z",
+    "source_last_updated": "2024-01-03T00:00:00Z",
+    "source_license": "CC0",
+    "total_record_count": 3,
+    "has_data_issue": false,
+    "is_data_stale": false,
+    "is_narrative_stale": false
+  },
+  "artifact": {
+    "relative_path": "data/raw/cfpb/sha256/53/53db3b7b07c83080244508e02e45cd193c4a92327d5cb127add22fab75aa5426.json",
+    "media_type": "application/json",
+    "content_encoding": "identity",
+    "byte_count": 3404,
+    "hash_algorithm": "SHA-256",
+    "hash_scope": "stored_bytes",
+    "sha256": "53db3b7b07c83080244508e02e45cd193c4a92327d5cb127add22fab75aa5426"
+  },
+  "records": {
+    "returned_record_count": 3,
+    "matching_total": 3,
+    "matching_total_relation": "eq",
+    "unique_complaint_id_count": 3,
+    "duplicate_complaint_id_count": 0,
+    "non_empty_narrative_count": 3,
+    "observed_date_received_min": "2024-01-02",
+    "observed_date_received_max": "2024-01-02"
+  },
+  "schema_observation": {
+    "field_count": 17,
+    "source_fields": [
+      "company",
+      "company_public_response",
+      "company_response",
+      "complaint_id",
+      "complaint_what_happened",
+      "date_received",
+      "date_sent_to_company",
+      "has_narrative",
+      "issue",
+      "product",
+      "state",
+      "sub_issue",
+      "sub_product",
+      "submitted_via",
+      "tags",
+      "timely",
+      "zip_code"
+    ],
+    "complaint_id_observed_types": [
+      "string"
+    ]
+  },
+  "lineage": {
+    "extractor_name": "ct-104-synthetic-fixture",
+    "extractor_version": "0.1.0",
+    "code_commit_sha": "db98cd682782a802cce00618a95b120e4c30f4bb",
+    "working_tree_clean": false,
+    "python_version": "3.13.5"
+  },
+  "privacy": {
+    "raw_artifact_contains_public_narratives": true,
+    "raw_artifact_git_tracked": false,
+    "manifest_contains_row_values": false,
+    "manifest_git_tracking_allowed": true,
+    "retention_policy_id": "not-applicable-synthetic-fixture"
+  }
+}

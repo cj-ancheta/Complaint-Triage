@@ -19,6 +19,7 @@ complaint-triage = "complaint_triage.cli:main"
 
 [project.optional-dependencies]
 dev = [
+  "jsonschema>=4.23,<5",
   "pytest>=8.3,<9",
   "pytest-cov>=6,<7",
   "ruff>=0.11,<1",
