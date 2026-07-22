@@ -10,7 +10,7 @@ selecting temporal splits or training a model. Charles accepted the policy in
 
 Population version `1.0.0` is bound to:
 
-- staging transformation `1.0.0`;
+- staging transformation `1.1.0`;
 - taxonomy `cfpb-product-2023-08-24`;
 - `2023-09-01 <= date_received < 2025-01-01`;
 - eleven identity-mapped product labels;
@@ -42,7 +42,7 @@ schema. The normal migration command succeeded locally on 2026-07-22.
 
 ## Run a report
 
-The raw batch must already have a completed staging `1.0.0` outcome set:
+The raw batch must already have a completed staging `1.1.0` outcome set:
 
 ```powershell
 .\.venv\Scripts\python.exe -m complaint_triage report-population `

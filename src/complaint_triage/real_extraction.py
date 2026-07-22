@@ -482,7 +482,6 @@ def _inspect_export(path: Path, spec: ShardSpec, expected_count: int) -> dict[st
                     "complaint_id",
                     "complaint_what_happened",
                     "date_received",
-                    "has_narrative",
                     "product",
                 }
                 if not required.issubset(source):
@@ -501,7 +500,7 @@ def _inspect_export(path: Path, spec: ShardSpec, expected_count: int) -> dict[st
                 if (
                     not isinstance(narrative, str)
                     or not narrative.strip()
-                    or source["has_narrative"] is not True
+                    or ("has_narrative" in source and source["has_narrative"] is not True)
                 ):
                     raise ExtractionError("export_narrative_invalid", source_row_ordinal=ordinal)
                 if not isinstance(source["product"], str) or not source["product"].strip():

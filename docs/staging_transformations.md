@@ -9,14 +9,14 @@ taxonomy.
 ```text
 raw.ingestion_batches + raw.complaints
                     |
-                    v  transformation 1.0.0
+                    v  transformation 1.1.0
 staging.transformation_batches
 staging.complaint_outcomes
       | accepted       | quarantined + reason codes
       +----------------+----------------------------> later analytical decision
 ```
 
-Every raw row produces exactly one staging outcome for version 1.0.0. Database
+Every raw row produces exactly one staging outcome for version 1.1.0. Database
 constraints require input and output counts to match and require accepted plus
 quarantined counts to equal the output count.
 
@@ -56,7 +56,7 @@ The first valid run returns aggregate-only JSON like:
   "quarantined_record_count": 0,
   "raw_batch_id": "cfpb-20260721T050000Z-53db3b7b07c8",
   "status": "staged",
-  "transformation_version": "1.0.0"
+  "transformation_version": "1.1.0"
 }
 ```
 

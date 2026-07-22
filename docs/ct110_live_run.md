@@ -29,3 +29,9 @@ CT-110 is not complete until the adapter is committed, the real run is acquired,
 all 16 manifests reconcile, migrations are current, every shard is ingested and
 staged, the analytical population is reported, and aggregate results plus peak
 loader memory are recorded without row values.
+
+The first acquisition attempt failed safely on the first record because the
+official export omits `_source.has_narrative`. The pinned API source confirms
+that omission is deliberate for export formats. The attempt rolled back its raw
+artifact and manifest. Staging 1.1.0 therefore preserves the unmodified raw
+payload and derives the filter guarantee only from the validated export request.

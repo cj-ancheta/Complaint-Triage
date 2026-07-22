@@ -214,6 +214,25 @@ def test_top_level_object_is_not_accepted_as_export_array(tmp_path: Path) -> Non
         )
 
 
+def test_official_export_omission_of_has_narrative_is_accepted(tmp_path: Path) -> None:
+    rows = json.loads(export_bytes())
+    for row in rows:
+        row["_source"].pop("has_narrative")
+    published = publish_export_shard(
+        approved_monthly_shards()[0],
+        expected_count=2,
+        response=response(json.dumps(rows).encode()),
+        context=CONTEXT,
+        repository_root=tmp_path,
+    )
+
+    manifest = tmp_path / Path(*published.manifest_relative_path.split("/"))
+    assert (
+        "has_narrative"
+        not in json.loads(manifest.read_text())["schema_observation"]["source_fields"]
+    )
+
+
 def test_truncated_json_is_rejected_without_publication(tmp_path: Path) -> None:
     with pytest.raises(ExtractionError, match="export_json_invalid"):
         publish_export_shard(

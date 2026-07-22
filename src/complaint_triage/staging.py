@@ -18,7 +18,7 @@ import psycopg
 from complaint_triage.db import DatabaseSettings
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-TRANSFORMATION_VERSION = "1.0.0"
+TRANSFORMATION_VERSION = "1.1.0"
 BATCH_ID_PATTERN = re.compile(r"^cfpb-[0-9]{8}T[0-9]{6}Z-[0-9a-f]{12}$")
 
 
@@ -49,6 +49,7 @@ class RawSourceRow:
     raw_complaint_id: str
     source_record_sha256: str
     payload: dict[str, Any]
+    export_narrative_filter_guaranteed: bool = False
 
 
 @dataclass(frozen=True)
@@ -107,7 +108,10 @@ def transform_raw_rows(rows: tuple[RawSourceRow, ...]) -> tuple[StagedOutcome, .
         if product is None:
             reasons.append(QuarantineReason.PRODUCT_INVALID)
 
-        if row.payload.get("has_narrative") is not True:
+        if (
+            row.payload.get("has_narrative") is not True
+            and not row.export_narrative_filter_guaranteed
+        ):
             reasons.append(QuarantineReason.HAS_NARRATIVE_NOT_TRUE)
 
         reason_values = tuple(reason.value for reason in reasons)
@@ -264,13 +268,23 @@ def _load_raw_rows(
     cursor: psycopg.Cursor[Any], batch_id: str
 ) -> tuple[tuple[RawSourceRow, ...], int]:
     cursor.execute(
-        "SELECT returned_record_count FROM raw.ingestion_batches WHERE batch_id = %s",
+        """
+        SELECT returned_record_count,
+               COALESCE(
+                   manifest #>> '{request,parameters,format}' = 'json'
+                   AND manifest #>> '{request,parameters,has_narrative}' = 'true',
+                   false
+               ) AS export_narrative_filter_guaranteed
+        FROM raw.ingestion_batches
+        WHERE batch_id = %s
+        """,
         (batch_id,),
     )
     batch = cursor.fetchone()
     if batch is None:
         raise StagingError("raw_batch_not_found")
     expected_count = int(batch[0])
+    export_narrative_filter_guaranteed = bool(batch[1])
 
     cursor.execute(
         """
@@ -288,6 +302,7 @@ def _load_raw_rows(
             raw_complaint_id=value[2],
             source_record_sha256=value[3],
             payload=value[4],
+            export_narrative_filter_guaranteed=export_narrative_filter_guaranteed,
         )
         for value in cursor.fetchall()
     )

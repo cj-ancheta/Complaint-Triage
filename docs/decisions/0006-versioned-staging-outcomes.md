@@ -60,6 +60,15 @@ Version 1.0.0 performs only reversible source-quality normalization:
 No case folding, stemming, language filtering, label merging, canonical product
 mapping, date-window filter, or modelling inclusion rule is applied.
 
+## Transformation version 1.1.0
+
+Version 1.1.0 retains every 1.0.0 rule and adds one source-contract-aware case:
+the official JSON export intentionally omits `_source.has_narrative`. For a
+validated real export manifest only, staging accepts the exact request filter
+`format=json&has_narrative=true` as evidence for that flag. The raw payload is
+not altered, and a missing or false flag in any non-export batch still receives
+`has_narrative_not_true`.
+
 ## Closed quarantine reason vocabulary
 
 | Reason | Meaning |

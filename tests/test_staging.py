@@ -54,6 +54,28 @@ def test_valid_row_is_normalized_without_selecting_a_taxonomy() -> None:
     outcome = transform_raw_rows((source_row(),))[0]
 
     assert outcome.status == "accepted"
+
+
+def test_export_filter_can_supply_missing_has_narrative_flag() -> None:
+    row = source_row()
+    payload = dict(row.payload)
+    payload.pop("has_narrative")
+    canonical = json.dumps(
+        payload, ensure_ascii=False, allow_nan=False, sort_keys=True, separators=(",", ":")
+    ).encode("utf-8")
+    export_row = RawSourceRow(
+        batch_id=row.batch_id,
+        ordinal=row.ordinal,
+        raw_complaint_id=row.raw_complaint_id,
+        source_record_sha256=hashlib.sha256(canonical).hexdigest(),
+        payload=payload,
+        export_narrative_filter_guaranteed=True,
+    )
+
+    outcome = transform_raw_rows((export_row,))[0]
+
+    assert outcome.status == "accepted"
+    assert QuarantineReason.HAS_NARRATIVE_NOT_TRUE.value not in outcome.reasons
     assert outcome.reasons == ()
     assert outcome.date_received.isoformat() == "2024-01-02"
     assert outcome.narrative == "Synthetic narrative.\nSecond line."
