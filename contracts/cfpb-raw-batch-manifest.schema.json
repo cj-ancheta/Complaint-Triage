@@ -21,7 +21,10 @@
   ],
   "properties": {
     "manifest_version": {
-      "const": "1.0.0"
+      "enum": [
+        "1.0.0",
+        "2.0.0"
+      ]
     },
     "batch_id": {
       "type": "string",
@@ -367,6 +370,9 @@
             "string",
             "null"
           ]
+        },
+        "expires_at_utc": {
+          "$ref": "#/$defs/utcTimestamp"
         }
       }
     }

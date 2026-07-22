@@ -5,7 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import UTC, datetime
 from pathlib import Path, PurePosixPath
 from typing import Any
 
@@ -14,10 +14,16 @@ from jsonschema import Draft202012Validator, FormatChecker
 from psycopg.types.json import Jsonb
 
 from complaint_triage.db import DatabaseSettings
+from complaint_triage.taxonomy import (
+    MODELLING_WINDOW_END_EXCLUSIVE,
+    MODELLING_WINDOW_START,
+)
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 MANIFEST_SCHEMA_PATH = PROJECT_ROOT / "contracts" / "cfpb-raw-batch-manifest.schema.json"
 SYNTHETIC_RETENTION_POLICY_ID = "not-applicable-synthetic-fixture"
+REAL_RETENTION_POLICY_ID = "cfpb-local-120d-v1"
+REAL_RETENTION_DEADLINE_UTC = datetime(2026, 11, 19, 15, 59, 59, tzinfo=UTC)
 
 
 class RawIngestionError(Exception):
@@ -58,6 +64,7 @@ def prepare_raw_batch(
     *,
     repository_root: Path = PROJECT_ROOT,
     schema_path: Path = MANIFEST_SCHEMA_PATH,
+    now_utc: datetime | None = None,
 ) -> PreparedRawBatch:
     """Validate manifest, lineage, exact bytes, and aggregate reconciliation."""
 
@@ -81,10 +88,7 @@ def prepare_raw_batch(
             first_validator=str(first.validator),
         )
 
-    if not manifest["is_synthetic"]:
-        raise RawIngestionError("real_data_retention_policy_unapproved")
-    if manifest["privacy"]["retention_policy_id"] != SYNTHETIC_RETENTION_POLICY_ID:
-        raise RawIngestionError("synthetic_retention_marker_invalid")
+    _validate_retention_boundary(manifest, now_utc=now_utc or datetime.now(UTC))
 
     artifact = manifest["artifact"]
     artifact_relative = PurePosixPath(artifact["relative_path"])
@@ -114,8 +118,47 @@ def prepare_raw_batch(
 
     response = _decode_json_object(raw_bytes, "artifact")
     records = _reconcile_records(manifest, response)
-    _validate_synthetic_markers(response, records)
+    if manifest["is_synthetic"]:
+        _validate_synthetic_markers(response, records)
     return PreparedRawBatch(manifest=manifest, records=records)
+
+
+def _validate_retention_boundary(manifest: dict[str, Any], *, now_utc: datetime) -> None:
+    privacy = manifest["privacy"]
+    if manifest["is_synthetic"]:
+        if manifest["manifest_version"] != "1.0.0":
+            raise RawIngestionError("synthetic_manifest_version_unsupported")
+        if privacy["retention_policy_id"] != SYNTHETIC_RETENTION_POLICY_ID:
+            raise RawIngestionError("synthetic_retention_marker_invalid")
+        if "expires_at_utc" in privacy:
+            raise RawIngestionError("synthetic_retention_expiry_forbidden")
+        return
+
+    if manifest["manifest_version"] != "2.0.0":
+        raise RawIngestionError("real_manifest_version_unsupported")
+    if privacy["retention_policy_id"] != REAL_RETENTION_POLICY_ID:
+        raise RawIngestionError("real_retention_policy_invalid")
+    expires_at = privacy.get("expires_at_utc")
+    if not isinstance(expires_at, str):
+        raise RawIngestionError("real_retention_expiry_missing")
+    expiry = _parse_utc(expires_at)
+    retrieved_at = _parse_utc(manifest["response"]["retrieved_at_utc"])
+    if expiry > REAL_RETENTION_DEADLINE_UTC:
+        raise RawIngestionError("real_retention_expiry_exceeds_policy")
+    if expiry <= retrieved_at or now_utc >= expiry:
+        raise RawIngestionError("real_retention_expired")
+    if manifest["lineage"]["working_tree_clean"] is not True:
+        raise RawIngestionError("real_acquisition_requires_clean_commit")
+
+    parameters = manifest["request"]["parameters"]
+    date_min = str(parameters["date_received_min"])
+    date_max = str(parameters["date_received_max"])
+    if (
+        date_min < MODELLING_WINDOW_START
+        or date_max > MODELLING_WINDOW_END_EXCLUSIVE
+        or date_min >= date_max
+    ):
+        raise RawIngestionError("real_request_outside_approved_window")
 
 
 def ingest_raw_batch(

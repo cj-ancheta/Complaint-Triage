@@ -20,7 +20,9 @@ This backlog converts `SPEC.md` into bounded delivery issues. Status values are 
 | CT-105 | Introduce PostgreSQL through a documented ADR | complete | Local database starts and readiness check passes |
 | CT-106 | Implement append-only raw ingestion with batch metadata | complete | Disposable PostgreSQL test proves rollback, idempotency, row-count reconciliation, and mutation rejection |
 | CT-107 | Implement staging transformations and quarantine reasons | complete | Versioned outcome contract and PostgreSQL acceptance/quarantine reconciliation tests |
-| CT-108 | Implement retention-controlled real extraction and cleanup | pending | Approved-policy enforcement, bounded real batch, and deletion rehearsal |
+| CT-108 | Enforce approved retention on real batch manifests | complete | Approved version/expiry/window enforcement and 16-month export design |
+| CT-109 | Implement monthly streamed export and cleanup rehearsal | pending | Tested writer, 16-shard run contract, and safe cleanup evidence |
+| CT-110 | Acquire, ingest, stage, and profile first real run | pending | Reconciled real aggregate population report under ADR 0009 |
 
 ## Phase 2: analytical dataset and baseline
 
@@ -41,7 +43,8 @@ Later phases remain defined in `SPEC.md`. Expand them into issue-level detail on
 
 Phase 2 is authorized and **CT-202 is complete**. ADR 0008 accepts a versioned
 English-language eligibility funnel over the accepted taxonomy/window. ADR 0009
-authorizes local real-data retention through 2026-11-19, but the loader remains
-synthetic-only until CT-108 implements policy enforcement, bounded extraction,
-and cleanup evidence. CT-108 is the next bounded issue; do not begin CT-203 until
-a real eligible population exists.
+authorizes local real-data retention through 2026-11-19. CT-108 is complete with
+fail-closed policy enforcement and an approved monthly export design. CT-109 is
+the next bounded issue: implement and test the streamed writer and cleanup
+rehearsal before CT-110 makes the first live request. Do not begin CT-203 until a
+real eligible population exists.

@@ -41,7 +41,7 @@ def test_manifest_schema_is_closed_and_versioned() -> None:
 
     assert schema["$schema"] == "https://json-schema.org/draft/2020-12/schema"
     assert schema["additionalProperties"] is False
-    assert schema["properties"]["manifest_version"]["const"] == "1.0.0"
+    assert schema["properties"]["manifest_version"]["enum"] == ["1.0.0", "2.0.0"]
     assert schema["$defs"]["sha256"]["pattern"] == "^[0-9a-f]{64}$"
 
     for section in (

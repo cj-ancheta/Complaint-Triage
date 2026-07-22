@@ -16,9 +16,9 @@ retention, cloud synchronization, or casual backup is unnecessary for this
 portfolio project.
 
 ADR 0008 is accepted, so a real staged batch is now needed to measure population
-attrition. This policy authorizes retention; it does not by itself disable the
-loader's technical block. The next bounded extraction issue must encode and test
-this policy before downloading or loading real rows.
+attrition. This policy authorizes retention; it does not by itself authorize an
+untested network writer. CT-108 must enforce the manifest boundary and CT-109
+must prove streaming and cleanup before downloading or loading real rows.
 
 ## Decision
 
@@ -113,7 +113,7 @@ Costs and risks:
 
 ## Implementation gate
 
-Before the first real request, the extraction issue must add tests that reject:
+Before the first real request, CT-108 and CT-109 must add tests that reject:
 
 - an unknown or missing policy ID;
 - an expiry later than the approved deadline;
@@ -121,6 +121,5 @@ Before the first real request, the extraction issue must add tests that reject:
 - a manifest that contains row values; and
 - any attempt to log or commit a response body.
 
-It must also implement the exact cleanup and deletion-evidence workflow. Until
-those controls pass, the existing synthetic-only loader block remains active.
-
+CT-109 must also implement the exact cleanup and deletion-evidence workflow.
+Until those controls pass, no live acquisition command may run.

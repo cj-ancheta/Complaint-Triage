@@ -120,9 +120,9 @@ deployment secret.
 
 ## Current boundary and next implementation
 
-Real CFPB manifests return `real_data_retention_policy_unapproved` even when they
-are otherwise valid. ADR 0009 now approves policy `cfpb-local-120d-v1` with an
-absolute 2026-11-19 deletion deadline, local-only storage, no backups, and a
-verified deletion record. The error remains intentionally active until CT-108
-implements and tests policy/expiry validation, allowed paths, bounded extraction,
-and the cleanup command. Approval alone does not weaken a technical control.
+ADR 0009 approves policy `cfpb-local-120d-v1` with an absolute 2026-11-19
+deletion deadline, local-only storage, no backups, and a verified deletion
+record. CT-108 proposes replacing the unconditional real-data rejection with
+exact version, policy, expiry, clean-commit, date-window, path, checksum, schema,
+and reconciliation checks. There is still no live acquisition command: CT-109
+must implement and test the streamed writer and cleanup rehearsal first.

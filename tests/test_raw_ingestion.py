@@ -2,6 +2,7 @@ import hashlib
 import json
 import shutil
 from copy import deepcopy
+from datetime import UTC, datetime
 from pathlib import Path
 
 import pytest
@@ -77,17 +78,92 @@ def test_manifest_aggregate_drift_is_rejected_without_exposing_values(tmp_path: 
     assert raised.value.details == {"field": "returned_record_count"}
 
 
-def test_real_data_is_blocked_until_retention_policy_is_approved(tmp_path: Path) -> None:
-    manifest_path, manifest = stage_batch(tmp_path)
+def real_manifest(manifest: dict) -> dict:
     changed = deepcopy(manifest)
+    changed["manifest_version"] = "2.0.0"
     changed["is_synthetic"] = False
-    changed["privacy"]["retention_policy_id"] = "unapproved-example"
+    changed["lineage"]["working_tree_clean"] = True
+    changed["privacy"]["retention_policy_id"] = "cfpb-local-120d-v1"
+    changed["privacy"]["expires_at_utc"] = "2026-11-19T15:59:59Z"
+    return changed
+
+
+def test_approved_real_retention_manifest_is_prepared(tmp_path: Path) -> None:
+    manifest_path, manifest = stage_batch(tmp_path)
+    changed = real_manifest(manifest)
+    manifest_path.write_text(json.dumps(changed), encoding="utf-8")
+
+    prepared = prepare_raw_batch(manifest_path, repository_root=tmp_path)
+
+    assert len(prepared.records) == 3
+
+
+@pytest.mark.parametrize(
+    ("mutation", "expected_code"),
+    [
+        (
+            lambda value: value["privacy"].update({"retention_policy_id": "unapproved-example"}),
+            "real_retention_policy_invalid",
+        ),
+        (
+            lambda value: value["privacy"].pop("expires_at_utc"),
+            "real_retention_expiry_missing",
+        ),
+        (
+            lambda value: value["privacy"].update({"expires_at_utc": "2026-11-20T00:00:00Z"}),
+            "real_retention_expiry_exceeds_policy",
+        ),
+        (
+            lambda value: value["privacy"].update({"expires_at_utc": "2026-07-01T00:00:00Z"}),
+            "real_retention_expired",
+        ),
+        (
+            lambda value: value["lineage"].update({"working_tree_clean": False}),
+            "real_acquisition_requires_clean_commit",
+        ),
+        (
+            lambda value: value["request"]["parameters"].update(
+                {"date_received_min": "2023-08-31"}
+            ),
+            "real_request_outside_approved_window",
+        ),
+    ],
+)
+def test_real_retention_boundary_fails_closed(tmp_path: Path, mutation, expected_code: str) -> None:
+    manifest_path, manifest = stage_batch(tmp_path)
+    changed = real_manifest(manifest)
+    mutation(changed)
     manifest_path.write_text(json.dumps(changed), encoding="utf-8")
 
     with pytest.raises(RawIngestionError) as raised:
         prepare_raw_batch(manifest_path, repository_root=tmp_path)
 
-    assert raised.value.code == "real_data_retention_policy_unapproved"
+    assert raised.value.code == expected_code
+
+
+def test_synthetic_manifest_cannot_claim_a_real_expiry(tmp_path: Path) -> None:
+    manifest_path, manifest = stage_batch(tmp_path)
+    manifest["privacy"]["expires_at_utc"] = "2026-11-19T15:59:59Z"
+    manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+
+    with pytest.raises(RawIngestionError) as raised:
+        prepare_raw_batch(manifest_path, repository_root=tmp_path)
+
+    assert raised.value.code == "synthetic_retention_expiry_forbidden"
+
+
+def test_real_manifest_cannot_be_loaded_at_or_after_expiry(tmp_path: Path) -> None:
+    manifest_path, manifest = stage_batch(tmp_path)
+    manifest_path.write_text(json.dumps(real_manifest(manifest)), encoding="utf-8")
+
+    with pytest.raises(RawIngestionError) as raised:
+        prepare_raw_batch(
+            manifest_path,
+            repository_root=tmp_path,
+            now_utc=datetime(2026, 11, 19, 15, 59, 59, tzinfo=UTC),
+        )
+
+    assert raised.value.code == "real_retention_expired"
 
 
 def test_artifact_cannot_exceed_manifest_request_limit(tmp_path: Path) -> None:

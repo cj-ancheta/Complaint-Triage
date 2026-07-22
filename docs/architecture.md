@@ -38,8 +38,9 @@ manifest contract, local PostgreSQL Compose service, and synthetic-only raw
 loader. The loader validates exact bytes and
 lineage before atomically inserting `raw.ingestion_batches` and
 `raw.complaints`. Database triggers enforce append-only behavior. ADR 0009
-approves bounded local retention, but real-data loading stays blocked until
-CT-108 implements and tests enforcement and cleanup.
+approves bounded local retention. CT-108 proposes manifest-level enforcement;
+live acquisition stays unavailable until CT-109 implements and tests the streamed
+writer and cleanup rehearsal.
 
 The accepted CT-107 staging layer adds versioned, append-only transformation
 batches and one accepted or quarantined outcome per raw row. ADR 0007 fixes the

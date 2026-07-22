@@ -21,8 +21,9 @@ rows. It applies the accepted taxonomy/window, identifies English narratives
 offline, records closed exclusion reasons and length metadata, and never copies
 narratives into the analytical schema. Current report evidence is synthetic only.
 ADR 0009 authorizes local retention for the first real extract through 19
-November 2026, but ingestion remains blocked until CT-108 implements and tests
-the retention and cleanup controls.
+November 2026. CT-108 provides accepted manifest-level retention enforcement;
+no real download occurs until the streamed monthly writer and cleanup rehearsal
+pass CT-109 review.
 
 ## Intended use
 
@@ -59,6 +60,7 @@ This project will not:
 - [Analytical population report](docs/analytical_population.md)
 - [Accepted analytical-population ADR](docs/decisions/0008-proposed-analytical-population.md)
 - [Local real-data retention ADR](docs/decisions/0009-local-real-data-retention.md)
+- [Retention-controlled real extraction plan](docs/real_extraction_plan.md)
 - [Architecture](docs/architecture.md)
 - [Learning log](docs/learning_log.md)
 
@@ -120,7 +122,8 @@ The Lovable React interface will live in a separate `complaint-triage-web` repos
 The planned source is the public CFPB Consumer Complaint Database. Raw complaint
 narratives, generated model artifacts, secrets, and local experiment stores are
 excluded from Git. CT-106 can load only explicit synthetic fixture batches; real
-raw ingestion stays disabled until CT-108 enforces the approved ADR 0009 policy.
+raw acquisition stays unavailable until CT-109 implements the approved ADR 0009
+streaming and cleanup controls.
 
 ## License
 

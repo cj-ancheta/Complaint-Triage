@@ -444,3 +444,44 @@ temporal split rather than this population filter.
   cleanup before acquiring the first real bounded batch?
 - What temporal and duplicate-isolation options should CT-203 compare after the
   population decision is accepted?
+
+---
+
+## Draft CT-108: enforce real-manifest retention boundary
+
+**Date:** 2026-07-22
+
+**What the AI generated**
+
+Manifest version 2 recognition for approved real batches, exact policy and expiry
+validation, current-time expiry enforcement, clean-commit and accepted-window
+checks, closed-schema support for an expiry timestamp, fail-closed tests, and an
+official-source-grounded monthly extraction design. No real complaint was
+downloaded or loaded.
+
+**How I verified it**
+
+Draft for Charles: review `docs/real_extraction_plan.md`, inspect the retention
+branch in `prepare_raw_batch`, and run the raw-ingestion and manifest-contract
+tests. The test data remains visibly synthetic even when it exercises the real
+policy branch.
+
+**What can fail in production**
+
+The clock can be wrong, a streamed export can change shape or stop midway,
+monthly counts can cross the official limit, source data can change between
+preflight and export, local cloud-sync software can violate the storage boundary,
+and a manifest policy check alone cannot delete expired Docker data.
+
+**What I can explain in an interview**
+
+Draft for Charles: why approval and enforcement are separate; why expiry is
+checked against retrieval, current time, and an absolute deadline; why extraction
+requires a clean commit; why monthly shards minimize data and stay below the
+official cap; and why a streamed JSON array needs a new contract rather than a
+shortcut through the old response parser.
+
+**Questions still open**
+
+- What byte cap and interruption-cleanup evidence should the synthetic writer
+  tests establish before the first live request?
