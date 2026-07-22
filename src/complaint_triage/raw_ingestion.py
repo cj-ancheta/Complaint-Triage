@@ -416,7 +416,7 @@ def _reconcile_export_records(manifest: dict[str, Any], response: Any) -> tuple[
         if not isinstance(received_date, str):
             raise RawIngestionError("date_received_invalid", source_row_ordinal=ordinal)
         try:
-            parsed_received = date.fromisoformat(received_date)
+            parsed_received = _source_date(received_date)
         except ValueError as error:
             raise RawIngestionError("date_received_invalid", source_row_ordinal=ordinal) from error
         if (
@@ -427,7 +427,7 @@ def _reconcile_export_records(manifest: dict[str, Any], response: Any) -> tuple[
             raise RawIngestionError("date_received_outside_request", source_row_ordinal=ordinal)
         complaint_ids.append(str(complaint_id))
         complaint_id_types.add("integer" if isinstance(complaint_id, int) else "string")
-        dates.append(received_date)
+        dates.append(parsed_received.isoformat())
         sources.append(source)
         source_bytes = json.dumps(
             source,
@@ -509,6 +509,13 @@ def _canonical_request_bytes(manifest: dict[str, Any]) -> bytes:
 
 def _parse_utc(value: str) -> datetime:
     return datetime.fromisoformat(value.replace("Z", "+00:00"))
+
+
+def _source_date(value: str) -> date:
+    try:
+        return date.fromisoformat(value)
+    except ValueError:
+        return datetime.fromisoformat(value.replace("Z", "+00:00")).date()
 
 
 def _read_json_object(path: Path, kind: str) -> dict[str, Any]:

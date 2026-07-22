@@ -1,5 +1,6 @@
 import hashlib
 import json
+from datetime import date
 
 import pytest
 
@@ -84,6 +85,15 @@ def test_export_filter_can_supply_missing_has_narrative_flag() -> None:
     assert outcome.sub_product_raw == "Sub product"
     assert outcome.sub_issue_raw is None
     assert outcome.submitted_via_raw is None
+
+
+def test_export_timestamp_date_normalizes_to_calendar_date() -> None:
+    row = source_row(date_received="2024-01-02T12:00:00-05:00")
+
+    outcome = transform_raw_rows((row,))[0]
+
+    assert outcome.status == "accepted"
+    assert outcome.date_received == date(2024, 1, 2)
 
 
 def test_invalid_source_quality_fields_receive_closed_reason_codes() -> None:

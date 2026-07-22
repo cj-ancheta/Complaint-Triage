@@ -8,7 +8,7 @@ import re
 import unicodedata
 from collections import Counter
 from dataclasses import dataclass
-from datetime import date
+from datetime import date, datetime
 from enum import StrEnum
 from pathlib import Path
 from typing import Any
@@ -383,9 +383,14 @@ def _normalize_date(value: Any) -> date | None:
         return None
     try:
         parsed = date.fromisoformat(normalized)
+        return parsed if parsed.isoformat() == normalized else None
     except ValueError:
-        return None
-    return parsed if parsed.isoformat() == normalized else None
+        if "T" not in normalized:
+            return None
+        try:
+            return datetime.fromisoformat(normalized.replace("Z", "+00:00")).date()
+        except ValueError:
+            return None
 
 
 def _normalize_required_text(value: Any) -> str | None:

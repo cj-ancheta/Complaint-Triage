@@ -35,3 +35,9 @@ official export omits `_source.has_narrative`. The pinned API source confirms
 that omission is deliberate for export formats. The attempt rolled back its raw
 artifact and manifest. Staging 1.1.0 therefore preserves the unmodified raw
 payload and derives the filter guarantee only from the validated export request.
+
+The second attempt also failed safely on record zero: the stored export field
+uses an ISO date-time representation rather than the normal API's date-only
+representation. Raw ingestion and staging now preserve that source string while
+normalizing its calendar component for manifest reconciliation and typed dates.
+The failed attempt again retained no JSON artifact or manifest.

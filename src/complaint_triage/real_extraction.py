@@ -509,7 +509,7 @@ def _inspect_export(path: Path, spec: ShardSpec, expected_count: int) -> dict[st
                 if not isinstance(received, str):
                     raise ExtractionError("export_date_invalid", source_row_ordinal=ordinal)
                 try:
-                    received_date = date.fromisoformat(received)
+                    received_date = _source_date(received)
                 except ValueError as error:
                     raise ExtractionError(
                         "export_date_invalid", source_row_ordinal=ordinal
@@ -520,7 +520,7 @@ def _inspect_export(path: Path, spec: ShardSpec, expected_count: int) -> dict[st
                     < date.fromisoformat(spec.end_exclusive)
                 ):
                     raise ExtractionError("export_date_outside_shard", source_row_ordinal=ordinal)
-                observed_dates.append(received)
+                observed_dates.append(received_date.isoformat())
                 fields.update(source)
     except ijson.JSONError as error:
         raise ExtractionError("export_json_invalid", month=spec.month) from error
@@ -719,3 +719,10 @@ def _file_sha256(path: Path) -> str:
 
 def _utc_text(value: datetime) -> str:
     return value.astimezone(UTC).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+
+def _source_date(value: str) -> date:
+    try:
+        return date.fromisoformat(value)
+    except ValueError:
+        return datetime.fromisoformat(value.replace("Z", "+00:00")).date()
