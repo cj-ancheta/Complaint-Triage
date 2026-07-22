@@ -25,6 +25,11 @@ from complaint_triage.real_extraction import (
     cleanup_real_data,
     safe_extraction_error,
 )
+from complaint_triage.real_run_report import (
+    RealRunReportError,
+    report_real_run,
+    safe_real_run_report_error,
+)
 from complaint_triage.staging import StagingError, safe_staging_error, stage_raw_batch
 from complaint_triage.taxonomy_profile import (
     TaxonomyProfileError,
@@ -80,6 +85,11 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
         help="Must exactly match the accepted retention policy ID.",
     )
+    run_report_parser = subcommands.add_parser(
+        "report-real-run",
+        help="Reconcile and publish an aggregate-only report for one real run.",
+    )
+    run_report_parser.add_argument("--run-manifest", type=Path, required=True)
     return parser
 
 
@@ -208,6 +218,26 @@ def main(argv: Sequence[str] | None = None) -> int:
             report = acquire_real_run(confirmation=args.confirmation)
         except ExtractionError as error:
             print(json.dumps(safe_live_result(error), indent=2, sort_keys=True))
+            return 1
+        print(json.dumps(report, indent=2, sort_keys=True))
+        return 0
+
+    if args.command == "report-real-run":
+        try:
+            report = report_real_run(args.run_manifest)
+        except RealRunReportError as error:
+            print(json.dumps(safe_real_run_report_error(error), indent=2, sort_keys=True))
+            return 1
+        except DatabaseSettingsError:
+            print(
+                json.dumps(
+                    safe_real_run_report_error(
+                        RealRunReportError("database_configuration_invalid")
+                    ),
+                    indent=2,
+                    sort_keys=True,
+                )
+            )
             return 1
         print(json.dumps(report, indent=2, sort_keys=True))
         return 0

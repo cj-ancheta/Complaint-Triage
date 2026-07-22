@@ -1,0 +1,100 @@
+{
+  "artifact": {
+    "byte_count": 74045937,
+    "content_encoding": "identity",
+    "hash_algorithm": "SHA-256",
+    "hash_scope": "stored_bytes",
+    "media_type": "application/json",
+    "relative_path": "data/raw/cfpb/sha256/45/452e2b86d9a4534a911050904ce09e937b222f092a672ee7642b63686debcdf5.json",
+    "sha256": "452e2b86d9a4534a911050904ce09e937b222f092a672ee7642b63686debcdf5"
+  },
+  "batch_id": "cfpb-20260722T130803Z-452e2b86d9a4",
+  "created_at_utc": "2026-07-22T13:08:03Z",
+  "is_synthetic": false,
+  "lineage": {
+    "code_commit_sha": "46b7402d1b4537842d2f96ae1adbd7740a4e6560",
+    "extractor_name": "complaint-triage-monthly-export",
+    "extractor_version": "1.0.0",
+    "python_version": "3.13.5",
+    "working_tree_clean": true
+  },
+  "manifest_version": "2.0.0",
+  "privacy": {
+    "expires_at_utc": "2026-11-19T15:59:59Z",
+    "manifest_contains_row_values": false,
+    "manifest_git_tracking_allowed": true,
+    "raw_artifact_contains_public_narratives": true,
+    "raw_artifact_git_tracked": false,
+    "retention_policy_id": "cfpb-local-120d-v1"
+  },
+  "records": {
+    "duplicate_complaint_id_count": 0,
+    "matching_total": 43349,
+    "matching_total_relation": "eq",
+    "non_empty_narrative_count": 43349,
+    "observed_date_received_max": "2023-10-31",
+    "observed_date_received_min": "2023-10-01",
+    "returned_record_count": 43349,
+    "unique_complaint_id_count": 43349
+  },
+  "request": {
+    "base_url": "https://www.consumerfinance.gov/data-research/consumer-complaints/search/api/v1/",
+    "fingerprint_schema": "complaint-triage-request-fingerprint-v1",
+    "method": "GET",
+    "parameters": {
+      "date_received_max": "2023-10-31",
+      "date_received_min": "2023-10-01",
+      "format": "json",
+      "has_narrative": "true",
+      "no_aggs": "true",
+      "no_highlight": "true",
+      "size": "43349",
+      "sort": "created_date_asc"
+    },
+    "request_fingerprint_sha256": "544d1f41cd6d8df339aeb691ae98cedd45be0077a9097219ab50f1b532d50d86"
+  },
+  "response": {
+    "content_encoding": "identity",
+    "content_type": "application/json",
+    "has_data_issue": null,
+    "http_status": 200,
+    "is_data_stale": null,
+    "is_narrative_stale": null,
+    "retrieved_at_utc": "2026-07-22T13:08:03Z",
+    "source_last_indexed": null,
+    "source_last_updated": null,
+    "source_license": null,
+    "total_record_count": null
+  },
+  "schema_observation": {
+    "complaint_id_observed_types": [
+      "string"
+    ],
+    "field_count": 16,
+    "source_fields": [
+      "company",
+      "company_public_response",
+      "company_response",
+      "complaint_id",
+      "complaint_what_happened",
+      "date_received",
+      "date_sent_to_company",
+      "issue",
+      "product",
+      "state",
+      "sub_issue",
+      "sub_product",
+      "submitted_via",
+      "tags",
+      "timely",
+      "zip_code"
+    ]
+  },
+  "source": {
+    "api_contract_commit_sha": "f10324b3e42c146fc6de1caacfb0bb63691e6b4a",
+    "api_contract_repository": "https://github.com/cfpb/ccdb5-api",
+    "dataset": "Consumer Complaint Database",
+    "endpoint_id": "cfpb_complaint_search_v1",
+    "provider": "Consumer Financial Protection Bureau"
+  }
+}

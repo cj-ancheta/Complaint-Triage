@@ -536,3 +536,46 @@ commit.
 
 - How much memory does the current raw loader use for the largest real shard,
   and must CT-110 stream database insertion before processing the full run?
+
+---
+
+## CT-110: first retained real run
+
+**Date:** 2026-07-22
+
+**What the AI generated**
+
+A clean-commit-gated HTTPS adapter, 20 GiB disk gate, fixed request validation,
+35-second anonymous-export pacing, incomplete-run rollback, official export
+compatibility for the omitted narrative flag and timestamp dates, staging 1.1.0,
+and a reproducible aggregate-only run report. The approved 16-shard run was
+acquired, ingested, staged, and filtered under ADR 0009.
+
+**How I verified it**
+
+Inspect `docs/ct110_live_run.md`; validate the run with the
+cleanup command in dry-run mode; run `complaint-triage report-real-run` against
+the recorded run manifest; and run the full test suite with PostgreSQL enabled.
+The database-derived report checks all 16 identities and reconciles 979,995 raw,
+staging, and population inputs without emitting row values.
+
+**What can fail in production**
+
+The upstream export schema can differ from the normal API schema, anonymous
+requests can be throttled, counts can revise between runs, content-addressed raw
+storage plus PostgreSQL can consume substantial disk, language detection is
+CPU-heavy, the current loader peaks near 519 MB on the largest shard, and an
+external sync or backup tool can violate the local-only retention policy.
+
+**What I can explain in an interview**
+
+Why a normal search contract cannot be assumed for bulk
+exports; how clean lineage, aggregate preflight, pacing, streaming validation,
+atomic publication, and rollback form separate controls; why raw source values
+were preserved when staging normalized timestamps; how all 16 data layers were
+reconciled; and why population prevalence is not a model-performance metric.
+
+**Questions still open**
+
+- What temporal split and duplicate-isolation policy should CT-203 adopt given
+  the accepted population and severe class imbalance?

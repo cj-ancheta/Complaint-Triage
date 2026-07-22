@@ -1,0 +1,100 @@
+{
+  "checks": {
+    "all_population_batches_present": true,
+    "all_raw_batches_present": true,
+    "all_staging_batches_present": true,
+    "eligible_products_reconcile": true,
+    "exclusion_reasons_cover_excluded": true,
+    "population_counts_reconcile": true,
+    "population_statuses_reconcile": true,
+    "raw_counts_reconcile": true,
+    "staging_counts_reconcile": true,
+    "staging_statuses_reconcile": true
+  },
+  "counts": {
+    "eligible_rate": 0.999183,
+    "eligible_record_count": 979194,
+    "excluded_record_count": 801,
+    "input_record_count": 979995,
+    "shard_count": 16,
+    "staging_accepted_record_count": 979995,
+    "staging_quarantined_record_count": 0
+  },
+  "detected_language_counts": {
+    "af": 1,
+    "bs": 21,
+    "ca": 14,
+    "cs": 3,
+    "da": 12,
+    "de": 5,
+    "en": 979194,
+    "eo": 9,
+    "es": 8,
+    "fi": 3,
+    "fr": 37,
+    "id": 3,
+    "is": 3,
+    "it": 30,
+    "la": 131,
+    "lg": 1,
+    "lt": 7,
+    "lv": 2,
+    "mi": 3,
+    "nn": 2,
+    "pl": 1,
+    "pt": 3,
+    "ro": 5,
+    "sk": 3,
+    "st": 2,
+    "sv": 1,
+    "tl": 42,
+    "tn": 240,
+    "tr": 4,
+    "ts": 4,
+    "xh": 1,
+    "yo": 200
+  },
+  "eligible_counts_by_product": {
+    "Checking or savings account": 38170,
+    "Credit card": 47562,
+    "Credit reporting or other personal consumer reports": 746849,
+    "Debt collection": 82045,
+    "Debt or credit management": 1838,
+    "Money transfer, virtual currency, or money service": 13210,
+    "Mortgage": 16227,
+    "Payday loan, title loan, personal loan, or advance loan": 6635,
+    "Prepaid card": 5002,
+    "Student loan": 11879,
+    "Vehicle loan or lease": 9777
+  },
+  "eligible_narrative_length": {
+    "maximum": 32962,
+    "mean": 983.736,
+    "minimum": 10
+  },
+  "exclusion_reason_counts": {
+    "language_not_english": 801
+  },
+  "lineage": {
+    "api_contract_commit_sha": "f10324b3e42c146fc6de1caacfb0bb63691e6b4a",
+    "code_commit_sha": "46b7402d1b4537842d2f96ae1adbd7740a4e6560",
+    "working_tree_clean": true
+  },
+  "privacy": {
+    "contains_row_values": false,
+    "narratives_in_report": false,
+    "source_values_logged": false
+  },
+  "report_version": "cfpb-real-run-population-v1",
+  "reported_at_utc": "2026-07-22T13:37:44.849831Z",
+  "retention": {
+    "expires_at_utc": "2026-11-19T15:59:59Z",
+    "retention_policy_id": "cfpb-local-120d-v1"
+  },
+  "run_id": "cfpb-run-20260722T130728Z-2b7815d4c850",
+  "status": "reported",
+  "versions": {
+    "analytical_population": "1.0.0",
+    "staging_transformation": "1.1.0"
+  }
+}

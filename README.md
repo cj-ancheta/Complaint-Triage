@@ -23,7 +23,9 @@ narratives into the analytical schema. Current report evidence is synthetic only
 ADR 0009 authorizes local retention for the first real extract through 19
 November 2026. CT-108 provides accepted manifest-level retention enforcement;
 CT-109 provides an accepted synthetic-tested monthly writer and cleanup
-workflow. CT-110 adds a gated live adapter; no real download has succeeded yet.
+workflow. CT-110's first retained real run and aggregate population evidence are
+accepted as pipeline evidence; no model has been trained and no metric is
+approved as a portfolio claim.
 
 ## Intended use
 

@@ -5,6 +5,7 @@ from complaint_triage.analytical_population import PopulationError
 from complaint_triage.cfpb_profile import ProfileError
 from complaint_triage.raw_ingestion import RawIngestionError
 from complaint_triage.real_extraction import ExtractionError
+from complaint_triage.real_run_report import RealRunReportError
 from complaint_triage.staging import StagingError
 from complaint_triage.taxonomy_profile import TaxonomyProfileError
 
@@ -260,3 +261,34 @@ def test_acquire_command_prints_safe_error(monkeypatch, capsys) -> None:
     assert exit_code == 1
     assert output["error"]["code"] == "real_acquisition_requires_clean_commit"
     assert output["privacy"]["response_body_logged"] is False
+
+
+def test_real_run_report_command_prints_aggregate_result(monkeypatch, capsys) -> None:
+    monkeypatch.setattr(
+        cli,
+        "report_real_run",
+        lambda _path: {
+            "run_id": "cfpb-run-20260722T130728Z-aaaaaaaaaaaa",
+            "counts": {"input_record_count": 100, "eligible_record_count": 98},
+            "privacy": {"contains_row_values": False},
+        },
+    )
+    exit_code = cli.main(["report-real-run", "--run-manifest", "data/manifests/cfpb/runs/run.json"])
+    output = json.loads(capsys.readouterr().out)
+
+    assert exit_code == 0
+    assert output["counts"]["eligible_record_count"] == 98
+    assert output["privacy"]["contains_row_values"] is False
+
+
+def test_real_run_report_command_prints_safe_error(monkeypatch, capsys) -> None:
+    def fail(_path) -> None:
+        raise RealRunReportError("run_reconciliation_failed", failed_check_count=1)
+
+    monkeypatch.setattr(cli, "report_real_run", fail)
+    exit_code = cli.main(["report-real-run", "--run-manifest", "data/manifests/cfpb/runs/run.json"])
+    output = json.loads(capsys.readouterr().out)
+
+    assert exit_code == 1
+    assert output["error"]["code"] == "run_reconciliation_failed"
+    assert output["privacy"]["narratives_in_report"] is False
