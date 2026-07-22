@@ -16,3 +16,8 @@ Fixture rules:
 
 The response fixture exists to test parsing and schema safeguards without making
 network calls or committing raw CFPB narratives.
+
+`taxonomy_trends_synthetic.json` is a hand-authored aggregate-only trends shape.
+Its counts are invented solely to test transition/candidate separation,
+reconciliation, and privacy guards. They are not a saved, redacted, or modified
+CFPB response and must never be reported as source measurements.

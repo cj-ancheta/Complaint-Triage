@@ -4,6 +4,7 @@ from complaint_triage import cli
 from complaint_triage.cfpb_profile import ProfileError
 from complaint_triage.raw_ingestion import RawIngestionError
 from complaint_triage.staging import StagingError
+from complaint_triage.taxonomy_profile import TaxonomyProfileError
 
 
 def test_profile_command_prints_safe_json(monkeypatch, capsys) -> None:
@@ -114,3 +115,37 @@ def test_stage_command_returns_controlled_error(monkeypatch, capsys) -> None:
     assert exit_code == 1
     assert output["error"]["code"] == "raw_batch_not_found"
     assert output["privacy"]["raw_payload_logged"] is False
+
+
+def test_taxonomy_profile_command_prints_aggregate_report(monkeypatch, capsys) -> None:
+    monkeypatch.setattr(
+        cli,
+        "fetch_taxonomy_profile",
+        lambda: {
+            "status": "ok",
+            "request": {"complaint_rows_requested": 0},
+            "candidate_window": {"counts_by_product": {"Synthetic product": 3}},
+            "privacy": {"narratives_received": False},
+        },
+    )
+
+    exit_code = cli.main(["profile-taxonomy"])
+    output = json.loads(capsys.readouterr().out)
+
+    assert exit_code == 0
+    assert output["request"]["complaint_rows_requested"] == 0
+    assert output["privacy"]["narratives_received"] is False
+
+
+def test_taxonomy_profile_command_returns_controlled_error(monkeypatch, capsys) -> None:
+    def fail() -> None:
+        raise TaxonomyProfileError("http_error", http_status=403)
+
+    monkeypatch.setattr(cli, "fetch_taxonomy_profile", fail)
+
+    exit_code = cli.main(["profile-taxonomy"])
+    output = json.loads(capsys.readouterr().out)
+
+    assert exit_code == 1
+    assert output["error"] == {"code": "http_error", "http_status": 403}
+    assert output["privacy"]["narratives_received"] is False

@@ -4,20 +4,17 @@ An educational portfolio project exploring how a human-in-the-loop NLP system ca
 
 ## Current status
 
-**Phase 1 ingestion is complete; the Phase 2 transition awaits approval.**
+**Phase 2 is active; CT-201 taxonomy and modelling window are accepted.**
 
-The repository now includes a privacy-safe, five-record CFPB source profiler with
-mocked network and contract tests. The live endpoint remains inaccessible from
-this execution environment, so a successful deployed response check is still
-outstanding. A versioned raw-batch manifest and exact-byte SHA-256 contract are
-approved, and a loopback-only PostgreSQL 18.4 service now passes real health and
-SQL readiness checks. The accepted CT-106 migration and loader validate and load
-the three-record synthetic fixture atomically, reject replays and mutations, and
-unconditionally block real data while retention remains undecided. No real source
-data has been ingested. The accepted CT-107 staging layer assigns every raw row a
-versioned accepted or quarantined outcome without selecting a modelling taxonomy
-or population. No model has been trained. Any future metric must be generated
-from a versioned evaluation artifact before it appears here or in the portfolio.
+The repository includes privacy-safe CFPB source and taxonomy profilers with
+mocked network and contract tests. On 22 July 2026, the aggregate-only taxonomy
+command successfully measured the current-form transition without requesting,
+logging, or persisting complaint rows or narratives. ADR 0007 accepts the eleven
+August 2023 form labels and a September 2023 through December 2024 window. The
+accepted raw and staging layers remain
+synthetic-only and do not select a modelling population. No real source data has
+been ingested and no model has been trained. Any future metric must come from a
+versioned evaluation artifact before it appears here or in the portfolio.
 
 ## Intended use
 
@@ -49,6 +46,8 @@ This project will not:
 - [Local PostgreSQL guide](docs/postgresql_local.md)
 - [Append-only raw ingestion guide](docs/raw_ingestion.md)
 - [Versioned staging transformation guide](docs/staging_transformations.md)
+- [CFPB taxonomy stability profile](docs/cfpb_taxonomy_stability.md)
+- [Accepted taxonomy and modelling-window ADR](docs/decisions/0007-proposed-taxonomy-window.md)
 - [Architecture](docs/architecture.md)
 - [Learning log](docs/learning_log.md)
 
@@ -76,6 +75,12 @@ Run the bounded source-contract profiler:
 
 ```powershell
 .\.venv\Scripts\python.exe -m complaint_triage profile-cfpb
+```
+
+Run the aggregate-only taxonomy profiler:
+
+```powershell
+.\.venv\Scripts\python.exe -m complaint_triage profile-taxonomy
 ```
 
 Start the local PostgreSQL service after copying `.env.example` to ignored

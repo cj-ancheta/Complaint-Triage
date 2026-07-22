@@ -15,6 +15,11 @@ from complaint_triage.raw_ingestion import (
     safe_ingestion_error,
 )
 from complaint_triage.staging import StagingError, safe_staging_error, stage_raw_batch
+from complaint_triage.taxonomy_profile import (
+    TaxonomyProfileError,
+    fetch_taxonomy_profile,
+    safe_taxonomy_error_report,
+)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -39,6 +44,10 @@ def build_parser() -> argparse.ArgumentParser:
         help="Create versioned staging outcomes for one ingested raw batch.",
     )
     stage_parser.add_argument("--batch-id", required=True, help="Raw ingestion batch ID.")
+    subcommands.add_parser(
+        "profile-taxonomy",
+        help="Run the fixed aggregate-only CFPB taxonomy stability profile.",
+    )
     return parser
 
 
@@ -102,6 +111,16 @@ def main(argv: Sequence[str] | None = None) -> int:
                     sort_keys=True,
                 )
             )
+            return 1
+
+        print(json.dumps(report, indent=2, sort_keys=True))
+        return 0
+
+    if args.command == "profile-taxonomy":
+        try:
+            report = fetch_taxonomy_profile()
+        except TaxonomyProfileError as error:
+            print(json.dumps(safe_taxonomy_error_report(error), indent=2, sort_keys=True))
             return 1
 
         print(json.dumps(report, indent=2, sort_keys=True))

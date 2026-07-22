@@ -351,3 +351,49 @@ duplicates are quarantined; and why `product_raw` is not yet a canonical target.
   Phase 2?
 - How should cross-batch exact duplicates be assigned without temporal leakage?
 - Which staging quarantine reasons, if any, should support a remediation flow?
+
+---
+
+## Draft CT-201: taxonomy stability and modelling-window proposal
+
+**Date:** 2026-07-22
+
+**What the AI generated**
+
+A fixed aggregate-only CFPB taxonomy profiler, strict network/privacy boundary,
+synthetic trends fixture, CLI command, unit tests, live aggregate evidence,
+research note, and ADR. No dependency was added. Charles approved the eleven
+current product labels with identity mapping and the September 2023 through
+December 2024 modelling window on 2026-07-22.
+
+**How I verified it**
+
+Draft for Charles: review `docs/cfpb_taxonomy_stability.md`, compare its source
+links and exact label strings to the official August 2023 form, run
+`complaint-triage profile-taxonomy`, and confirm that all checks are true. The
+observed live run returned 979,996 aggregate narrative-bearing records in the
+candidate window, all 16 months, all 11 current labels, and no legacy or
+unexpected label. Automated tests never call the network or contain complaint
+rows.
+
+**What can fail in production**
+
+The upstream API can change parameters or response shape, historical aggregates
+can be revised, a taxonomy can change again, the smallest classes can lose too
+many rows during analytical filtering, the 2025 distribution shift can reduce
+future performance, and an operator can misinterpret complaint counts as a
+representative measure of consumer harm. The API's broad `dateRangeBuckets`
+context must not be mistaken for the filtered product total.
+
+**What I can explain in an interview**
+
+Draft for Charles: why August 2023 is a mixed taxonomy month; why the first full
+month begins the candidate window; why a clean pre-2025 baseline is preferable
+to blindly maximizing recency; how an aggregate endpoint reduces privacy risk;
+why exact identity labels are more defensible than an invented `Other` mapping;
+and why 76% majority-class prevalence makes macro and per-class metrics essential.
+
+**Questions still open**
+
+- Which analytical exclusions will CT-202 propose, and how much class attrition
+  will they cause?

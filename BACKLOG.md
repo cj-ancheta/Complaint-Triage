@@ -25,7 +25,7 @@ This backlog converts `SPEC.md` into bounded delivery issues. Status values are 
 
 | ID | Issue | Status | Exit evidence |
 |---|---|---|---|
-| CT-201 | Profile taxonomy stability and propose modelling window | pending | User-approved taxonomy and date window |
+| CT-201 | Profile taxonomy stability and propose modelling window | complete | Accepted ADR 0007: 11-label identity taxonomy and `2023-09-01 <= date_received < 2025-01-01` |
 | CT-202 | Define analytical population and exclusions | pending | Versioned population report |
 | CT-203 | Implement temporal split and duplicate isolation | pending | Split manifest and leakage tests |
 | CT-204 | Implement majority baseline | pending | Reproducible baseline report |
@@ -38,11 +38,7 @@ Later phases remain defined in `SPEC.md`. Expand them into issue-level detail on
 
 ## Current next issue
 
-Phase 1 is complete. Await explicit approval to transition into **Phase 2:
-analytical dataset and baseline**.
-
-The accepted implementation leaves raw rows unchanged, records exactly one
-versioned accepted or quarantined outcome for every input, and does not select the
-modelling population or taxonomy. The Phase 2 transition must be approved before
-CT-201 begins because it leads to proposals for the final taxonomy and date
-window, which are separate phase-gated decisions.
+Phase 2 is authorized and **CT-201 is complete**. ADR 0007 accepts the eleven
+current-form labels with identity mapping and the September 2023 through December
+2024 modelling window. The next bounded issue is CT-202: define the analytical
+population and exclusions without changing the accepted taxonomy or window.
