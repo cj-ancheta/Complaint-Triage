@@ -2,10 +2,12 @@
 
 ## Safety state
 
-CT-109 provides the acquisition boundary but deliberately provides no HTTP
-client or live acquisition CLI. Calling its functions with synthetic byte
-streams cannot contact CFPB. CT-110 may add the narrow live adapter only after
-this implementation is accepted and committed with a clean working tree.
+CT-109 provides the accepted acquisition boundary. CT-110 adds a narrow live
+HTTPS adapter, but it fails before preflight or download unless the working tree
+is clean, HEAD is a full commit, at least 20 GiB is free, and the operator types
+the accepted retention policy ID. The adapter fixes the host, path, method, and
+query; rejects redirects and compressed/non-JSON responses; and does not log
+response bodies.
 
 Real data is authorized only under ADR 0009. It must remain under
 `data/raw/cfpb/` and in the loopback-only Compose PostgreSQL volume. Do not copy
@@ -69,6 +71,22 @@ containers remain, and writes metadata-only evidence under
 Deletion is intentionally irreversible. The batch and run manifests remain as
 permitted evidence. A failed verification returns a controlled error and must be
 investigated before claiming deletion is complete.
+
+## Live acquisition
+
+This command performs one aggregate-only preflight, then streams exactly the 16
+approved monthly shards:
+
+```powershell
+complaint-triage acquire-real-run --confirmation cfpb-local-120d-v1
+```
+
+Run it only from the accepted clean CT-110 adapter commit. If any shard fails,
+the orchestrator removes only artifacts and batch manifests newly created by
+that incomplete attempt. It never removes a pre-existing content-addressed
+artifact during rollback. A successful command prints aggregate counts, byte
+count, run ID, manifest path, commit SHA, and retention deadline--never complaint
+values.
 
 ## Synthetic verification
 

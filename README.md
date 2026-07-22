@@ -23,7 +23,7 @@ narratives into the analytical schema. Current report evidence is synthetic only
 ADR 0009 authorizes local retention for the first real extract through 19
 November 2026. CT-108 provides accepted manifest-level retention enforcement;
 CT-109 provides an accepted synthetic-tested monthly writer and cleanup
-workflow. No live network acquisition command exists yet.
+workflow. CT-110 adds a gated live adapter; no real download has succeeded yet.
 
 ## Intended use
 
@@ -62,6 +62,7 @@ This project will not:
 - [Local real-data retention ADR](docs/decisions/0009-local-real-data-retention.md)
 - [Retention-controlled real extraction plan](docs/real_extraction_plan.md)
 - [Monthly extraction and cleanup operator guide](docs/real_extraction.md)
+- [CT-110 live-run record](docs/ct110_live_run.md)
 - [Architecture](docs/architecture.md)
 - [Learning log](docs/learning_log.md)
 
@@ -70,6 +71,13 @@ Cleanup inventory is dry-run-only unless the exact run ID is supplied with
 
 ```powershell
 complaint-triage cleanup-real-data --run-manifest data/manifests/cfpb/runs/<run-id>.json
+```
+
+The live adapter additionally requires a clean commit, 20 GiB free, a fresh
+aggregate-only preflight, and the exact retention policy confirmation:
+
+```powershell
+complaint-triage acquire-real-run --confirmation cfpb-local-120d-v1
 ```
 
 Future coding agents must also read [AGENTS.md](AGENTS.md) before making changes.

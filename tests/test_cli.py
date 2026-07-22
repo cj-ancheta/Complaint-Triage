@@ -229,3 +229,34 @@ def test_cleanup_command_prints_safe_controlled_error(monkeypatch, capsys) -> No
     assert exit_code == 1
     assert output["error"]["code"] == "cleanup_confirmation_invalid"
     assert output["privacy"]["response_body_logged"] is False
+
+
+def test_acquire_command_requires_and_forwards_policy_confirmation(monkeypatch, capsys) -> None:
+    monkeypatch.setattr(
+        cli,
+        "acquire_real_run",
+        lambda *, confirmation: {
+            "status": "acquired",
+            "confirmation_received": confirmation,
+            "privacy": {"response_body_logged": False},
+        },
+    )
+
+    exit_code = cli.main(["acquire-real-run", "--confirmation", "cfpb-local-120d-v1"])
+    output = json.loads(capsys.readouterr().out)
+
+    assert exit_code == 0
+    assert output["confirmation_received"] == "cfpb-local-120d-v1"
+
+
+def test_acquire_command_prints_safe_error(monkeypatch, capsys) -> None:
+    def fail(*, confirmation) -> None:
+        raise ExtractionError("real_acquisition_requires_clean_commit")
+
+    monkeypatch.setattr(cli, "acquire_real_run", fail)
+    exit_code = cli.main(["acquire-real-run", "--confirmation", "wrong"])
+    output = json.loads(capsys.readouterr().out)
+
+    assert exit_code == 1
+    assert output["error"]["code"] == "real_acquisition_requires_clean_commit"
+    assert output["privacy"]["response_body_logged"] is False

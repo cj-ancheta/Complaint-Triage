@@ -10,7 +10,7 @@ import subprocess
 import sys
 import uuid
 from collections.abc import Callable, Iterable, Mapping, Sequence
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
 from typing import Any
@@ -93,6 +93,8 @@ class PublishedShard:
     artifact_sha256: str
     artifact_byte_count: int
     returned_record_count: int
+    artifact_created: bool = field(default=False, compare=False, repr=False)
+    manifest_created: bool = field(default=False, compare=False, repr=False)
 
 
 @dataclass(frozen=True)
@@ -258,7 +260,7 @@ def publish_export_shard(
             raise ExtractionError("batch_manifest_schema_invalid", issue_count=len(batch_errors))
         manifest_relative = f"data/manifests/cfpb/{manifest['batch_id']}.json"
         manifest_path = (root / Path(*manifest_relative.split("/"))).resolve()
-        _atomic_json(manifest_path, manifest)
+        manifest_created = _atomic_json(manifest_path, manifest)
         return PublishedShard(
             ordinal=spec.ordinal,
             month=spec.month,
@@ -273,6 +275,8 @@ def publish_export_shard(
             artifact_sha256=digest,
             artifact_byte_count=byte_count,
             returned_record_count=observation["returned_record_count"],
+            artifact_created=created_artifact,
+            manifest_created=manifest_created,
         )
     except ExtractionError:
         if temp_path.exists():
@@ -345,7 +349,14 @@ def publish_run_manifest(
             "shard_byte_limit": SHARD_BYTE_LIMIT,
         },
         "database_volume": POSTGRES_VOLUME,
-        "shards": [asdict(shard) for shard in ordered],
+        "shards": [
+            {
+                key: value
+                for key, value in asdict(shard).items()
+                if key not in {"artifact_created", "manifest_created"}
+            }
+            for shard in ordered
+        ],
         "privacy": {"contains_row_values": False, "git_tracking_allowed": True},
     }
     schema = json.loads(RUN_SCHEMA_PATH.read_text(encoding="utf-8"))
@@ -637,7 +648,7 @@ def _validate_context(context: ExtractionContext) -> None:
         raise ExtractionError("retention_boundary_invalid")
 
 
-def _atomic_json(path: Path, value: dict[str, Any]) -> None:
+def _atomic_json(path: Path, value: dict[str, Any]) -> bool:
     path.parent.mkdir(parents=True, exist_ok=True)
     encoded = (
         json.dumps(value, indent=2, sort_keys=True, ensure_ascii=False, allow_nan=False).encode(
@@ -648,7 +659,7 @@ def _atomic_json(path: Path, value: dict[str, Any]) -> None:
     if path.exists():
         if path.read_bytes() != encoded:
             raise ExtractionError("manifest_identity_conflict")
-        return
+        return False
     temporary = path.with_name(f".{path.name}.{uuid.uuid4().hex}.tmp")
     try:
         with temporary.open("xb") as destination:
@@ -656,6 +667,7 @@ def _atomic_json(path: Path, value: dict[str, Any]) -> None:
             destination.flush()
             os.fsync(destination.fileno())
         os.replace(temporary, path)
+        return True
     finally:
         if temporary.exists():
             temporary.unlink()

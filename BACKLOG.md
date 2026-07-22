@@ -22,7 +22,7 @@ This backlog converts `SPEC.md` into bounded delivery issues. Status values are 
 | CT-107 | Implement staging transformations and quarantine reasons | complete | Versioned outcome contract and PostgreSQL acceptance/quarantine reconciliation tests |
 | CT-108 | Enforce approved retention on real batch manifests | complete | Approved version/expiry/window enforcement and 16-month export design |
 | CT-109 | Implement monthly streamed export and cleanup rehearsal | complete | Accepted tested writer, 16-shard run contract, 1 GiB shard cap, and safe cleanup evidence |
-| CT-110 | Acquire, ingest, stage, and profile first real run | pending | Reconciled real aggregate population report under ADR 0009 |
+| CT-110 | Acquire, ingest, stage, and profile first real run | in progress | Reconciled real aggregate population report under ADR 0009 |
 
 ## Phase 2: analytical dataset and baseline
 

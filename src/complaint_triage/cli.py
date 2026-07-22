@@ -14,6 +14,7 @@ from complaint_triage.analytical_population import (
 )
 from complaint_triage.cfpb_profile import ProfileError, fetch_cfpb_profile, safe_error_report
 from complaint_triage.db import DatabaseSettingsError
+from complaint_triage.live_extraction import acquire_real_run, safe_live_result
 from complaint_triage.raw_ingestion import (
     RawIngestionError,
     ingest_raw_batch,
@@ -70,6 +71,15 @@ def build_parser() -> argparse.ArgumentParser:
     cleanup_parser.add_argument("--run-manifest", type=Path, required=True)
     cleanup_parser.add_argument("--execute", action="store_true")
     cleanup_parser.add_argument("--confirmation")
+    acquire_parser = subcommands.add_parser(
+        "acquire-real-run",
+        help="Acquire the approved retained CFPB run from a clean commit.",
+    )
+    acquire_parser.add_argument(
+        "--confirmation",
+        required=True,
+        help="Must exactly match the accepted retention policy ID.",
+    )
     return parser
 
 
@@ -189,6 +199,15 @@ def main(argv: Sequence[str] | None = None) -> int:
                 else ExtractionError("cleanup_manifest_unreadable")
             )
             print(json.dumps(safe_extraction_error(controlled), indent=2, sort_keys=True))
+            return 1
+        print(json.dumps(report, indent=2, sort_keys=True))
+        return 0
+
+    if args.command == "acquire-real-run":
+        try:
+            report = acquire_real_run(confirmation=args.confirmation)
+        except ExtractionError as error:
+            print(json.dumps(safe_live_result(error), indent=2, sort_keys=True))
             return 1
         print(json.dumps(report, indent=2, sort_keys=True))
         return 0
