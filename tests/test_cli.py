@@ -1,6 +1,7 @@
 import json
 
 from complaint_triage import cli
+from complaint_triage.analytical_population import PopulationError
 from complaint_triage.cfpb_profile import ProfileError
 from complaint_triage.raw_ingestion import RawIngestionError
 from complaint_triage.staging import StagingError
@@ -149,3 +150,41 @@ def test_taxonomy_profile_command_returns_controlled_error(monkeypatch, capsys) 
     assert exit_code == 1
     assert output["error"] == {"code": "http_error", "http_status": 403}
     assert output["privacy"]["narratives_received"] is False
+
+
+def test_population_report_command_prints_aggregate_counts(monkeypatch, capsys) -> None:
+    monkeypatch.setattr(
+        cli,
+        "report_analytical_population",
+        lambda _batch_id: {
+            "status": "reported",
+            "counts": {
+                "input_record_count": 3,
+                "eligible_record_count": 2,
+                "excluded_record_count": 1,
+                "output_record_count": 3,
+            },
+            "privacy": {"narratives_in_report": False},
+        },
+    )
+
+    exit_code = cli.main(["report-population", "--batch-id", "cfpb-20260722T000000Z-aaaaaaaaaaaa"])
+    output = json.loads(capsys.readouterr().out)
+
+    assert exit_code == 0
+    assert output["counts"]["input_record_count"] == output["counts"]["output_record_count"]
+    assert output["privacy"]["narratives_in_report"] is False
+
+
+def test_population_report_command_returns_controlled_error(monkeypatch, capsys) -> None:
+    def fail(_batch_id: str) -> None:
+        raise PopulationError("staging_batch_not_found")
+
+    monkeypatch.setattr(cli, "report_analytical_population", fail)
+
+    exit_code = cli.main(["report-population", "--batch-id", "cfpb-20260722T000000Z-aaaaaaaaaaaa"])
+    output = json.loads(capsys.readouterr().out)
+
+    assert exit_code == 1
+    assert output["error"] == {"code": "staging_batch_not_found"}
+    assert output["privacy"]["narratives_in_report"] is False

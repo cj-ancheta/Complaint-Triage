@@ -268,9 +268,9 @@ or future row-level data.
 - [x] No ingestion or schema migration implemented.
 - [x] User approved the ADR and CT-105 diff on 2026-07-22.
 
-## CT-106 follow-up
+## Real-data retention follow-up
 
-CT-106 now proposes append-only raw ingestion with batch metadata and a disposable
-database test. It remains synthetic-only. Before any real response is retained,
-the open raw-artifact and database-row retention policy from CT-104 must be
-approved separately.
+ADR 0009 accepts local-only retention through 2026-11-19 with no backups. The
+database remains synthetic-only until CT-108 validates the policy on each batch
+and implements a verified cleanup workflow. At expiry, the entire project volume
+is removed so append-only row history is not selectively mutated.

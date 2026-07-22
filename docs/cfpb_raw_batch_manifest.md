@@ -306,11 +306,11 @@ runtime ingestion dependency is added.
 
 ## Retention boundary
 
-No production retention duration or deletion schedule is approved in CT-104.
-The manifest has `retention_policy_id`, but CT-106 must not persist a real raw
-artifact until a concrete policy identifier and local cleanup behavior are
-reviewed. The synthetic example uses
-`not-applicable-synthetic-fixture`.
+CT-104 originally deferred real-data retention. ADR 0009 now accepts policy
+`cfpb-local-120d-v1` through 2026-11-19. The existing manifest field can identify
+that policy, while CT-108 must add and validate the per-batch expiry and cleanup
+evidence before the first real artifact is acquired. The synthetic example
+continues to use `not-applicable-synthetic-fixture`.
 
 ## CT-104 acceptance checklist
 

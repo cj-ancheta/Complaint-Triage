@@ -4,6 +4,8 @@
 - Date: 2026-07-22
 - Decision owners: Charles Jr Ancheta and project maintainer
 - Scope: the first PostgreSQL raw-layer migration and loader
+- Retention update: ADR 0009 resolved the deferred policy on 2026-07-22;
+  technical enforcement remains scoped to CT-108
 
 ## Context
 

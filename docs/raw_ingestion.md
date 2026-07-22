@@ -118,16 +118,11 @@ CI runs this test against its own ephemeral PostgreSQL service. The committed CI
 credential is intentionally scoped to that disposable runner and is not a
 deployment secret.
 
-## Current boundary and next decision
+## Current boundary and next implementation
 
 Real CFPB manifests return `real_data_retention_policy_unapproved` even when they
-are otherwise valid. Before that changes, the project must approve and document:
-
-- which real artifacts and database rows are retained;
-- the retention duration and start event;
-- the deletion owner, command, verification, and audit evidence;
-- backup and derived-data behavior; and
-- how local development differs from a future deployed environment.
-
-The proposed CT-107 staging behavior uses only synthetic raw rows and does not
-cross that decision gate. See `docs/staging_transformations.md`.
+are otherwise valid. ADR 0009 now approves policy `cfpb-local-120d-v1` with an
+absolute 2026-11-19 deletion deadline, local-only storage, no backups, and a
+verified deletion record. The error remains intentionally active until CT-108
+implements and tests policy/expiry validation, allowed paths, bounded extraction,
+and the cleanup command. Approval alone does not weaken a technical control.

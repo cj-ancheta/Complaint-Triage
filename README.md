@@ -4,7 +4,7 @@ An educational portfolio project exploring how a human-in-the-loop NLP system ca
 
 ## Current status
 
-**Phase 2 is active; CT-201 taxonomy and modelling window are accepted.**
+**Phase 2 is active; CT-202 is accepted and real extraction is next.**
 
 The repository includes privacy-safe CFPB source and taxonomy profilers with
 mocked network and contract tests. On 22 July 2026, the aggregate-only taxonomy
@@ -15,6 +15,14 @@ accepted raw and staging layers remain
 synthetic-only and do not select a modelling population. No real source data has
 been ingested and no model has been trained. Any future metric must come from a
 versioned evaluation artifact before it appears here or in the portfolio.
+
+CT-202 implements an accepted, append-only eligibility report over staged
+rows. It applies the accepted taxonomy/window, identifies English narratives
+offline, records closed exclusion reasons and length metadata, and never copies
+narratives into the analytical schema. Current report evidence is synthetic only.
+ADR 0009 authorizes local retention for the first real extract through 19
+November 2026, but ingestion remains blocked until CT-108 implements and tests
+the retention and cleanup controls.
 
 ## Intended use
 
@@ -48,6 +56,9 @@ This project will not:
 - [Versioned staging transformation guide](docs/staging_transformations.md)
 - [CFPB taxonomy stability profile](docs/cfpb_taxonomy_stability.md)
 - [Accepted taxonomy and modelling-window ADR](docs/decisions/0007-proposed-taxonomy-window.md)
+- [Analytical population report](docs/analytical_population.md)
+- [Accepted analytical-population ADR](docs/decisions/0008-proposed-analytical-population.md)
+- [Local real-data retention ADR](docs/decisions/0009-local-real-data-retention.md)
 - [Architecture](docs/architecture.md)
 - [Learning log](docs/learning_log.md)
 
@@ -83,6 +94,13 @@ Run the aggregate-only taxonomy profiler:
 .\.venv\Scripts\python.exe -m complaint_triage profile-taxonomy
 ```
 
+Create an aggregate analytical-population report for a staged batch:
+
+```powershell
+.\.venv\Scripts\python.exe -m complaint_triage report-population `
+  --batch-id cfpb-YYYYMMDDTHHMMSSZ-aaaaaaaaaaaa
+```
+
 Start the local PostgreSQL service after copying `.env.example` to ignored
 `.env` and replacing its example password:
 
@@ -102,7 +120,7 @@ The Lovable React interface will live in a separate `complaint-triage-web` repos
 The planned source is the public CFPB Consumer Complaint Database. Raw complaint
 narratives, generated model artifacts, secrets, and local experiment stores are
 excluded from Git. CT-106 can load only explicit synthetic fixture batches; real
-raw ingestion stays disabled until a retention policy is approved.
+raw ingestion stays disabled until CT-108 enforces the approved ADR 0009 policy.
 
 ## License
 

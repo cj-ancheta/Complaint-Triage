@@ -7,6 +7,11 @@ import json
 from collections.abc import Sequence
 from pathlib import Path
 
+from complaint_triage.analytical_population import (
+    PopulationError,
+    report_analytical_population,
+    safe_population_error,
+)
 from complaint_triage.cfpb_profile import ProfileError, fetch_cfpb_profile, safe_error_report
 from complaint_triage.db import DatabaseSettingsError
 from complaint_triage.raw_ingestion import (
@@ -48,6 +53,11 @@ def build_parser() -> argparse.ArgumentParser:
         "profile-taxonomy",
         help="Run the fixed aggregate-only CFPB taxonomy stability profile.",
     )
+    population_parser = subcommands.add_parser(
+        "report-population",
+        help="Create a versioned aggregate analytical-population report.",
+    )
+    population_parser.add_argument("--batch-id", required=True, help="Staged raw batch ID.")
     return parser
 
 
@@ -121,6 +131,33 @@ def main(argv: Sequence[str] | None = None) -> int:
             report = fetch_taxonomy_profile()
         except TaxonomyProfileError as error:
             print(json.dumps(safe_taxonomy_error_report(error), indent=2, sort_keys=True))
+            return 1
+
+        print(json.dumps(report, indent=2, sort_keys=True))
+        return 0
+
+    if args.command == "report-population":
+        try:
+            report = report_analytical_population(args.batch_id)
+        except PopulationError as error:
+            print(json.dumps(safe_population_error(error), indent=2, sort_keys=True))
+            return 1
+        except DatabaseSettingsError:
+            print(
+                json.dumps(
+                    {
+                        "status": "error",
+                        "error": {"code": "database_configuration_invalid"},
+                        "privacy": {
+                            "narratives_logged": False,
+                            "narratives_in_report": False,
+                            "narratives_copied_to_analytical": False,
+                        },
+                    },
+                    indent=2,
+                    sort_keys=True,
+                )
+            )
             return 1
 
         print(json.dumps(report, indent=2, sort_keys=True))

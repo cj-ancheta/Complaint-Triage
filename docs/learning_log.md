@@ -397,3 +397,50 @@ and why 76% majority-class prevalence makes macro and per-class metrics essentia
 
 - Which analytical exclusions will CT-202 propose, and how much class attrition
   will they cause?
+
+---
+
+## Draft CT-202: versioned analytical population
+
+**Date:** 2026-07-22
+
+**What the AI generated**
+
+A shared accepted-taxonomy module; accepted population ADR; offline language
+detector dependency; pure eligibility rules; append-only analytical migration;
+streaming, idempotent database report; aggregate-only CLI output; operator guide;
+and unit plus real PostgreSQL tests. No temporal split, cross-batch duplicate
+rule, real-data result, or model was created.
+
+**How I verified it**
+
+Draft for Charles: review `docs/decisions/0008-proposed-analytical-population.md`,
+trace each rule through `src/complaint_triage/analytical_population.py`, run the
+documented command on an approved staged batch, and run the validation suite with
+`RUN_POSTGRES_TESTS=1`. The integration test forces rollback, then reconciles one
+eligible and four differently excluded synthetic rows, verifies replay, rejects
+an unknown reason, and rejects table mutation.
+
+**What can fail in production**
+
+Language identification can misclassify short or mixed text, the 170 MB compiled
+detector wheel may be unavailable on an unsupported platform, a large extract can
+take substantial CPU time, real filtering can leave rare classes with inadequate
+support, an upstream change can violate the staging contract, and multiple
+reason counts can be mistaken for mutually exclusive row counts.
+
+**What I can explain in an interview**
+
+Draft for Charles: the difference between staging quality and modelling
+eligibility; why every input receives a versioned outcome; why date/product checks
+precede language detection; why undetermined language fails closed; why narrative
+length is measured instead of filtered arbitrarily; how deferred foreign keys
+allow atomic streaming inserts; and why duplicate isolation belongs with the
+temporal split rather than this population filter.
+
+**Questions still open**
+
+- How should CT-108 encode the approved deadline and rehearse irreversible
+  cleanup before acquiring the first real bounded batch?
+- What temporal and duplicate-isolation options should CT-203 compare after the
+  population decision is accepted?

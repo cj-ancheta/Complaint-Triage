@@ -15,6 +15,7 @@ authors = [
 dependencies = [
   "alembic>=1.18.5,<1.19",
   "jsonschema>=4.23,<5",
+  "lingua-language-detector>=2.2,<2.3",
   "psycopg[binary]>=3.3.4,<3.4",
   "SQLAlchemy>=2.0.51,<2.1",
 ]

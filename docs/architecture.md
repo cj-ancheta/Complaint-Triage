@@ -34,16 +34,18 @@ This is a planned architecture, not a claim that the components already exist.
 ## Current implemented boundary
 
 The repository now includes the controlled CFPB source profiler, raw batch
-manifest contract, local PostgreSQL Compose service, first Alembic migration, and
-a proposed synthetic-only raw loader. The loader validates exact bytes and
+manifest contract, local PostgreSQL Compose service, and synthetic-only raw
+loader. The loader validates exact bytes and
 lineage before atomically inserting `raw.ingestion_batches` and
-`raw.complaints`. Database triggers enforce append-only behavior. Real-data
-loading is blocked until a retention policy is separately approved.
+`raw.complaints`. Database triggers enforce append-only behavior. ADR 0009
+approves bounded local retention, but real-data loading stays blocked until
+CT-108 implements and tests enforcement and cleanup.
 
-The proposed CT-107 staging layer adds versioned, append-only transformation
-batches and one accepted or quarantined outcome per raw row. It normalizes
-source-quality fields but deliberately preserves `product_raw`; modelling
-population, canonical taxonomy, and temporal rules remain undecided.
+The accepted CT-107 staging layer adds versioned, append-only transformation
+batches and one accepted or quarantined outcome per raw row. ADR 0007 fixes the
+current-form identity taxonomy and pre-2025 window. The accepted CT-202 analytical
+layer records one versioned eligibility outcome per staged row without copying
+narratives. Temporal split and cross-batch duplicate rules remain undecided.
 
 ## Architecture decisions
 
@@ -53,3 +55,6 @@ population, canonical taxonomy, and temporal rules remain undecided.
 - [ADR 0004: Local PostgreSQL with Docker Compose](decisions/0004-local-postgresql-compose.md)
 - [ADR 0005: Append-only raw ingestion through validated manifests](decisions/0005-append-only-raw-ingestion.md)
 - [ADR 0006: Versioned staging outcomes with explicit quarantine reasons](decisions/0006-versioned-staging-outcomes.md)
+- [ADR 0007: Current-form product taxonomy and pre-2025 window](decisions/0007-proposed-taxonomy-window.md)
+- [ADR 0008: Analytical population and exclusions](decisions/0008-proposed-analytical-population.md)
+- [ADR 0009: Local-only 120-day real-data retention](decisions/0009-local-real-data-retention.md)

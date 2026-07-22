@@ -11,6 +11,14 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import parse_qs, urlsplit
 from urllib.request import HTTPRedirectHandler, Request, build_opener
 
+from complaint_triage.taxonomy import (
+    CURRENT_PRODUCT_LABELS,
+    LEGACY_CHANGED_PRODUCT_LABELS,
+    MODELLING_WINDOW_END_EXCLUSIVE,
+    MODELLING_WINDOW_START,
+    TAXONOMY_EFFECTIVE_DATE,
+)
+
 CFPB_TAXONOMY_PROFILE_URL = (
     "https://www.consumerfinance.gov/data-research/consumer-complaints/"
     "search/api/v1/trends?date_received_min=2023-07-01&date_received_max=2025-01-01"
@@ -21,9 +29,8 @@ CFPB_TRENDS_PATH = "/data-research/consumer-complaints/search/api/v1/trends"
 MAX_RESPONSE_BYTES = 3_000_000
 DEFAULT_TIMEOUT_SECONDS = 20.0
 USER_AGENT = "complaint-triage-taxonomy-profile/0.1"
-TAXONOMY_EFFECTIVE_DATE = "2023-08-24"
-CANDIDATE_WINDOW_START = "2023-09-01"
-CANDIDATE_WINDOW_END_EXCLUSIVE = "2025-01-01"
+CANDIDATE_WINDOW_START = MODELLING_WINDOW_START
+CANDIDATE_WINDOW_END_EXCLUSIVE = MODELLING_WINDOW_END_EXCLUSIVE
 
 EXPECTED_QUERY = {
     "date_received_max": ["2025-01-01"],
@@ -33,30 +40,6 @@ EXPECTED_QUERY = {
     "trend_depth": ["100"],
     "trend_interval": ["month"],
 }
-
-CURRENT_PRODUCT_LABELS = frozenset(
-    {
-        "Checking or savings account",
-        "Credit card",
-        "Credit reporting or other personal consumer reports",
-        "Debt collection",
-        "Debt or credit management",
-        "Money transfer, virtual currency, or money service",
-        "Mortgage",
-        "Payday loan, title loan, personal loan, or advance loan",
-        "Prepaid card",
-        "Student loan",
-        "Vehicle loan or lease",
-    }
-)
-
-LEGACY_CHANGED_PRODUCT_LABELS = frozenset(
-    {
-        "Credit card or prepaid card",
-        "Credit reporting, credit repair services, or other personal consumer reports",
-        "Payday loan, title loan, or personal loan",
-    }
-)
 
 
 class ResponseLike(Protocol):
