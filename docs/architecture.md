@@ -33,23 +33,24 @@ This is a planned architecture, not a claim that the components already exist.
 
 ## Current implemented boundary
 
-The repository now includes the controlled CFPB source profiler, raw batch
-manifest contract, local PostgreSQL Compose service, and synthetic-only raw
-loader. The loader validates exact bytes and
-lineage before atomically inserting `raw.ingestion_batches` and
-`raw.complaints`. Database triggers enforce append-only behavior. ADR 0009
-approves bounded local retention, and CT-108 enforces it at the manifest
-boundary. CT-109 adds the fixed 16-month partition, preflight-count enforcement,
-run-scoped streamed hashing, iterative JSON inspection, atomic publication, and
-verified cleanup workflow. HTTP transport remains deliberately unavailable
-until CT-110 adds and verifies the narrow live adapter from this accepted clean
-checkpoint.
+The repository includes the controlled CFPB source profiler, raw batch manifest
+contract, local PostgreSQL Compose service, and exact-byte raw loader. The
+loader atomically inserts `raw.ingestion_batches` and `raw.complaints`, and
+database triggers enforce append-only behavior. ADR 0009 approves bounded local
+retention, and CT-108 enforces it at the manifest boundary. CT-109 adds the fixed
+16-month partition, preflight-count enforcement, run-scoped streamed hashing,
+iterative JSON inspection, atomic publication, and verified cleanup workflow.
+CT-110 adds the gated live adapter and reconciles the accepted retained run
+without exposing source rows in commit-safe evidence.
 
 The accepted CT-107 staging layer adds versioned, append-only transformation
 batches and one accepted or quarantined outcome per raw row. ADR 0007 fixes the
 current-form identity taxonomy and pre-2025 window. The accepted CT-202 analytical
 layer records one versioned eligibility outcome per staged row without copying
-narratives. Temporal split and cross-batch duplicate rules remain undecided.
+narratives. Accepted ADR 0010 fixes whole-month train, validation, and test
+boundaries plus a normalized SHA-256 duplicate rule. CT-203 adds append-only
+split runs and outcomes without copying narratives or complaint identifiers;
+real-run reconciliation remains the completion gate.
 
 ## Architecture decisions
 
@@ -62,3 +63,4 @@ narratives. Temporal split and cross-batch duplicate rules remain undecided.
 - [ADR 0007: Current-form product taxonomy and pre-2025 window](decisions/0007-proposed-taxonomy-window.md)
 - [ADR 0008: Analytical population and exclusions](decisions/0008-proposed-analytical-population.md)
 - [ADR 0009: Local-only 120-day real-data retention](decisions/0009-local-real-data-retention.md)
+- [ADR 0010: Temporal split and normalized duplicate isolation](decisions/0010-temporal-split-duplicate-isolation.md)

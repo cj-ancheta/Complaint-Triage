@@ -1,0 +1,149 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/cj-ancheta/Complaint-Triage/contracts/cfpb-temporal-split-manifest.schema.json",
+  "title": "CFPB temporal split manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "split_manifest_version",
+    "run_id",
+    "created_at_utc",
+    "source",
+    "versions",
+    "boundaries",
+    "counts",
+    "exclusion_reason_counts",
+    "split_counts",
+    "class_counts_by_split",
+    "checks",
+    "privacy"
+  ],
+  "properties": {
+    "split_manifest_version": { "const": "1.0.0" },
+    "run_id": {
+      "type": "string",
+      "pattern": "^cfpb-run-[0-9]{8}T[0-9]{6}Z-[0-9a-f]{12}$"
+    },
+    "created_at_utc": { "$ref": "#/$defs/utcTimestamp" },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "run_manifest_sha256",
+        "extraction_commit_sha",
+        "split_implementation_commit_sha"
+      ],
+      "properties": {
+        "run_manifest_sha256": { "$ref": "#/$defs/sha256" },
+        "extraction_commit_sha": { "$ref": "#/$defs/gitCommitSha" },
+        "split_implementation_commit_sha": { "$ref": "#/$defs/gitCommitSha" }
+      }
+    },
+    "versions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["staging_transformation", "analytical_population", "taxonomy", "split", "fingerprint"],
+      "properties": {
+        "staging_transformation": { "const": "1.1.0" },
+        "analytical_population": { "const": "1.0.0" },
+        "taxonomy": { "const": "cfpb-product-2023-08-24" },
+        "split": { "const": "1.0.0" },
+        "fingerprint": { "const": "nfc-casefold-whitespace-sha256-v1" }
+      }
+    },
+    "boundaries": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["window_start_inclusive", "train_end_exclusive", "validation_end_exclusive", "window_end_exclusive"],
+      "properties": {
+        "window_start_inclusive": { "const": "2023-09-01" },
+        "train_end_exclusive": { "const": "2024-09-01" },
+        "validation_end_exclusive": { "const": "2024-11-01" },
+        "window_end_exclusive": { "const": "2025-01-01" }
+      }
+    },
+    "counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["input_eligible_count", "included_record_count", "excluded_record_count", "output_record_count"],
+      "properties": {
+        "input_eligible_count": { "type": "integer", "minimum": 1 },
+        "included_record_count": { "type": "integer", "minimum": 1 },
+        "excluded_record_count": { "type": "integer", "minimum": 0 },
+        "output_record_count": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "exclusion_reason_counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["duplicate_same_label", "duplicate_label_conflict"],
+      "properties": {
+        "duplicate_same_label": { "type": "integer", "minimum": 0 },
+        "duplicate_label_conflict": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "split_counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["train", "validation", "test"],
+      "properties": {
+        "train": { "type": "integer", "minimum": 1 },
+        "validation": { "type": "integer", "minimum": 1 },
+        "test": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "class_counts_by_split": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["train", "validation", "test"],
+      "properties": {
+        "train": { "$ref": "#/$defs/classCounts" },
+        "validation": { "$ref": "#/$defs/classCounts" },
+        "test": { "$ref": "#/$defs/classCounts" }
+      }
+    },
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_population_reconciled",
+        "input_output_reconciled",
+        "dispositions_reconciled",
+        "assignments_reconciled",
+        "included_fingerprints_unique",
+        "split_dates_valid",
+        "all_splits_present"
+      ],
+      "properties": {
+        "source_population_reconciled": { "const": true },
+        "input_output_reconciled": { "const": true },
+        "dispositions_reconciled": { "const": true },
+        "assignments_reconciled": { "const": true },
+        "included_fingerprints_unique": { "const": true },
+        "split_dates_valid": { "const": true },
+        "all_splits_present": { "const": true }
+      }
+    },
+    "privacy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["contains_row_values", "contains_narratives", "contains_complaint_ids", "git_tracking_allowed"],
+      "properties": {
+        "contains_row_values": { "const": false },
+        "contains_narratives": { "const": false },
+        "contains_complaint_ids": { "const": false },
+        "git_tracking_allowed": { "const": true }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "gitCommitSha": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "utcTimestamp": { "type": "string", "format": "date-time", "pattern": "Z$" },
+    "classCounts": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": { "type": "integer", "minimum": 1 }
+    }
+  }
+}

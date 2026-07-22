@@ -30,7 +30,7 @@ This backlog converts `SPEC.md` into bounded delivery issues. Status values are 
 |---|---|---|---|
 | CT-201 | Profile taxonomy stability and propose modelling window | complete | Accepted ADR 0007: 11-label identity taxonomy and `2023-09-01 <= date_received < 2025-01-01` |
 | CT-202 | Define analytical population and exclusions | complete | Accepted ADR 0008 and tested versioned metadata-only population report |
-| CT-203 | Implement temporal split and duplicate isolation | pending | Split manifest and leakage tests |
+| CT-203 | Implement temporal split and duplicate isolation | in progress | Split manifest and leakage tests |
 | CT-204 | Implement majority baseline | pending | Reproducible baseline report |
 | CT-205 | Implement TF-IDF logistic-regression baseline | pending | Tracked training and evaluation run |
 | CT-206 | Produce per-class and temporal baseline error analysis | pending | Generated report with limitations |
@@ -48,5 +48,6 @@ fail-closed policy enforcement and an approved monthly export design. CT-109 is
 complete with an accepted network-disabled streamed writer, exact run contract,
 1 GiB shard cap, and dry-run-by-default cleanup rehearsal. CT-110 is complete:
 the accepted retained 16-shard run reconciles 979,995 inputs to 979,194 eligible
-and 801 excluded records, with zero staging quarantines. CT-203 is the next
-bounded issue.
+and 801 excluded records, with zero staging quarantines. CT-203 is in progress
+under accepted ADR 0010; it must reproduce the approved deduplicated temporal
+split and publish a reconciled metadata-only manifest before review.

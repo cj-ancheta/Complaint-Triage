@@ -8,6 +8,7 @@ from complaint_triage.real_extraction import ExtractionError
 from complaint_triage.real_run_report import RealRunReportError
 from complaint_triage.staging import StagingError
 from complaint_triage.taxonomy_profile import TaxonomyProfileError
+from complaint_triage.temporal_split import TemporalSplitError
 
 
 def test_profile_command_prints_safe_json(monkeypatch, capsys) -> None:
@@ -292,3 +293,42 @@ def test_real_run_report_command_prints_safe_error(monkeypatch, capsys) -> None:
     assert exit_code == 1
     assert output["error"]["code"] == "run_reconciliation_failed"
     assert output["privacy"]["narratives_in_report"] is False
+
+
+def test_temporal_split_command_prints_aggregate_result(monkeypatch, capsys) -> None:
+    monkeypatch.setattr(
+        cli,
+        "build_temporal_split",
+        lambda _path: {
+            "run_id": "cfpb-run-20260722T130728Z-aaaaaaaaaaaa",
+            "split_counts": {"train": 70, "validation": 15, "test": 15},
+            "privacy": {"contains_row_values": False},
+        },
+    )
+
+    exit_code = cli.main(
+        ["build-temporal-split", "--run-manifest", "data/manifests/cfpb/runs/run.json"]
+    )
+    output = json.loads(capsys.readouterr().out)
+
+    assert exit_code == 0
+    assert output["split_counts"] == {"train": 70, "validation": 15, "test": 15}
+    assert output["privacy"]["contains_row_values"] is False
+
+
+def test_temporal_split_command_prints_safe_error(monkeypatch, capsys) -> None:
+    def fail(_path) -> None:
+        raise TemporalSplitError("split_reconciliation_failed", failed_check_count=1)
+
+    monkeypatch.setattr(cli, "build_temporal_split", fail)
+    exit_code = cli.main(
+        ["build-temporal-split", "--run-manifest", "data/manifests/cfpb/runs/run.json"]
+    )
+    output = json.loads(capsys.readouterr().out)
+
+    assert exit_code == 1
+    assert output["error"] == {
+        "code": "split_reconciliation_failed",
+        "failed_check_count": 1,
+    }
+    assert output["privacy"]["narratives_logged"] is False

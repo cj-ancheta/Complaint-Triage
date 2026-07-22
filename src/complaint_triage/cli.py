@@ -36,6 +36,11 @@ from complaint_triage.taxonomy_profile import (
     fetch_taxonomy_profile,
     safe_taxonomy_error_report,
 )
+from complaint_triage.temporal_split import (
+    TemporalSplitError,
+    build_temporal_split,
+    safe_temporal_split_error,
+)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -90,6 +95,11 @@ def build_parser() -> argparse.ArgumentParser:
         help="Reconcile and publish an aggregate-only report for one real run.",
     )
     run_report_parser.add_argument("--run-manifest", type=Path, required=True)
+    split_parser = subcommands.add_parser(
+        "build-temporal-split",
+        help="Build the approved deduplicated temporal split for one real run.",
+    )
+    split_parser.add_argument("--run-manifest", type=Path, required=True)
     return parser
 
 
@@ -234,6 +244,24 @@ def main(argv: Sequence[str] | None = None) -> int:
                     safe_real_run_report_error(
                         RealRunReportError("database_configuration_invalid")
                     ),
+                    indent=2,
+                    sort_keys=True,
+                )
+            )
+            return 1
+        print(json.dumps(report, indent=2, sort_keys=True))
+        return 0
+
+    if args.command == "build-temporal-split":
+        try:
+            report = build_temporal_split(args.run_manifest)
+        except TemporalSplitError as error:
+            print(json.dumps(safe_temporal_split_error(error), indent=2, sort_keys=True))
+            return 1
+        except DatabaseSettingsError:
+            print(
+                json.dumps(
+                    safe_temporal_split_error(TemporalSplitError("database_configuration_invalid")),
                     indent=2,
                     sort_keys=True,
                 )
