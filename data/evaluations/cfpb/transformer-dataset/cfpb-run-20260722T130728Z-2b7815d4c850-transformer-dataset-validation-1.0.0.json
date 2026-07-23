@@ -1,0 +1,182 @@
+{
+  "checks": {
+    "dynamic_padding_checked": true,
+    "label_mapping_bijective": true,
+    "length_grouping_checked": true,
+    "maximum_length_enforced": true,
+    "no_classifier_trained": true,
+    "no_model_weights_loaded": true,
+    "no_rows_persisted": true,
+    "source_counts_reconcile": true,
+    "taxonomy_complete": true,
+    "test_accessed": false,
+    "train_shuffle_deterministic": true,
+    "validation_order_stable": true
+  },
+  "claims": {
+    "interpretation": "dataset_pipeline_validation_not_model_performance",
+    "portfolio_promotion_approved": false,
+    "predictive_performance_measured": false
+  },
+  "created_at_utc": "2026-07-23T18:42:51.994636Z",
+  "data": {
+    "allowed_splits": [
+      "train",
+      "validation"
+    ],
+    "feature_input": "consumer_complaint_narrative_only",
+    "id_to_label": {
+      "0": "Checking or savings account",
+      "1": "Credit card",
+      "10": "Vehicle loan or lease",
+      "2": "Credit reporting or other personal consumer reports",
+      "3": "Debt collection",
+      "4": "Debt or credit management",
+      "5": "Money transfer, virtual currency, or money service",
+      "6": "Mortgage",
+      "7": "Payday loan, title loan, personal loan, or advance loan",
+      "8": "Prepaid card",
+      "9": "Student loan"
+    },
+    "label_to_id": {
+      "Checking or savings account": 0,
+      "Credit card": 1,
+      "Credit reporting or other personal consumer reports": 2,
+      "Debt collection": 3,
+      "Debt or credit management": 4,
+      "Money transfer, virtual currency, or money service": 5,
+      "Mortgage": 6,
+      "Payday loan, title loan, personal loan, or advance loan": 7,
+      "Prepaid card": 8,
+      "Student loan": 9,
+      "Vehicle loan or lease": 10
+    },
+    "labels": [
+      "Checking or savings account",
+      "Credit card",
+      "Credit reporting or other personal consumer reports",
+      "Debt collection",
+      "Debt or credit management",
+      "Money transfer, virtual currency, or money service",
+      "Mortgage",
+      "Payday loan, title loan, personal loan, or advance loan",
+      "Prepaid card",
+      "Student loan",
+      "Vehicle loan or lease"
+    ],
+    "queried_splits": [
+      "train",
+      "validation"
+    ],
+    "test_accessed": false
+  },
+  "pipeline": {
+    "add_special_tokens": true,
+    "dynamic_padding": "longest_in_caller_batch",
+    "fast_tokenizer": true,
+    "length_grouping": {
+      "batch_order": "seeded_shuffle",
+      "kind": "bounded_pool_sort",
+      "pool_size": 1024,
+      "resampling": false
+    },
+    "maximum_length": 384,
+    "model_id": "microsoft/MiniLM-L12-H384-uncased",
+    "pad_to_multiple_of": 8,
+    "revision": "9a201d7b3ebebc5feabf9fbb4b3a4ec5d3f2440d",
+    "stored_padding": false,
+    "tokenize_batch_size": 256,
+    "tokenizer_class": "BertTokenizer",
+    "training_shuffle": {
+      "base_seed": 42,
+      "buffer_size": 8192,
+      "epoch_seed_rule": "base_seed_plus_epoch",
+      "kind": "bounded_buffer",
+      "resampling": false
+    },
+    "truncation": true,
+    "validation_collation_batch_size": 32,
+    "validation_order": "deterministic_length_grouped_batches"
+  },
+  "privacy": {
+    "contains_complaint_ids": false,
+    "contains_narratives": false,
+    "contains_row_values": false,
+    "contains_token_ids": false,
+    "contains_vocabulary": false,
+    "report_git_tracking_allowed": true,
+    "tokenized_dataset_persisted": false
+  },
+  "report_version": "transformer-dataset-validation-1.0.0",
+  "run_id": "cfpb-run-20260722T130728Z-2b7815d4c850",
+  "software": {
+    "huggingface_hub": "1.24.0",
+    "python": "3.12.10",
+    "tokenizers": "0.22.2",
+    "transformers": "5.14.1"
+  },
+  "source": {
+    "dataset_implementation_commit_sha": "758d7be2b5f9c46cbda686a94a182994d9e25526",
+    "split_manifest_sha256": "8685eefd10d764d813dee2891e930323c22592850d537b0571956f390afe554b",
+    "split_version": "1.0.0"
+  },
+  "splits": {
+    "train": {
+      "class_counts": {
+        "Checking or savings account": 27501,
+        "Credit card": 30122,
+        "Credit reporting or other personal consumer reports": 248062,
+        "Debt collection": 41325,
+        "Debt or credit management": 1173,
+        "Money transfer, virtual currency, or money service": 9462,
+        "Mortgage": 12136,
+        "Payday loan, title loan, personal loan, or advance loan": 4751,
+        "Prepaid card": 3830,
+        "Student loan": 9150,
+        "Vehicle loan or lease": 7052
+      },
+      "collation_batch_count": 12331,
+      "counts_reconcile": true,
+      "elapsed_seconds": 73.91,
+      "maximum_padded_length": 384,
+      "maximum_unpadded_length": 384,
+      "minimum_padded_length": 24,
+      "minimum_unpadded_length": 3,
+      "padded_token_slots": 86334208,
+      "padding_share": 0.038157,
+      "padding_token_count": 3294264,
+      "real_token_count": 83039944,
+      "record_count": 394564
+    },
+    "validation": {
+      "class_counts": {
+        "Checking or savings account": 4961,
+        "Credit card": 5195,
+        "Credit reporting or other personal consumer reports": 54012,
+        "Debt collection": 8784,
+        "Debt or credit management": 227,
+        "Money transfer, virtual currency, or money service": 1684,
+        "Mortgage": 2036,
+        "Payday loan, title loan, personal loan, or advance loan": 905,
+        "Prepaid card": 452,
+        "Student loan": 1481,
+        "Vehicle loan or lease": 1255
+      },
+      "collation_batch_count": 2531,
+      "counts_reconcile": true,
+      "elapsed_seconds": 16.654,
+      "maximum_padded_length": 384,
+      "maximum_unpadded_length": 384,
+      "minimum_padded_length": 24,
+      "minimum_unpadded_length": 8,
+      "padded_token_slots": 18556160,
+      "padding_share": 0.036064,
+      "padding_token_count": 669217,
+      "real_token_count": 17886943,
+      "record_count": 80992
+    }
+  },
+  "timing": {
+    "total_elapsed_seconds": 90.565
+  }
+}

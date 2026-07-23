@@ -60,6 +60,27 @@ timing, software versions, and boolean checks.
 An idempotent replay validates and returns the existing report without reading
 the database or tokenizer again.
 
+## First real-run evidence
+
+The authoritative run uses implementation commit
+`758d7be2b5f9c46cbda686a94a182994d9e25526`. It reconciles 394,564 training
+rows and 80,992 validation rows across the accepted eleven-label mapping. Test
+access, model-weight loading, classifier training, and tokenized-dataset
+persistence all remained false.
+
+| Split | Rows | Check batches | Real tokens | Padded slots | Padding share | Seconds |
+|---|---:|---:|---:|---:|---:|---:|
+| Train | 394,564 | 12,331 | 83,039,944 | 86,334,208 | 3.8157% | 73.910 |
+| Validation | 80,992 | 2,531 | 17,886,943 | 18,556,160 | 3.6064% | 16.654 |
+
+All check batches stay at or below 384 tokens and all padded lengths are
+multiples of eight. The complete report passes its closed JSON Schema, all
+class totals reconcile, and an idempotent replay preserves SHA-256
+`c1ce47ba80723463171f892812eacd9351633a8422f18ee344e584f879bd09f7`.
+
+These are pipeline-correctness and padding-efficiency measurements, not
+training throughput or predictive-performance results.
+
 ## Training integration
 
 CT-303 can call `stream_tokenized_split(..., split="train", epoch=n)` to obtain
