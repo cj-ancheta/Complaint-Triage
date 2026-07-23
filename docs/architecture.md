@@ -57,7 +57,7 @@ evidence. Accepted ADR 0011 fixes CT-205's train-only TF-IDF vocabulary,
 four-candidate sparse logistic search, validation-only selection rule, and
 local-only fitted-artifact boundary. The real run selected the converged
 unweighted `C=1.0` candidate and retained its governed pipeline locally; the
-aggregate validation evidence is awaiting acceptance and test remains untouched.
+aggregate validation evidence is accepted and test remains untouched.
 
 ## Architecture decisions
 

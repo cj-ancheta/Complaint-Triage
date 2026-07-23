@@ -90,7 +90,7 @@ products more influence. Worst-class recall exposes a route the averages might
 hide. None of these validation metrics is a final test claim because validation
 was used to choose the model.
 
-## Measured review evidence
+## Accepted measured evidence
 
 The real run from implementation commit `995c85f` reconciled 394,564 training
 and 80,992 validation rows. The vectorizer reached its 200,000-feature cap with
@@ -133,7 +133,7 @@ operational limitation: the model still misses most examples of the rarest
 route. CT-206 should investigate this failure without changing CT-205's model
 or consuming test outcomes.
 
-The review report is
+The accepted issue report is
 `data/evaluations/cfpb/tfidf-logreg/cfpb-run-20260722T130728Z-2b7815d4c850-tfidf-logreg-selection-1.0.0.json`.
 The selected local pipeline is 19,625,755 bytes with SHA-256
 `4989984c061d368bb83e1a5e8e48e1d88189a86d7f2bb463d958a70b4dd839ff`.

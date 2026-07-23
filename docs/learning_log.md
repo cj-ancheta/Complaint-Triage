@@ -671,12 +671,11 @@ baseline is a floor rather than a candidate for deployment.
 
 ---
 
-## CT-205 draft: validation-only TF-IDF logistic regression
+## CT-205: validation-only TF-IDF logistic regression
 
 **Date:** 2026-07-23
 
-**Status:** Draft until the real smoke and four-candidate run are reviewed and
-accepted.
+**Status:** Accepted by Charles on 2026-07-23.
 
 **What the AI generated**
 

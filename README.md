@@ -4,7 +4,7 @@ An educational portfolio project exploring how a human-in-the-loop NLP system ca
 
 ## Current status
 
-**Phase 2 is active; CT-205 aggregate evidence is in review.**
+**Phase 2 is active; CT-205 is accepted and CT-206 is next.**
 
 The repository includes privacy-safe CFPB source and taxonomy profilers with
 mocked network and contract tests. On 22 July 2026, the aggregate-only taxonomy
@@ -32,9 +32,9 @@ evidence; no model metric is approved as a portfolio claim.
 ADR 0011 accepts CT-205's fixed train-only TF-IDF representation, four logistic
 candidates, validation-only selection rule, untouched-test boundary, and
 local-only fitted artifact. Real CT-205 training evidence is not yet accepted.
-The completed validation-only run selected the converged `c1p0-unweighted`
-candidate; its aggregate report is under review and no test or portfolio metric
-has been approved.
+The accepted validation-only run selected the converged `c1p0-unweighted`
+candidate. Its aggregate issue evidence is accepted; test remains untouched and
+no metric has been approved as a public portfolio claim.
 
 ## Intended use
 
