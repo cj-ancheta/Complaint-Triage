@@ -4,7 +4,7 @@ An educational portfolio project exploring how a human-in-the-loop NLP system ca
 
 ## Current status
 
-**Phase 2 is active; CT-205 is accepted and CT-206 is in review.**
+**Phase 2 is complete; the Phase 3 transition is approved.**
 
 The repository includes privacy-safe CFPB source and taxonomy profilers with
 mocked network and contract tests. On 22 July 2026, the aggregate-only taxonomy

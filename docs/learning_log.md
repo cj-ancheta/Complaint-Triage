@@ -724,11 +724,11 @@ its public report is aggregate-only.
 
 ---
 
-## CT-206 draft: validation-only baseline error analysis
+## CT-206: validation-only baseline error analysis
 
 **Date:** 2026-07-23
 
-**Status:** Draft until the real aggregate report is reviewed and accepted.
+**Status:** Accepted by Charles on 2026-07-23.
 
 **What the AI generated**
 

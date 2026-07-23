@@ -61,8 +61,9 @@ aggregate validation evidence is accepted and test remains untouched.
 CT-206 adds a validation-only diagnostic layer over the frozen selected
 pipeline. It publishes closed aggregate class, confusion, month, length, and
 rarity slices without retaining row-level predictions or accessing test.
-The real CT-206 aggregate report reproduces the accepted validation metrics and
-is awaiting review; it does not change the selected model or public claims.
+The accepted real CT-206 aggregate report reproduces the accepted validation
+metrics; it does not change the selected model or public claims. Charles
+approved transition into Phase 3 compact-transformer work on 2026-07-23.
 
 ## Architecture decisions
 

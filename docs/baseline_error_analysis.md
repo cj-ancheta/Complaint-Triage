@@ -106,7 +106,7 @@ Validation was already used to select the CT-205 candidate. These metrics are
 therefore useful for diagnosis but are not an unbiased final estimate. Test
 remains reserved for the later once-only final comparison gate.
 
-## Measured review evidence
+## Accepted measured evidence
 
 The real CT-206 run from implementation commit `6f13507` scored all 80,992
 validation rows in 21 seconds. It reproduced CT-205 exactly: 9,420 errors,
@@ -165,7 +165,7 @@ Rare-class precision is not the central problem; recall is. The rare/common
 macro-F1 gap is 0.379088. CT-206 describes that limitation but does not reopen
 the accepted CT-205 search or select a new weighting rule.
 
-The review report is
+The accepted issue report is
 `data/evaluations/cfpb/error-analysis/cfpb-run-20260722T130728Z-2b7815d4c850-baseline-error-analysis-1.0.0.json`.
 
 ## Run the command
