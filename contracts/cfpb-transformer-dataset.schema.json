@@ -1,0 +1,159 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/cj-ancheta/Complaint-Triage/contracts/cfpb-transformer-dataset.schema.json",
+  "title": "CFPB transformer dataset-pipeline validation report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["report_version", "run_id", "created_at_utc", "source", "data", "pipeline", "splits", "timing", "software", "checks", "claims", "privacy"],
+  "properties": {
+    "report_version": { "const": "transformer-dataset-validation-1.0.0" },
+    "run_id": { "type": "string", "pattern": "^cfpb-run-[0-9]{8}T[0-9]{6}Z-[0-9a-f]{12}$" },
+    "created_at_utc": { "$ref": "#/$defs/utcTimestamp" },
+    "source": {
+      "type": "object", "additionalProperties": false,
+      "required": ["split_manifest_sha256", "split_version", "dataset_implementation_commit_sha"],
+      "properties": {
+        "split_manifest_sha256": { "$ref": "#/$defs/sha256" },
+        "split_version": { "const": "1.0.0" },
+        "dataset_implementation_commit_sha": { "$ref": "#/$defs/gitCommitSha" }
+      }
+    },
+    "data": {
+      "type": "object", "additionalProperties": false,
+      "required": ["feature_input", "allowed_splits", "queried_splits", "test_accessed", "labels", "label_to_id", "id_to_label"],
+      "properties": {
+        "feature_input": { "const": "consumer_complaint_narrative_only" },
+        "allowed_splits": { "const": ["train", "validation"] },
+        "queried_splits": { "const": ["train", "validation"] },
+        "test_accessed": { "const": false },
+        "labels": { "$ref": "#/$defs/labels" },
+        "label_to_id": {
+          "type": "object", "minProperties": 11, "maxProperties": 11,
+          "additionalProperties": { "type": "integer", "minimum": 0, "maximum": 10 }
+        },
+        "id_to_label": {
+          "type": "object", "minProperties": 11, "maxProperties": 11,
+          "propertyNames": { "pattern": "^(0|1|2|3|4|5|6|7|8|9|10)$" },
+          "additionalProperties": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "pipeline": {
+      "type": "object", "additionalProperties": false,
+      "required": ["model_id", "revision", "tokenizer_class", "fast_tokenizer", "maximum_length", "add_special_tokens", "truncation", "stored_padding", "dynamic_padding", "pad_to_multiple_of", "tokenize_batch_size", "validation_collation_batch_size", "training_shuffle", "validation_order"],
+      "properties": {
+        "model_id": { "const": "microsoft/MiniLM-L12-H384-uncased" },
+        "revision": { "const": "9a201d7b3ebebc5feabf9fbb4b3a4ec5d3f2440d" },
+        "tokenizer_class": { "type": "string", "minLength": 1 },
+        "fast_tokenizer": { "const": true },
+        "maximum_length": { "const": 384 },
+        "add_special_tokens": { "const": true },
+        "truncation": { "const": true },
+        "stored_padding": { "const": false },
+        "dynamic_padding": { "const": "longest_in_caller_batch" },
+        "pad_to_multiple_of": { "const": 8 },
+        "tokenize_batch_size": { "const": 256 },
+        "validation_collation_batch_size": { "const": 32 },
+        "training_shuffle": {
+          "type": "object", "additionalProperties": false,
+          "required": ["kind", "buffer_size", "base_seed", "epoch_seed_rule", "resampling"],
+          "properties": {
+            "kind": { "const": "bounded_buffer" },
+            "buffer_size": { "const": 8192 },
+            "base_seed": { "const": 42 },
+            "epoch_seed_rule": { "const": "base_seed_plus_epoch" },
+            "resampling": { "const": false }
+          }
+        },
+        "validation_order": { "const": "canonical_source_order" }
+      }
+    },
+    "splits": {
+      "type": "object", "additionalProperties": false,
+      "required": ["train", "validation"],
+      "properties": {
+        "train": { "$ref": "#/$defs/split" },
+        "validation": { "$ref": "#/$defs/split" }
+      }
+    },
+    "timing": {
+      "type": "object", "additionalProperties": false,
+      "required": ["total_elapsed_seconds"],
+      "properties": { "total_elapsed_seconds": { "type": "number", "minimum": 0 } }
+    },
+    "software": {
+      "type": "object", "additionalProperties": false,
+      "required": ["python", "transformers", "tokenizers", "huggingface_hub"],
+      "properties": {
+        "python": { "type": "string", "minLength": 1 },
+        "transformers": { "type": "string", "minLength": 1 },
+        "tokenizers": { "type": "string", "minLength": 1 },
+        "huggingface_hub": { "type": "string", "minLength": 1 }
+      }
+    },
+    "checks": {
+      "type": "object", "additionalProperties": false,
+      "required": ["source_counts_reconcile", "taxonomy_complete", "label_mapping_bijective", "maximum_length_enforced", "dynamic_padding_checked", "train_shuffle_deterministic", "validation_order_stable", "test_accessed", "no_rows_persisted", "no_model_weights_loaded", "no_classifier_trained"],
+      "properties": {
+        "source_counts_reconcile": { "const": true },
+        "taxonomy_complete": { "const": true },
+        "label_mapping_bijective": { "const": true },
+        "maximum_length_enforced": { "const": true },
+        "dynamic_padding_checked": { "const": true },
+        "train_shuffle_deterministic": { "const": true },
+        "validation_order_stable": { "const": true },
+        "test_accessed": { "const": false },
+        "no_rows_persisted": { "const": true },
+        "no_model_weights_loaded": { "const": true },
+        "no_classifier_trained": { "const": true }
+      }
+    },
+    "claims": {
+      "type": "object", "additionalProperties": false,
+      "required": ["portfolio_promotion_approved", "predictive_performance_measured", "interpretation"],
+      "properties": {
+        "portfolio_promotion_approved": { "const": false },
+        "predictive_performance_measured": { "const": false },
+        "interpretation": { "const": "dataset_pipeline_validation_not_model_performance" }
+      }
+    },
+    "privacy": {
+      "type": "object", "additionalProperties": false,
+      "required": ["contains_row_values", "contains_narratives", "contains_complaint_ids", "contains_token_ids", "contains_vocabulary", "tokenized_dataset_persisted", "report_git_tracking_allowed"],
+      "properties": {
+        "contains_row_values": { "const": false },
+        "contains_narratives": { "const": false },
+        "contains_complaint_ids": { "const": false },
+        "contains_token_ids": { "const": false },
+        "contains_vocabulary": { "const": false },
+        "tokenized_dataset_persisted": { "const": false },
+        "report_git_tracking_allowed": { "const": true }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "gitCommitSha": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "utcTimestamp": { "type": "string", "format": "date-time", "pattern": "Z$" },
+    "labels": { "type": "array", "minItems": 11, "maxItems": 11, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+    "classCounts": {
+      "type": "object", "minProperties": 11, "maxProperties": 11,
+      "additionalProperties": { "type": "integer", "minimum": 1 }
+    },
+    "split": {
+      "type": "object", "additionalProperties": false,
+      "required": ["record_count", "class_counts", "collation_batch_count", "minimum_unpadded_length", "maximum_unpadded_length", "minimum_padded_length", "maximum_padded_length", "counts_reconcile", "elapsed_seconds"],
+      "properties": {
+        "record_count": { "type": "integer", "minimum": 1 },
+        "class_counts": { "$ref": "#/$defs/classCounts" },
+        "collation_batch_count": { "type": "integer", "minimum": 1 },
+        "minimum_unpadded_length": { "type": "integer", "minimum": 1, "maximum": 384 },
+        "maximum_unpadded_length": { "type": "integer", "minimum": 1, "maximum": 384 },
+        "minimum_padded_length": { "type": "integer", "minimum": 8, "maximum": 384, "multipleOf": 8 },
+        "maximum_padded_length": { "type": "integer", "minimum": 8, "maximum": 384, "multipleOf": 8 },
+        "counts_reconcile": { "const": true },
+        "elapsed_seconds": { "type": "number", "minimum": 0 }
+      }
+    }
+  }
+}

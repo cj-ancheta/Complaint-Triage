@@ -12,6 +12,7 @@ from complaint_triage.staging import StagingError
 from complaint_triage.taxonomy_profile import TaxonomyProfileError
 from complaint_triage.temporal_split import TemporalSplitError
 from complaint_triage.tfidf_logreg import TfidfLogregError
+from complaint_triage.transformer_dataset import TransformerDatasetError
 from complaint_triage.transformer_token_profile import TransformerTokenProfileError
 
 
@@ -477,3 +478,34 @@ def test_transformer_token_profile_command_prints_safe_error(monkeypatch, capsys
     assert exit_code == 1
     assert output["error"] == {"code": "token_profile_revision_mismatch"}
     assert output["privacy"]["token_ids_logged"] is False
+
+
+def test_transformer_dataset_command_prints_aggregate_result(monkeypatch, capsys) -> None:
+    monkeypatch.setattr(
+        cli,
+        "validate_transformer_dataset",
+        lambda path: {
+            "report_version": "transformer-dataset-validation-1.0.0",
+            "data": {"allowed_splits": ["train", "validation"], "test_accessed": False},
+        },
+    )
+
+    exit_code = cli.main(["validate-transformer-dataset", "--split-manifest", "split.json"])
+    output = json.loads(capsys.readouterr().out)
+
+    assert exit_code == 0
+    assert output["data"]["test_accessed"] is False
+
+
+def test_transformer_dataset_command_prints_safe_error(monkeypatch, capsys) -> None:
+    def fail(path):
+        raise TransformerDatasetError("transformer_dataset_split_forbidden")
+
+    monkeypatch.setattr(cli, "validate_transformer_dataset", fail)
+
+    exit_code = cli.main(["validate-transformer-dataset", "--split-manifest", "split.json"])
+    output = json.loads(capsys.readouterr().out)
+
+    assert exit_code == 1
+    assert output["error"] == {"code": "transformer_dataset_split_forbidden"}
+    assert output["privacy"]["narratives_logged"] is False
