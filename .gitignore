@@ -1,4 +1,5 @@
 .venv/
+.venv-transformer/
 __pycache__/
 *.py[cod]
 *.egg-info/
@@ -19,6 +20,7 @@ data/raw/
 data/interim/
 data/processed/
 artifacts/
+data/model_cache/
 mlruns/
 *.joblib
 *.pkl
@@ -29,4 +31,3 @@ mlruns/
 .vscode/
 .DS_Store
 Thumbs.db
-

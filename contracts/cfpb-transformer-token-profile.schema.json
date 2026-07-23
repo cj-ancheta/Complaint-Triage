@@ -1,0 +1,184 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/cj-ancheta/Complaint-Triage/contracts/cfpb-transformer-token-profile.schema.json",
+  "title": "CFPB training-only transformer token-length profile",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["report_version", "run_id", "created_at_utc", "source", "data", "tokenizer", "measurement", "software", "checks", "decision", "claims", "privacy"],
+  "properties": {
+    "report_version": { "const": "tokenizer-profile-1.0.0" },
+    "run_id": { "type": "string", "pattern": "^cfpb-run-[0-9]{8}T[0-9]{6}Z-[0-9a-f]{12}$" },
+    "created_at_utc": { "$ref": "#/$defs/utcTimestamp" },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["split_manifest_sha256", "split_version", "profiling_implementation_commit_sha"],
+      "properties": {
+        "split_manifest_sha256": { "$ref": "#/$defs/sha256" },
+        "split_version": { "const": "1.0.0" },
+        "profiling_implementation_commit_sha": { "$ref": "#/$defs/gitCommitSha" }
+      }
+    },
+    "data": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["feature_input", "profiled_split", "queried_splits", "train_record_count", "validation_accessed", "test_accessed", "labels"],
+      "properties": {
+        "feature_input": { "const": "consumer_complaint_narrative_only" },
+        "profiled_split": { "const": "train" },
+        "queried_splits": { "const": ["train"] },
+        "train_record_count": { "type": "integer", "minimum": 1 },
+        "validation_accessed": { "const": false },
+        "test_accessed": { "const": false },
+        "labels": { "$ref": "#/$defs/labels" }
+      }
+    },
+    "tokenizer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["model_id", "revision", "tokenizer_class", "config_class", "fast", "vocabulary_size", "special_tokens_per_single_sequence", "model_max_position_embeddings", "hidden_size", "hidden_layers", "add_special_tokens", "truncation_during_measurement", "padding_during_measurement", "batch_size"],
+      "properties": {
+        "model_id": { "const": "microsoft/MiniLM-L12-H384-uncased" },
+        "revision": { "const": "9a201d7b3ebebc5feabf9fbb4b3a4ec5d3f2440d" },
+        "tokenizer_class": { "type": "string", "minLength": 1 },
+        "config_class": { "type": "string", "minLength": 1 },
+        "fast": { "const": true },
+        "vocabulary_size": { "type": "integer", "minimum": 1 },
+        "special_tokens_per_single_sequence": { "type": "integer", "minimum": 1 },
+        "model_max_position_embeddings": { "const": 512 },
+        "hidden_size": { "type": "integer", "minimum": 1 },
+        "hidden_layers": { "type": "integer", "minimum": 1 },
+        "add_special_tokens": { "const": true },
+        "truncation_during_measurement": { "const": false },
+        "padding_during_measurement": { "const": false },
+        "batch_size": { "const": 256 }
+      }
+    },
+    "measurement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["quantile_method", "candidate_maximum_lengths", "elapsed_seconds", "overall", "by_class"],
+      "properties": {
+        "quantile_method": { "const": "nearest_rank" },
+        "candidate_maximum_lengths": { "const": [128, 256, 384, 512] },
+        "elapsed_seconds": { "type": "number", "minimum": 0 },
+        "overall": { "$ref": "#/$defs/distribution" },
+        "by_class": {
+          "type": "object",
+          "minProperties": 11,
+          "maxProperties": 11,
+          "additionalProperties": { "$ref": "#/$defs/distribution" }
+        }
+      }
+    },
+    "software": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["python", "transformers", "tokenizers", "huggingface_hub"],
+      "properties": {
+        "python": { "type": "string", "minLength": 1 },
+        "transformers": { "type": "string", "minLength": 1 },
+        "tokenizers": { "type": "string", "minLength": 1 },
+        "huggingface_hub": { "type": "string", "minLength": 1 }
+      }
+    },
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_counts_reconcile", "taxonomy_complete", "tokenizer_revision_pinned", "train_only_query", "validation_accessed", "test_accessed", "no_model_weights_loaded", "no_classifier_trained"],
+      "properties": {
+        "source_counts_reconcile": { "const": true },
+        "taxonomy_complete": { "const": true },
+        "tokenizer_revision_pinned": { "const": true },
+        "train_only_query": { "const": true },
+        "validation_accessed": { "const": false },
+        "test_accessed": { "const": false },
+        "no_model_weights_loaded": { "const": true },
+        "no_classifier_trained": { "const": true }
+      }
+    },
+    "decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["maximum_length_selected", "requires_owner_approval", "next_gate"],
+      "properties": {
+        "maximum_length_selected": { "const": false },
+        "requires_owner_approval": { "const": true },
+        "next_gate": { "const": "select_maximum_length_before_CT-302" }
+      }
+    },
+    "claims": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["portfolio_promotion_approved", "predictive_performance_measured", "interpretation"],
+      "properties": {
+        "portfolio_promotion_approved": { "const": false },
+        "predictive_performance_measured": { "const": false },
+        "interpretation": { "const": "training_input_retention_profile_not_model_performance" }
+      }
+    },
+    "privacy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["contains_row_values", "contains_narratives", "contains_complaint_ids", "contains_token_ids", "contains_vocabulary", "cache_contains_governed_vocabulary", "cache_git_tracking_allowed", "report_git_tracking_allowed"],
+      "properties": {
+        "contains_row_values": { "const": false },
+        "contains_narratives": { "const": false },
+        "contains_complaint_ids": { "const": false },
+        "contains_token_ids": { "const": false },
+        "contains_vocabulary": { "const": false },
+        "cache_contains_governed_vocabulary": { "const": true },
+        "cache_git_tracking_allowed": { "const": false },
+        "report_git_tracking_allowed": { "const": true }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "gitCommitSha": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "utcTimestamp": { "type": "string", "format": "date-time", "pattern": "Z$" },
+    "labels": { "type": "array", "minItems": 11, "maxItems": 11, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+    "quantiles": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["p50", "p75", "p90", "p95", "p99"],
+      "properties": {
+        "p50": { "type": "integer", "minimum": 1 },
+        "p75": { "type": "integer", "minimum": 1 },
+        "p90": { "type": "integer", "minimum": 1 },
+        "p95": { "type": "integer", "minimum": 1 },
+        "p99": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "candidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["maximum_length", "records_exceeding", "share_records_exceeding", "retained_token_ratio"],
+      "properties": {
+        "maximum_length": { "enum": [128, 256, 384, 512] },
+        "records_exceeding": { "type": "integer", "minimum": 0 },
+        "share_records_exceeding": { "type": "number", "minimum": 0, "maximum": 1 },
+        "retained_token_ratio": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "distribution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["record_count", "token_count", "minimum", "maximum", "mean", "quantiles", "candidate_lengths"],
+      "properties": {
+        "record_count": { "type": "integer", "minimum": 1 },
+        "token_count": { "type": "integer", "minimum": 1 },
+        "minimum": { "type": "integer", "minimum": 1 },
+        "maximum": { "type": "integer", "minimum": 1 },
+        "mean": { "type": "number", "minimum": 1 },
+        "quantiles": { "$ref": "#/$defs/quantiles" },
+        "candidate_lengths": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "items": { "$ref": "#/$defs/candidate" }
+        }
+      }
+    }
+  }
+}

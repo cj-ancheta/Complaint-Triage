@@ -57,6 +57,11 @@ from complaint_triage.tfidf_logreg import (
     smoke_tfidf_logreg,
     train_tfidf_logreg,
 )
+from complaint_triage.transformer_token_profile import (
+    TransformerTokenProfileError,
+    profile_transformer_tokens,
+    safe_transformer_token_profile_error,
+)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -136,6 +141,11 @@ def build_parser() -> argparse.ArgumentParser:
         help="Produce validation-only aggregate error analysis for the selected baseline.",
     )
     error_analysis_parser.add_argument("--model-report", type=Path, required=True)
+    token_profile_parser = subcommands.add_parser(
+        "profile-transformer-tokens",
+        help="Profile pinned MiniLM token lengths using training narratives only.",
+    )
+    token_profile_parser.add_argument("--split-manifest", type=Path, required=True)
     return parser
 
 
@@ -348,6 +358,26 @@ def main(argv: Sequence[str] | None = None) -> int:
                 json.dumps(
                     safe_baseline_error(
                         BaselineErrorAnalysisError("database_configuration_invalid")
+                    ),
+                    indent=2,
+                    sort_keys=True,
+                )
+            )
+            return 1
+        print(json.dumps(report, indent=2, sort_keys=True))
+        return 0
+
+    if args.command == "profile-transformer-tokens":
+        try:
+            report = profile_transformer_tokens(args.split_manifest)
+        except TransformerTokenProfileError as error:
+            print(json.dumps(safe_transformer_token_profile_error(error), indent=2, sort_keys=True))
+            return 1
+        except DatabaseSettingsError:
+            print(
+                json.dumps(
+                    safe_transformer_token_profile_error(
+                        TransformerTokenProfileError("database_configuration_invalid")
                     ),
                     indent=2,
                     sort_keys=True,

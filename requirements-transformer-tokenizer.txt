@@ -1,0 +1,6 @@
+# CT-301 only: install after `pip install -e ".[dev]"` in Python 3.12.
+# PyTorch is intentionally deferred until the bounded training issue.
+transformers==5.14.1
+tokenizers==0.22.2
+huggingface-hub==1.24.0
+safetensors==0.8.0

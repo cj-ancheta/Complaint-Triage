@@ -12,6 +12,7 @@ from complaint_triage.staging import StagingError
 from complaint_triage.taxonomy_profile import TaxonomyProfileError
 from complaint_triage.temporal_split import TemporalSplitError
 from complaint_triage.tfidf_logreg import TfidfLogregError
+from complaint_triage.transformer_token_profile import TransformerTokenProfileError
 
 
 def test_profile_command_prints_safe_json(monkeypatch, capsys) -> None:
@@ -445,3 +446,34 @@ def test_error_analysis_command_prints_safe_error(monkeypatch, capsys) -> None:
     assert output["error"] == {"code": "error_analysis_artifact_missing_or_changed"}
     assert output["privacy"]["narratives_logged"] is False
     assert output["privacy"]["narratives_logged"] is False
+
+
+def test_transformer_token_profile_command_prints_aggregate_result(monkeypatch, capsys) -> None:
+    monkeypatch.setattr(
+        cli,
+        "profile_transformer_tokens",
+        lambda path: {
+            "report_version": "tokenizer-profile-1.0.0",
+            "data": {"profiled_split": "train", "test_accessed": False},
+        },
+    )
+
+    exit_code = cli.main(["profile-transformer-tokens", "--split-manifest", "split.json"])
+    output = json.loads(capsys.readouterr().out)
+
+    assert exit_code == 0
+    assert output["data"] == {"profiled_split": "train", "test_accessed": False}
+
+
+def test_transformer_token_profile_command_prints_safe_error(monkeypatch, capsys) -> None:
+    def fail(path):
+        raise TransformerTokenProfileError("token_profile_revision_mismatch")
+
+    monkeypatch.setattr(cli, "profile_transformer_tokens", fail)
+
+    exit_code = cli.main(["profile-transformer-tokens", "--split-manifest", "split.json"])
+    output = json.loads(capsys.readouterr().out)
+
+    assert exit_code == 1
+    assert output["error"] == {"code": "token_profile_revision_mismatch"}
+    assert output["privacy"]["token_ids_logged"] is False
