@@ -106,6 +106,68 @@ Validation was already used to select the CT-205 candidate. These metrics are
 therefore useful for diagnosis but are not an unbiased final estimate. Test
 remains reserved for the later once-only final comparison gate.
 
+## Measured review evidence
+
+The real CT-206 run from implementation commit `6f13507` scored all 80,992
+validation rows in 21 seconds. It reproduced CT-205 exactly: 9,420 errors,
+accuracy 0.883692, macro F1 0.699661, weighted F1 0.879291, and worst-class
+recall 0.057269. Supporting top-2 accuracy is 0.965256. Test was not accessed.
+
+### Largest confusion
+
+The largest actual-to-predicted error is:
+
+`Debt collection` → `Credit reporting or other personal consumer reports`
+
+It occurs 2,436 times, representing 25.8599% of all validation errors and
+86.4750% of the errors within the actual `Debt collection` class. The reverse
+direction occurs 1,221 times and is the second-largest confusion. This is model
+evidence of overlapping routing language, not proof that the source labels are
+wrong or that the two business routes should be merged.
+
+### Month comparison
+
+| Month | Rows | Errors | Accuracy | Macro F1 | Weighted F1 | Worst recall | Top-2 accuracy |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| 2024-09 | 39,161 | 4,269 | 0.890988 | 0.710195 | 0.887161 | 0.051020 | 0.967749 |
+| 2024-10 | 41,831 | 5,151 | 0.876862 | 0.689863 | 0.871909 | 0.062016 | 0.962922 |
+
+October macro F1 is 0.020332 lower than September. Two months cannot establish
+seasonality or long-run degradation, but the difference is large enough to keep
+temporal monitoring in the later evaluation and deployment design.
+
+### Narrative-length comparison
+
+| Band | Rows | Macro F1 | Worst recall | Top-2 accuracy |
+|---|---:|---:|---:|---:|
+| 1–499 | 23,079 | 0.646155 | 0.030303 | 0.949868 |
+| 500–999 | 20,991 | 0.709150 | 0.069767 | 0.966652 |
+| 1,000–1,999 | 23,352 | 0.713584 | 0.054545 | 0.973364 |
+| 2,000–3,999 | 10,397 | 0.748408 | 0.153846 | 0.976051 |
+| 4,000+ | 3,173 | 0.633940 | 0.000000 | 0.972896 |
+
+Macro F1 spans 0.633940–0.748408, a difference of 0.114468. The shortest band
+has the lowest top-2 accuracy. The 4,000+ band's zero worst-class recall is based
+on only four `Debt or credit management` rows, so it is a high-uncertainty
+warning rather than a stable rate.
+
+### Rare versus common classes
+
+The fixed training-share rule classifies `Debt or credit management` and
+`Prepaid card` as rare. Together they have only 679 validation rows.
+
+| Group | Labels | Support | Macro precision | Macro recall | Macro F1 |
+|---|---:|---:|---:|---:|---:|
+| Rare | 2 | 679 | 0.829069 | 0.307395 | 0.389498 |
+| Common | 9 | 80,313 | 0.809197 | 0.738726 | 0.768586 |
+
+Rare-class precision is not the central problem; recall is. The rare/common
+macro-F1 gap is 0.379088. CT-206 describes that limitation but does not reopen
+the accepted CT-205 search or select a new weighting rule.
+
+The review report is
+`data/evaluations/cfpb/error-analysis/cfpb-run-20260722T130728Z-2b7815d4c850-baseline-error-analysis-1.0.0.json`.
+
 ## Run the command
 
 PostgreSQL and the governed local pipeline must be available. The first real

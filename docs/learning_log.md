@@ -737,13 +737,14 @@ artifact loader, batched scorer, fixed month and narrative-length slices,
 training-defined rare/common grouping, stable confusion ranking, operator
 guide, safe CLI errors, and synthetic privacy/leakage/replay tests.
 
-**How I will verify it**
+**How I verified it**
 
-Checkpoint the implementation from a clean commit; run the command against the
-accepted CT-205 report and governed local pipeline; reproduce CT-205 metrics;
-reconcile all temporal and length counts to 80,992 validation rows; inspect
-per-class, confusion, rarity, and slice findings; confirm test is absent; then
-run schema, privacy, lint, formatting, default, and PostgreSQL validation.
+The real command verified the accepted artifact before loading and scored all
+80,992 validation rows in 21 seconds. It exactly reproduced CT-205 metrics and
+9,420 errors. I independently reconciled overall, month, length, rarity, and
+off-diagonal confusion counts; validated the closed schema; replayed the report;
+scanned keys for prohibited row fields; confirmed test is absent; and passed
+lint, formatting, and all 196 tests with PostgreSQL online.
 
 **What can fail in production**
 
@@ -765,8 +766,10 @@ while narratives and the fitted vocabulary do not.
 
 **Questions still open**
 
-- Which confusion pair accounts for the most validation errors?
-- How much do macro F1 and worst-class recall change between September and
-  October and across narrative-length bands?
-- Which labels fall below the fixed 1% training-share definition, and how large
-  is the rare/common macro-F1 gap?
+- `Debt collection` → `Credit reporting or other personal consumer reports`
+  accounts for 2,436 errors, or 25.8599% of all validation errors.
+- September macro F1 is 0.710195 versus October's 0.689863. Length-band macro F1
+  spans 0.633940–0.748408, though the longest band has sparse rare-class support.
+- `Debt or credit management` and `Prepaid card` are below 1% training share.
+  Their combined macro F1 is 0.389498 versus 0.768586 for common classes, a
+  0.379088 gap.
