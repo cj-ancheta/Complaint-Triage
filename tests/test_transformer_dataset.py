@@ -12,12 +12,14 @@ from complaint_triage.transformer_dataset import (
     ID_TO_LABEL,
     LABEL_TO_ID,
     LABELS,
+    LENGTH_GROUP_POOL_SIZE,
     MAXIMUM_LENGTH,
     PAD_TO_MULTIPLE_OF,
     DatasetTokenizer,
     TransformerDatasetError,
     buffered_shuffle,
     collate_dynamic,
+    length_grouped_batches,
     safe_transformer_dataset_error,
     stream_tokenized_split,
     tokenize_rows,
@@ -158,6 +160,38 @@ def test_buffered_shuffle_is_repeatable_epoch_sensitive_and_lossless() -> None:
     assert len(set(first)) == len(source)
 
 
+def test_length_grouping_is_repeatable_lossless_and_reduces_padding() -> None:
+    features = []
+    for index in range(32):
+        for length in (8, 384):
+            features.append(
+                {
+                    "input_ids": [index + 1] * length,
+                    "attention_mask": [1] * length,
+                    "token_type_ids": [0] * length,
+                    "labels": index % len(LABELS),
+                }
+            )
+
+    grouped = list(length_grouped_batches(features, batch_size=8, pool_size=64, seed=42))
+    replay = list(length_grouped_batches(features, batch_size=8, pool_size=64, seed=42))
+    ungrouped = [features[index : index + 8] for index in range(0, len(features), 8)]
+    ungrouped_slots = sum(
+        len(batch) * max(len(feature["input_ids"]) for feature in batch) for batch in ungrouped
+    )
+    grouped_slots = sum(
+        len(batch) * max(len(feature["input_ids"]) for feature in batch) for batch in grouped
+    )
+
+    assert grouped == replay
+    assert sum(len(batch) for batch in grouped) == len(features)
+    assert sorted(id(feature) for batch in grouped for feature in batch) == sorted(
+        id(feature) for feature in features
+    )
+    assert grouped_slots < ungrouped_slots
+    assert LENGTH_GROUP_POOL_SIZE == 1_024
+
+
 def test_stream_rejects_test_before_calling_row_loader() -> None:
     with pytest.raises(TransformerDatasetError, match="transformer_dataset_split_forbidden"):
         list(
@@ -242,6 +276,8 @@ def test_full_synthetic_validation_writes_closed_report_and_replays(tmp_path: Pa
     assert report["pipeline"]["maximum_length"] == 384
     assert report["splits"]["train"]["record_count"] == 11
     assert report["splits"]["validation"]["record_count"] == 11
+    assert 0 <= report["splits"]["train"]["padding_share"] <= 1
+    assert report["checks"]["length_grouping_checked"] is True
     assert report["privacy"]["tokenized_dataset_persisted"] is False
 
     replay = validate_transformer_dataset(

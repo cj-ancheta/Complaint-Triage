@@ -40,7 +40,7 @@
     },
     "pipeline": {
       "type": "object", "additionalProperties": false,
-      "required": ["model_id", "revision", "tokenizer_class", "fast_tokenizer", "maximum_length", "add_special_tokens", "truncation", "stored_padding", "dynamic_padding", "pad_to_multiple_of", "tokenize_batch_size", "validation_collation_batch_size", "training_shuffle", "validation_order"],
+      "required": ["model_id", "revision", "tokenizer_class", "fast_tokenizer", "maximum_length", "add_special_tokens", "truncation", "stored_padding", "dynamic_padding", "pad_to_multiple_of", "tokenize_batch_size", "validation_collation_batch_size", "training_shuffle", "length_grouping", "validation_order"],
       "properties": {
         "model_id": { "const": "microsoft/MiniLM-L12-H384-uncased" },
         "revision": { "const": "9a201d7b3ebebc5feabf9fbb4b3a4ec5d3f2440d" },
@@ -65,7 +65,17 @@
             "resampling": { "const": false }
           }
         },
-        "validation_order": { "const": "canonical_source_order" }
+        "length_grouping": {
+          "type": "object", "additionalProperties": false,
+          "required": ["kind", "pool_size", "batch_order", "resampling"],
+          "properties": {
+            "kind": { "const": "bounded_pool_sort" },
+            "pool_size": { "const": 1024 },
+            "batch_order": { "const": "seeded_shuffle" },
+            "resampling": { "const": false }
+          }
+        },
+        "validation_order": { "const": "deterministic_length_grouped_batches" }
       }
     },
     "splits": {
@@ -93,13 +103,14 @@
     },
     "checks": {
       "type": "object", "additionalProperties": false,
-      "required": ["source_counts_reconcile", "taxonomy_complete", "label_mapping_bijective", "maximum_length_enforced", "dynamic_padding_checked", "train_shuffle_deterministic", "validation_order_stable", "test_accessed", "no_rows_persisted", "no_model_weights_loaded", "no_classifier_trained"],
+      "required": ["source_counts_reconcile", "taxonomy_complete", "label_mapping_bijective", "maximum_length_enforced", "dynamic_padding_checked", "length_grouping_checked", "train_shuffle_deterministic", "validation_order_stable", "test_accessed", "no_rows_persisted", "no_model_weights_loaded", "no_classifier_trained"],
       "properties": {
         "source_counts_reconcile": { "const": true },
         "taxonomy_complete": { "const": true },
         "label_mapping_bijective": { "const": true },
         "maximum_length_enforced": { "const": true },
         "dynamic_padding_checked": { "const": true },
+        "length_grouping_checked": { "const": true },
         "train_shuffle_deterministic": { "const": true },
         "validation_order_stable": { "const": true },
         "test_accessed": { "const": false },
@@ -142,7 +153,7 @@
     },
     "split": {
       "type": "object", "additionalProperties": false,
-      "required": ["record_count", "class_counts", "collation_batch_count", "minimum_unpadded_length", "maximum_unpadded_length", "minimum_padded_length", "maximum_padded_length", "counts_reconcile", "elapsed_seconds"],
+      "required": ["record_count", "class_counts", "collation_batch_count", "minimum_unpadded_length", "maximum_unpadded_length", "minimum_padded_length", "maximum_padded_length", "real_token_count", "padded_token_slots", "padding_token_count", "padding_share", "counts_reconcile", "elapsed_seconds"],
       "properties": {
         "record_count": { "type": "integer", "minimum": 1 },
         "class_counts": { "$ref": "#/$defs/classCounts" },
@@ -151,6 +162,10 @@
         "maximum_unpadded_length": { "type": "integer", "minimum": 1, "maximum": 384 },
         "minimum_padded_length": { "type": "integer", "minimum": 8, "maximum": 384, "multipleOf": 8 },
         "maximum_padded_length": { "type": "integer", "minimum": 8, "maximum": 384, "multipleOf": 8 },
+        "real_token_count": { "type": "integer", "minimum": 1 },
+        "padded_token_slots": { "type": "integer", "minimum": 1 },
+        "padding_token_count": { "type": "integer", "minimum": 0 },
+        "padding_share": { "type": "number", "minimum": 0, "maximum": 1 },
         "counts_reconcile": { "const": true },
         "elapsed_seconds": { "type": "number", "minimum": 0 }
       }

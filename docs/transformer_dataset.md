@@ -17,7 +17,12 @@ trained, scored, calibrated, or compared.
   the padding call because current Transformers ignores it with
   `padding=True`; every input is checked against 384 before padding.
 - Canonical source order is stable. Training callers may request a bounded
-  8,192-row shuffle using seed `42 + epoch`. Validation shuffling is forbidden.
+  8,192-row shuffle using seed `42 + epoch`. Validation row shuffling is
+  forbidden.
+- Before collation, tokenized examples are sorted by length inside bounded
+  1,024-example pools and the resulting batch order is shuffled with a fixed
+  seed. This avoids turning one long example into padding for an otherwise short
+  batch while preserving every example exactly once.
 - Shuffling changes order only. It does not resample or alter class frequency.
   The class-weighting or sampling decision belongs to CT-303.
 
@@ -31,7 +36,9 @@ Padding every example to 384 would waste computation on short narratives.
 Dynamic padding delays padding until the training caller has formed a batch and
 pads only to that batch's longest sequence. Rounding to a multiple of eight is
 compatible with common accelerator tensor dimensions while preserving the
-approved 384 ceiling.
+approved 384 ceiling. Length grouping is required because random groups of 32
+from this dataset almost always contain at least one 384-token example; dynamic
+padding alone therefore provides little benefit.
 
 ## Validate
 
@@ -60,6 +67,10 @@ a reproducibly shuffled epoch and `stream_tokenized_split(...,
 split="validation")` for stable validation. It can call `collate_dynamic` with
 `return_tensors="pt"` after PyTorch is installed. CT-302 itself uses NumPy
 tensors only for shape validation and does not install PyTorch.
+
+For the actual training path, `stream_collated_batches` combines the split
+stream, deterministic length grouping, and dynamic collation. The caller still
+chooses the per-device batch size in CT-303.
 
 ## Limits
 

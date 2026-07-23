@@ -41,6 +41,7 @@ TOKENIZE_BATCH_SIZE = 256
 COLLATION_CHECK_BATCH_SIZE = 32
 PAD_TO_MULTIPLE_OF = 8
 SHUFFLE_BUFFER_SIZE = 8_192
+LENGTH_GROUP_POOL_SIZE = 1_024
 RANDOM_SEED = 42
 FETCH_SIZE = 2_000
 ALLOWED_SPLITS = ("train", "validation")
@@ -175,7 +176,13 @@ def validate_transformer_dataset(
                 "epoch_seed_rule": "base_seed_plus_epoch",
                 "resampling": False,
             },
-            "validation_order": "canonical_source_order",
+            "length_grouping": {
+                "kind": "bounded_pool_sort",
+                "pool_size": LENGTH_GROUP_POOL_SIZE,
+                "batch_order": "seeded_shuffle",
+                "resampling": False,
+            },
+            "validation_order": "deterministic_length_grouped_batches",
         },
         "splits": split_results,
         "timing": {"total_elapsed_seconds": round(time.perf_counter() - total_started, 3)},
@@ -186,6 +193,7 @@ def validate_transformer_dataset(
             "label_mapping_bijective": True,
             "maximum_length_enforced": True,
             "dynamic_padding_checked": True,
+            "length_grouping_checked": True,
             "train_shuffle_deterministic": True,
             "validation_order_stable": True,
             "test_accessed": False,
@@ -358,6 +366,72 @@ def collate_dynamic(
     return batch
 
 
+def stream_collated_batches(
+    manifest: Mapping[str, Any],
+    settings: DatabaseSettings,
+    split: str,
+    tokenizer: DatasetTokenizer,
+    *,
+    batch_size: int,
+    return_tensors: str,
+    epoch: int | None = None,
+    row_loader: RowLoader | None = None,
+) -> Iterator[Mapping[str, Any]]:
+    """Yield deterministic, length-grouped, dynamically padded caller batches."""
+
+    features = stream_tokenized_split(
+        manifest,
+        settings,
+        split,
+        tokenizer,
+        epoch=epoch,
+        row_loader=row_loader,
+    )
+    grouping_seed = RANDOM_SEED + (epoch or 0)
+    for batch_features in length_grouped_batches(
+        features,
+        batch_size=batch_size,
+        pool_size=LENGTH_GROUP_POOL_SIZE,
+        seed=grouping_seed,
+    ):
+        yield collate_dynamic(batch_features, tokenizer, return_tensors=return_tensors)
+
+
+def length_grouped_batches(
+    features: Iterable[Mapping[str, Any]],
+    *,
+    batch_size: int,
+    pool_size: int,
+    seed: int,
+) -> Iterator[list[Mapping[str, Any]]]:
+    """Group similar lengths in bounded pools and shuffle batch order reproducibly."""
+
+    if isinstance(batch_size, bool) or not isinstance(batch_size, int) or batch_size < 1:
+        raise TransformerDatasetError("transformer_dataset_batch_size_invalid")
+    if isinstance(pool_size, bool) or not isinstance(pool_size, int) or pool_size < batch_size:
+        raise TransformerDatasetError("transformer_dataset_length_pool_invalid")
+    if isinstance(seed, bool) or not isinstance(seed, int) or seed < 0:
+        raise TransformerDatasetError("transformer_dataset_shuffle_seed_invalid")
+    generator = random.Random(seed)
+    pool: list[Mapping[str, Any]] = []
+
+    def emit_pool() -> Iterator[list[Mapping[str, Any]]]:
+        if not pool:
+            return
+        pool.sort(key=lambda feature: len(feature["input_ids"]))
+        batches = [pool[index : index + batch_size] for index in range(0, len(pool), batch_size)]
+        generator.shuffle(batches)
+        yield from batches
+        pool.clear()
+
+    for feature in features:
+        _validate_unpadded_feature(feature)
+        pool.append(feature)
+        if len(pool) == pool_size:
+            yield from emit_pool()
+    yield from emit_pool()
+
+
 def buffered_shuffle[T](items: Iterable[T], *, buffer_size: int, seed: int) -> Iterator[T]:
     """Shuffle a stream reproducibly with bounded memory and no resampling."""
 
@@ -395,13 +469,18 @@ def validate_split_stream(
     maximum_unpadded: int | None = None
     minimum_padded: int | None = None
     maximum_padded: int | None = None
-    collation_batch: list[Mapping[str, Any]] = []
+    real_token_count = 0
+    padded_token_slots = 0
 
-    def consume_collation_batch() -> None:
-        nonlocal collation_batch_count, minimum_padded, maximum_padded
-        if not collation_batch:
-            return
-        padded = collate_dynamic(collation_batch, tokenizer, return_tensors="np")
+    features = tokenize_rows(rows, tokenizer)
+    batches = length_grouped_batches(
+        features,
+        batch_size=COLLATION_CHECK_BATCH_SIZE,
+        pool_size=LENGTH_GROUP_POOL_SIZE,
+        seed=RANDOM_SEED,
+    )
+    for batch_features in batches:
+        padded = collate_dynamic(batch_features, tokenizer, return_tensors="np")
         padded_length = int(padded["input_ids"].shape[1])
         collation_batch_count += 1
         minimum_padded = (
@@ -410,19 +489,15 @@ def validate_split_stream(
         maximum_padded = (
             padded_length if maximum_padded is None else max(maximum_padded, padded_length)
         )
-        collation_batch.clear()
-
-    for feature in tokenize_rows(rows, tokenizer):
-        label = ID_TO_LABEL[feature["labels"]]
-        counts[label] += 1
-        example_count += 1
-        length = len(feature["input_ids"])
-        minimum_unpadded = length if minimum_unpadded is None else min(minimum_unpadded, length)
-        maximum_unpadded = length if maximum_unpadded is None else max(maximum_unpadded, length)
-        collation_batch.append(feature)
-        if len(collation_batch) == COLLATION_CHECK_BATCH_SIZE:
-            consume_collation_batch()
-    consume_collation_batch()
+        real_token_count += int(padded["attention_mask"].sum())
+        padded_token_slots += int(padded["input_ids"].shape[0]) * padded_length
+        for feature in batch_features:
+            label = ID_TO_LABEL[feature["labels"]]
+            counts[label] += 1
+            example_count += 1
+            length = len(feature["input_ids"])
+            minimum_unpadded = length if minimum_unpadded is None else min(minimum_unpadded, length)
+            maximum_unpadded = length if maximum_unpadded is None else max(maximum_unpadded, length)
 
     if dict(counts) != dict(expected_counts):
         raise TransformerDatasetError("transformer_dataset_source_counts_do_not_reconcile")
@@ -436,6 +511,10 @@ def validate_split_stream(
         "maximum_unpadded_length": maximum_unpadded,
         "minimum_padded_length": minimum_padded,
         "maximum_padded_length": maximum_padded,
+        "real_token_count": real_token_count,
+        "padded_token_slots": padded_token_slots,
+        "padding_token_count": padded_token_slots - real_token_count,
+        "padding_share": round((padded_token_slots - real_token_count) / padded_token_slots, 6),
         "counts_reconcile": True,
     }
 
