@@ -51,6 +51,9 @@ narratives. Accepted ADR 0010 fixes whole-month train, validation, and test
 boundaries plus a normalized SHA-256 duplicate rule. CT-203 adds append-only
 split runs and outcomes without copying narratives or complaint identifiers;
 the accepted first real split reconciles with zero included fingerprint overlap.
+CT-204 evaluates a constant training-majority reference directly from the
+commit-safe split counts; its first aggregate report is accepted as issue
+evidence.
 
 ## Architecture decisions
 

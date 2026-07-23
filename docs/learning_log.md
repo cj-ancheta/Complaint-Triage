@@ -625,3 +625,46 @@ remain in governed local storage.
 
 - After CT-203 acceptance, should CT-204's majority baseline be defined globally
   from training labels only and evaluated unchanged on validation and test?
+
+---
+
+## CT-204: training-majority reference baseline
+
+**Date:** 2026-07-23
+
+**What the AI generated**
+
+A closed aggregate evaluation contract, dependency-free metric implementation,
+CLI command, operator guide, and versioned real report. The evaluator chooses
+one label from training counts only, freezes it, and reports all-class metrics
+and confusion matrices on train, validation, and test without reading row-level
+data.
+
+**How I verified it**
+
+Inspect `docs/majority_baseline.md` and the generated report;
+rerun `complaint-triage evaluate-majority-baseline`; then run lint, formatting,
+and tests. The report source SHA matches the accepted split, every confusion
+matrix sums to its split total, all eleven per-class entries exist, metrics are
+finite, the privacy contract is exact, and replay is byte-identical.
+
+**What can fail in production**
+
+A changed or invalid split manifest, taxonomy mismatch, count mismatch, tied
+training majority, dirty implementation checkpoint, report identity conflict,
+or invalid metric fails closed. The more important analytical failure is human:
+reporting roughly 67% test accuracy without macro F1 would make an ineffective
+one-class predictor look strong.
+
+**What I can explain in an interview**
+
+Why the majority label must come from training only; why a
+non-tunable reference may be evaluated once on test; how multiclass precision,
+recall, F1, weighted F1, and the confusion matrix reduce for a constant
+predictor; why zero-performing classes must stay in macro metrics; and why this
+baseline is a floor rather than a candidate for deployment.
+
+**Questions still open**
+
+- CT-205 must define a validation-only search space for TF-IDF and logistic
+  regression without using the frozen test metrics for selection.

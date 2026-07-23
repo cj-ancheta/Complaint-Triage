@@ -74,3 +74,27 @@ The focused tests prove training-only selection even when later splits have a
 different majority, fail-closed ties, exact metric arithmetic, zero-score class
 retention, confusion-matrix orientation, idempotent output, schema validation,
 and privacy flags.
+
+## First retained-run evaluation
+
+The first authoritative evaluation ran on 2026-07-23 from clean implementation
+commit `bf60c724f2706f7e6b8700b2d4a3a5a4afc20aeb`. Training selected `Credit
+reporting or other personal consumer reports`; the predictor used that same
+label unchanged for every row in all three partitions.
+
+| Split | Rows | Accuracy | Macro F1 | Weighted F1 | Macro recall |
+|---|---:|---:|---:|---:|---:|
+| Train | 394,564 | 0.628699 | 0.070184 | 0.485372 | 0.090909 |
+| Validation | 80,992 | 0.666881 | 0.072741 | 0.533607 | 0.090909 |
+| Test | 85,786 | 0.667172 | 0.072760 | 0.533980 | 0.090909 |
+
+Accuracy follows majority-label prevalence, while macro recall is exactly one
+of eleven classes and ten classes have zero recall. This confirms that the
+apparently high accuracy is not useful routing performance; later models must
+be judged primarily against balanced and per-class measures.
+
+The canonical report is
+`data/evaluations/cfpb/majority/cfpb-run-20260722T130728Z-2b7815d4c850-majority-baseline-1.0.0.json`.
+Its source hash, metric tables, three confusion matrices, schema, and privacy
+flags reconcile, and replay is byte-identical. These scores remain CT-204 review
+evidence and are not approved public portfolio claims.

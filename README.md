@@ -27,8 +27,8 @@ workflow. CT-110's first retained real run and aggregate population evidence are
 accepted as pipeline evidence; no model has been trained and no metric is
 approved as a portfolio claim. CT-203's reconciled temporal split and normalized
 duplicate-isolation evidence are accepted as pipeline evidence.
-CT-204 is implementing the training-only majority reference baseline; no model
-metric is approved as a portfolio claim.
+CT-204's training-only majority reference baseline is accepted as issue
+evidence; no model metric is approved as a portfolio claim.
 
 ## Intended use
 
