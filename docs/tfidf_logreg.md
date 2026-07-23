@@ -90,6 +90,55 @@ products more influence. Worst-class recall exposes a route the averages might
 hide. None of these validation metrics is a final test claim because validation
 was used to choose the model.
 
+## Measured review evidence
+
+The real run from implementation commit `995c85f` reconciled 394,564 training
+and 80,992 validation rows. The vectorizer reached its 200,000-feature cap with
+90,801,048 nonzero training values and 18,794,609 nonzero validation values.
+The training-only smoke had first succeeded on 1,100 rows across all eleven
+classes and wrote no artifact or report.
+
+| Candidate | Converged | Iterations | Accuracy | Macro F1 | Worst recall | Weighted F1 |
+|---|---:|---:|---:|---:|---:|---:|
+| `c0p5-unweighted` | yes | 15 | 0.880322 | 0.682010 | 0.017621 | 0.874957 |
+| `c1p0-unweighted` | yes | 15 | 0.883692 | 0.699661 | 0.057269 | 0.879291 |
+| `c0p5-balanced` | no | 200 | 0.813043 | 0.576675 | 0.000000 | 0.817360 |
+| `c1p0-balanced` | no | 200 | 0.789880 | 0.576239 | 0.039648 | 0.795097 |
+
+Both balanced candidates emitted convergence warnings at the fixed 200-iteration
+cap, so the accepted rule excludes them regardless of their partial-fit scores.
+Among eligible candidates, `c1p0-unweighted` has the higher macro F1 and wins
+without needing a tie-break.
+
+For the selected candidate, validation performance by route is:
+
+| Product route | Support | Precision | Recall | F1 |
+|---|---:|---:|---:|---:|
+| Checking or savings account | 4,961 | 0.801098 | 0.853255 | 0.826354 |
+| Credit card | 5,195 | 0.777212 | 0.764196 | 0.770649 |
+| Credit reporting or other personal consumer reports | 54,012 | 0.922831 | 0.960675 | 0.941373 |
+| Debt collection | 8,784 | 0.774834 | 0.679303 | 0.723931 |
+| Debt or credit management | 227 | 0.812500 | 0.057269 | 0.106996 |
+| Money transfer, virtual currency, or money service | 1,684 | 0.771827 | 0.624703 | 0.690515 |
+| Mortgage | 2,036 | 0.868726 | 0.884086 | 0.876339 |
+| Payday loan, title loan, personal loan, or advance loan | 905 | 0.680342 | 0.439779 | 0.534228 |
+| Prepaid card | 452 | 0.845638 | 0.557522 | 0.672000 |
+| Student loan | 1,481 | 0.935655 | 0.834571 | 0.882227 |
+| Vehicle loan or lease | 1,255 | 0.750246 | 0.607968 | 0.671655 |
+
+Relative to the accepted validation majority reference, accuracy improves by
+0.216811, macro F1 by 0.626920, and weighted F1 by 0.345684. The improvement is
+substantial, but the 0.057269 recall for `Debt or credit management` is a clear
+operational limitation: the model still misses most examples of the rarest
+route. CT-206 should investigate this failure without changing CT-205's model
+or consuming test outcomes.
+
+The review report is
+`data/evaluations/cfpb/tfidf-logreg/cfpb-run-20260722T130728Z-2b7815d4c850-tfidf-logreg-selection-1.0.0.json`.
+The selected local pipeline is 19,625,755 bytes with SHA-256
+`4989984c061d368bb83e1a5e8e48e1d88189a86d7f2bb463d958a70b4dd839ff`.
+It remains ignored and governed through 2026-11-19.
+
 ## Data leakage controls
 
 The vectorizer calls `fit_transform` only on training text and calls

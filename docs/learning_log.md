@@ -685,13 +685,14 @@ closed aggregate report contract, governed local artifact writer, CLI smoke and
 full-run modes, operator guide, and synthetic leakage/selection tests. The full
 loader reads training and validation only; the smoke loader reads training only.
 
-**How I will verify it**
+**How I verified it**
 
-Inspect `docs/tfidf_logreg.md`; run the training-only smoke; checkpoint the
-clean implementation; run the real four-candidate search; reconcile both source
-splits and eleven labels; inspect convergence and aggregate validation metrics;
-verify the artifact hash and ignore status; search the report for prohibited
-source text; then run lint, formatting, default tests, and PostgreSQL tests.
+I ran the 1,100-row, eleven-class training-only smoke before the full search.
+The real run reconciled 394,564 training and 80,992 validation rows, selected
+`c1p0-unweighted`, and left test untouched. I independently validated the JSON
+Schema, selection ranking, four confusion-matrix totals, 200,000-feature fitted
+pipeline, SHA-256, Git ignore rule, and idempotent replay. Lint and formatting
+passed, and all 187 tests passed with PostgreSQL online.
 
 **What can fail in production**
 
@@ -712,8 +713,12 @@ its public report is aggregate-only.
 
 **Questions still open**
 
-- Which of the four accepted candidates converges and wins on validation?
-- Does the selected candidate materially improve macro F1 and worst-class
-  recall over the majority reference?
+- The two unweighted candidates converged in 15 iterations; both balanced
+  candidates hit the 200-iteration cap and were excluded. `c1p0-unweighted`
+  won with validation macro F1 0.699661, weighted F1 0.879291, accuracy
+  0.883692, and worst-class recall 0.057269.
+- The selected candidate improves validation macro F1 by 0.626920 and weighted
+  F1 by 0.345684 over the majority reference, but rare `Debt or credit
+  management` recall remains only 0.057269.
 - After CT-205 acceptance, what exact CT-206 error-analysis artifacts can be
   produced without exposing narratives or consuming the test partition early?

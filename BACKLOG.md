@@ -32,7 +32,7 @@ This backlog converts `SPEC.md` into bounded delivery issues. Status values are 
 | CT-202 | Define analytical population and exclusions | complete | Accepted ADR 0008 and tested versioned metadata-only population report |
 | CT-203 | Implement temporal split and duplicate isolation | complete | Accepted reconciled metadata-only split manifest and leakage tests |
 | CT-204 | Implement majority baseline | complete | Accepted reproducible aggregate baseline report |
-| CT-205 | Implement TF-IDF logistic-regression baseline | in progress | Tracked training and evaluation run |
+| CT-205 | Implement TF-IDF logistic-regression baseline | review | Tracked training and evaluation run |
 | CT-206 | Produce per-class and temporal baseline error analysis | pending | Generated report with limitations |
 
 ## Phase 3 onward
@@ -53,5 +53,6 @@ accepted retained real run exactly reproduces the approved 561,342-row
 deduplicated split, has zero included fingerprint overlap, and publishes
 metadata-only evidence. CT-204 is complete: its accepted training-only majority
 reference is reproducible from the split manifest and its aggregate report
-reconciles all eleven classes. CT-205's validation-only rule is accepted and
-implementation is in progress; real smoke and full-run evidence remain pending.
+reconciles all eleven classes. CT-205's validation-only rule, implementation,
+training-only smoke, and real aggregate selection evidence are ready for review.
+The test partition remains untouched and CT-205 is not complete until accepted.
