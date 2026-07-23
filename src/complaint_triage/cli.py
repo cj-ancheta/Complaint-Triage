@@ -15,6 +15,11 @@ from complaint_triage.analytical_population import (
 from complaint_triage.cfpb_profile import ProfileError, fetch_cfpb_profile, safe_error_report
 from complaint_triage.db import DatabaseSettingsError
 from complaint_triage.live_extraction import acquire_real_run, safe_live_result
+from complaint_triage.majority_baseline import (
+    MajorityBaselineError,
+    evaluate_majority_baseline,
+    safe_majority_baseline_error,
+)
 from complaint_triage.raw_ingestion import (
     RawIngestionError,
     ingest_raw_batch,
@@ -100,6 +105,11 @@ def build_parser() -> argparse.ArgumentParser:
         help="Build the approved deduplicated temporal split for one real run.",
     )
     split_parser.add_argument("--run-manifest", type=Path, required=True)
+    majority_parser = subcommands.add_parser(
+        "evaluate-majority-baseline",
+        help="Evaluate the training-majority reference against the accepted split.",
+    )
+    majority_parser.add_argument("--split-manifest", type=Path, required=True)
     return parser
 
 
@@ -266,6 +276,15 @@ def main(argv: Sequence[str] | None = None) -> int:
                     sort_keys=True,
                 )
             )
+            return 1
+        print(json.dumps(report, indent=2, sort_keys=True))
+        return 0
+
+    if args.command == "evaluate-majority-baseline":
+        try:
+            report = evaluate_majority_baseline(args.split_manifest)
+        except MajorityBaselineError as error:
+            print(json.dumps(safe_majority_baseline_error(error), indent=2, sort_keys=True))
             return 1
         print(json.dumps(report, indent=2, sort_keys=True))
         return 0

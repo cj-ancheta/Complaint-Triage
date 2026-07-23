@@ -3,6 +3,7 @@ import json
 from complaint_triage import cli
 from complaint_triage.analytical_population import PopulationError
 from complaint_triage.cfpb_profile import ProfileError
+from complaint_triage.majority_baseline import MajorityBaselineError
 from complaint_triage.raw_ingestion import RawIngestionError
 from complaint_triage.real_extraction import ExtractionError
 from complaint_triage.real_run_report import RealRunReportError
@@ -331,4 +332,48 @@ def test_temporal_split_command_prints_safe_error(monkeypatch, capsys) -> None:
         "code": "split_reconciliation_failed",
         "failed_check_count": 1,
     }
+    assert output["privacy"]["narratives_logged"] is False
+
+
+def test_majority_baseline_command_prints_aggregate_result(monkeypatch, capsys) -> None:
+    monkeypatch.setattr(
+        cli,
+        "evaluate_majority_baseline",
+        lambda _path: {
+            "model": {"predicted_label": "Synthetic majority"},
+            "evaluation": {"test": {"metrics": {"macro_f1": 0.05}}},
+            "privacy": {"contains_row_values": False},
+        },
+    )
+
+    exit_code = cli.main(
+        [
+            "evaluate-majority-baseline",
+            "--split-manifest",
+            "data/manifests/cfpb/splits/split.json",
+        ]
+    )
+    output = json.loads(capsys.readouterr().out)
+
+    assert exit_code == 0
+    assert output["model"]["predicted_label"] == "Synthetic majority"
+    assert output["privacy"]["contains_row_values"] is False
+
+
+def test_majority_baseline_command_prints_safe_error(monkeypatch, capsys) -> None:
+    def fail(_path) -> None:
+        raise MajorityBaselineError("majority_label_tie", tied_label_count=2)
+
+    monkeypatch.setattr(cli, "evaluate_majority_baseline", fail)
+    exit_code = cli.main(
+        [
+            "evaluate-majority-baseline",
+            "--split-manifest",
+            "data/manifests/cfpb/splits/split.json",
+        ]
+    )
+    output = json.loads(capsys.readouterr().out)
+
+    assert exit_code == 1
+    assert output["error"] == {"code": "majority_label_tie", "tied_label_count": 2}
     assert output["privacy"]["narratives_logged"] is False

@@ -1,0 +1,183 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/cj-ancheta/Complaint-Triage/contracts/cfpb-majority-baseline-report.schema.json",
+  "title": "CFPB majority baseline evaluation report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "report_version",
+    "run_id",
+    "evaluated_at_utc",
+    "source",
+    "model",
+    "labels",
+    "evaluation",
+    "checks",
+    "claims",
+    "privacy"
+  ],
+  "properties": {
+    "report_version": { "const": "majority-baseline-1.0.0" },
+    "run_id": {
+      "type": "string",
+      "pattern": "^cfpb-run-[0-9]{8}T[0-9]{6}Z-[0-9a-f]{12}$"
+    },
+    "evaluated_at_utc": { "$ref": "#/$defs/utcTimestamp" },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["split_manifest_sha256", "split_version", "split_implementation_commit_sha", "evaluation_implementation_commit_sha"],
+      "properties": {
+        "split_manifest_sha256": { "$ref": "#/$defs/sha256" },
+        "split_version": { "const": "1.0.0" },
+        "split_implementation_commit_sha": { "$ref": "#/$defs/gitCommitSha" },
+        "evaluation_implementation_commit_sha": { "$ref": "#/$defs/gitCommitSha" }
+      }
+    },
+    "model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["strategy", "predicted_label", "selection_split", "tie_behavior", "feature_input", "tunable_parameter_count"],
+      "properties": {
+        "strategy": { "const": "predict_training_majority_for_every_row" },
+        "predicted_label": { "type": "string", "minLength": 1 },
+        "selection_split": { "const": "train" },
+        "tie_behavior": { "const": "fail_closed" },
+        "feature_input": { "const": "none" },
+        "tunable_parameter_count": { "const": 0 }
+      }
+    },
+    "labels": {
+      "type": "array",
+      "minItems": 11,
+      "maxItems": 11,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "evaluation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["train", "validation", "test"],
+      "properties": {
+        "train": { "$ref": "#/$defs/splitEvaluation" },
+        "validation": { "$ref": "#/$defs/splitEvaluation" },
+        "test": { "$ref": "#/$defs/splitEvaluation" }
+      }
+    },
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_counts_reconcile", "taxonomy_complete", "majority_selected_from_train_only", "all_classes_scored", "confusion_matrices_reconcile", "metrics_finite"],
+      "properties": {
+        "source_counts_reconcile": { "const": true },
+        "taxonomy_complete": { "const": true },
+        "majority_selected_from_train_only": { "const": true },
+        "all_classes_scored": { "const": true },
+        "confusion_matrices_reconcile": { "const": true },
+        "metrics_finite": { "const": true }
+      }
+    },
+    "claims": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["portfolio_promotion_approved", "test_used_for_tuning", "interpretation"],
+      "properties": {
+        "portfolio_promotion_approved": { "const": false },
+        "test_used_for_tuning": { "const": false },
+        "interpretation": { "const": "non_tunable_reference_baseline" }
+      }
+    },
+    "privacy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["contains_row_values", "contains_narratives", "contains_complaint_ids", "git_tracking_allowed"],
+      "properties": {
+        "contains_row_values": { "const": false },
+        "contains_narratives": { "const": false },
+        "contains_complaint_ids": { "const": false },
+        "git_tracking_allowed": { "const": true }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "gitCommitSha": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "utcTimestamp": { "type": "string", "format": "date-time", "pattern": "Z$" },
+    "score": { "type": "number", "minimum": 0, "maximum": 1 },
+    "classMetric": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["support", "predicted_count", "true_positive", "false_positive", "false_negative", "precision", "recall", "f1"],
+      "properties": {
+        "support": { "type": "integer", "minimum": 1 },
+        "predicted_count": { "type": "integer", "minimum": 0 },
+        "true_positive": { "type": "integer", "minimum": 0 },
+        "false_positive": { "type": "integer", "minimum": 0 },
+        "false_negative": { "type": "integer", "minimum": 0 },
+        "precision": { "$ref": "#/$defs/score" },
+        "recall": { "$ref": "#/$defs/score" },
+        "f1": { "$ref": "#/$defs/score" }
+      }
+    },
+    "aggregateMetrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["accuracy", "macro_precision", "macro_recall", "macro_f1", "weighted_f1"],
+      "properties": {
+        "accuracy": { "$ref": "#/$defs/score" },
+        "macro_precision": { "$ref": "#/$defs/score" },
+        "macro_recall": { "$ref": "#/$defs/score" },
+        "macro_f1": { "$ref": "#/$defs/score" },
+        "weighted_f1": { "$ref": "#/$defs/score" }
+      }
+    },
+    "confusionMatrix": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["orientation", "labels", "rows"],
+      "properties": {
+        "orientation": { "const": "rows_actual_columns_predicted" },
+        "labels": {
+          "type": "array",
+          "minItems": 11,
+          "maxItems": 11,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "rows": {
+          "type": "array",
+          "minItems": 11,
+          "maxItems": 11,
+          "items": {
+            "type": "array",
+            "minItems": 11,
+            "maxItems": 11,
+            "items": { "type": "integer", "minimum": 0 }
+          }
+        }
+      }
+    },
+    "splitEvaluation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["record_count", "class_distribution", "metrics", "per_class", "confusion_matrix"],
+      "properties": {
+        "record_count": { "type": "integer", "minimum": 1 },
+        "class_distribution": {
+          "type": "object",
+          "minProperties": 11,
+          "maxProperties": 11,
+          "additionalProperties": { "type": "integer", "minimum": 1 }
+        },
+        "metrics": { "$ref": "#/$defs/aggregateMetrics" },
+        "per_class": {
+          "type": "object",
+          "minProperties": 11,
+          "maxProperties": 11,
+          "additionalProperties": { "$ref": "#/$defs/classMetric" }
+        },
+        "confusion_matrix": { "$ref": "#/$defs/confusionMatrix" }
+      }
+    }
+  }
+}

@@ -27,6 +27,8 @@ workflow. CT-110's first retained real run and aggregate population evidence are
 accepted as pipeline evidence; no model has been trained and no metric is
 approved as a portfolio claim. CT-203's reconciled temporal split and normalized
 duplicate-isolation evidence are accepted as pipeline evidence.
+CT-204 is implementing the training-only majority reference baseline; no model
+metric is approved as a portfolio claim.
 
 ## Intended use
 
@@ -67,6 +69,7 @@ This project will not:
 - [Monthly extraction and cleanup operator guide](docs/real_extraction.md)
 - [CT-110 live-run record](docs/ct110_live_run.md)
 - [Temporal split and duplicate isolation](docs/temporal_split.md)
+- [Majority reference baseline](docs/majority_baseline.md)
 - [Accepted temporal split ADR](docs/decisions/0010-temporal-split-duplicate-isolation.md)
 - [Architecture](docs/architecture.md)
 - [Learning log](docs/learning_log.md)
