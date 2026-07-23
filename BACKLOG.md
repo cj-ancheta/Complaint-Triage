@@ -39,7 +39,7 @@ This backlog converts `SPEC.md` into bounded delivery issues. Status values are 
 
 | ID | Issue | Status | Exit evidence |
 |---|---|---|---|
-| CT-301 | Select the compact encoder boundary and profile tokenizer truncation | in progress | Approved ADR 0012 and reproducible training-only aggregate token-length report |
+| CT-301 | Select the compact encoder boundary and profile tokenizer truncation | complete | Accepted ADR 0012, 384-token boundary, and reproducible training-only aggregate report |
 | CT-302 | Implement the versioned transformer dataset and tokenizer pipeline | pending | Deterministic train/validation loaders with leakage and truncation tests |
 | CT-303 | Train and track the compact transformer candidate | pending | Reproducible validation-only experiment with early stopping and local governed artifact |
 | CT-304 | Compare baseline and transformer on validation evidence | pending | Aggregate validation comparison and proposed utility decision; test remains untouched |
@@ -68,7 +68,8 @@ run selected the converged unweighted `C=1.0` candidate, retained the governed
 pipeline locally, and left test untouched. CT-206 is the next bounded issue.
 CT-206 is complete: its accepted validation-only per-class, confusion, month,
 narrative-length, and common-versus-rare report leaves test untouched. Charles
-approved the Phase 2 to Phase 3 transition on 2026-07-23. CT-301 is the current
-bounded issue. It selects a compact encoder supply-chain boundary and produces
-a training-only aggregate truncation profile; no transformer is trained and no
-validation or test rows are read in this issue.
+approved the Phase 2 to Phase 3 transition on 2026-07-23. CT-301 is complete:
+its accepted pinned MiniLM boundary and training-only aggregate profile select
+384 tokens without loading model weights or accessing validation or test rows.
+CT-302 is the next bounded issue; it will implement the deterministic dataset
+and tokenizer pipeline without training a classifier.

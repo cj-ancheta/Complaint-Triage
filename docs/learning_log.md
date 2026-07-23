@@ -773,3 +773,56 @@ while narratives and the fitted vocabulary do not.
 - `Debt or credit management` and `Prepaid card` are below 1% training share.
   Their combined macro F1 is 0.389498 versus 0.768586 for common classes, a
   0.379088 gap.
+
+---
+
+## CT-301: compact encoder and training-only token profile
+
+**Date:** 2026-07-23
+
+**Status:** Accepted by Charles on 2026-07-23.
+
+**What the AI generated**
+
+An accepted MiniLM supply-chain and environment ADR, isolated Python 3.12
+tokenizer environment, immutable model revision boundary, streaming train-only
+profiler, closed aggregate report contract, CLI command, operator guide, and
+synthetic privacy, leakage, reconciliation, and replay tests.
+
+**How I verified it**
+
+The authoritative command streamed all 394,564 training narratives in bounded
+batches and completed tokenization in 39.604 seconds. I independently validated
+the JSON Schema, reconciled class rows and tokens to the overall totals,
+reconciled every candidate's per-class exceedance counts, and replayed the
+report with the same SHA-256. Both the Python 3.12 transformer environment and
+the original Python 3.13 environment passed lint, formatting, and all 204 tests
+with PostgreSQL online. No validation/test rows, model weights, or classifier
+were used.
+
+**What can fail in production**
+
+Missing or changed split evidence, database outage, count or taxonomy drift,
+mutable or mismatched upstream model revisions, tokenizer/config download
+failure, dependency incompatibility, unsafe report paths, schema drift, and
+partial writes fail closed. The 384-token boundary can also omit relevant text,
+especially for Mortgage and other long narratives; later validation slices
+must measure that risk.
+
+**What I can explain in an interview**
+
+Why tokenization is profiled before training; how special tokens, truncation,
+padding, and maximum positions differ; why training-only input analysis avoids
+validation tuning; how histogram-based nearest-rank quantiles avoid storing
+row-level sequences; why immutable revisions and safetensors reduce supply-chain
+risk; and why 384 is a resource-versus-context choice rather than evidence of
+predictive superiority.
+
+**Questions still open**
+
+- At 384 tokens, 20.6742% of training narratives exceed the boundary and
+  72.6368% of all measured tokens are retained.
+- Mortgage is the most affected class: 31.5508% exceed the boundary and
+  66.9487% of its tokens are retained.
+- What deterministic padding, batching, and label encoding contract should
+  CT-302 enforce before transformer training begins?

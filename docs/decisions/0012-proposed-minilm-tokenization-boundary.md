@@ -70,6 +70,32 @@ aggregate trade-off and stop for an explicit owner decision. This avoids hiding
 a cost-versus-context judgment inside code. CT-302 may then enforce the accepted
 length in the dataset pipeline.
 
+## Accepted maximum length
+
+The authoritative CT-301 report processed all 394,564 training narratives and
+selected a maximum sequence length of **384 tokens** after owner review. No
+validation or test narratives were accessed.
+
+| Maximum length | Narratives exceeding boundary | Tokens retained |
+|---:|---:|---:|
+| 128 | 66.2841% | 37.8252% |
+| 256 | 37.2855% | 60.1767% |
+| **384** | **20.6742%** | **72.6368%** |
+| 512 | 12.6968% | 79.8203% |
+
+The training distribution has p75 343 tokens, p90 587, p95 813, and p99 1,828.
+Moving from 256 to 384 retains another 12.4601 percentage points of tokens and
+fully preserves 65,542 additional narratives. Moving from 384 to 512 retains a
+smaller additional 7.1835 percentage points while increasing the maximum
+attention-matrix dimension from 384 to 512. The latter is a 1.78-times increase
+in maximum attention-score cells, although actual training cost will also
+depend on dynamic padding, length grouping, batch size, and implementation.
+
+At 384, Mortgage is the most affected class: 31.5508% of its training
+narratives exceed the boundary and 66.9487% of its tokens are retained. Later
+validation analysis must report the fixed long/truncated slice and must not
+describe this operational slice as demographic fairness evidence.
+
 ## Reproducibility and failure behavior
 
 - Verify the split manifest, run identity, taxonomy, and expected training
@@ -116,7 +142,9 @@ decision and may remain the TF-IDF baseline.
 
 Charles explicitly approved the MiniLM family and pinned revision, isolated
 Python 3.12 environment, training-only aggregate measurement boundary, and
-explicit post-report sequence-length decision gate on 2026-07-23.
+explicit post-report sequence-length decision gate on 2026-07-23. After
+reviewing the aggregate profile, Charles approved 384 tokens as the CT-302
+maximum sequence length on 2026-07-23.
 
 ## Primary references
 

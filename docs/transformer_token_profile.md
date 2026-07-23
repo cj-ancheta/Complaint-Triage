@@ -68,6 +68,19 @@ statistics, not evidence that longer input improves model quality.
 CT-301 stops after presenting this evidence. Charles selects the maximum length
 before CT-302 makes it a dataset-pipeline invariant.
 
+## Accepted real-run evidence
+
+The authoritative report for run
+`cfpb-run-20260722T130728Z-2b7815d4c850` profiled all 394,564 training rows in
+39.604 seconds. Its aggregate counts reconcile by class, its schema validates,
+and an idempotent replay preserved SHA-256
+`c07509fee8ed84e6dda3e1efdb2842b6bc9bde5ea5d50efbb6ed1218be4262ac`.
+
+Charles selected **384 tokens**. It fully preserves 79.3258% of training
+narratives and retains 72.6368% of measured tokens. This is an input-boundary
+decision, not a model-performance claim. Validation and test access remained
+false, and no model weights or classifier were loaded.
+
 ## Verify
 
 ```powershell

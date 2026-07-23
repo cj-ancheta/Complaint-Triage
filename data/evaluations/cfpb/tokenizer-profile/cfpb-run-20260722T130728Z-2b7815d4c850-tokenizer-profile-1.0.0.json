@@ -1,0 +1,577 @@
+{
+  "checks": {
+    "no_classifier_trained": true,
+    "no_model_weights_loaded": true,
+    "source_counts_reconcile": true,
+    "taxonomy_complete": true,
+    "test_accessed": false,
+    "tokenizer_revision_pinned": true,
+    "train_only_query": true,
+    "validation_accessed": false
+  },
+  "claims": {
+    "interpretation": "training_input_retention_profile_not_model_performance",
+    "portfolio_promotion_approved": false,
+    "predictive_performance_measured": false
+  },
+  "created_at_utc": "2026-07-23T14:55:18.265186Z",
+  "data": {
+    "feature_input": "consumer_complaint_narrative_only",
+    "labels": [
+      "Checking or savings account",
+      "Credit card",
+      "Credit reporting or other personal consumer reports",
+      "Debt collection",
+      "Debt or credit management",
+      "Money transfer, virtual currency, or money service",
+      "Mortgage",
+      "Payday loan, title loan, personal loan, or advance loan",
+      "Prepaid card",
+      "Student loan",
+      "Vehicle loan or lease"
+    ],
+    "profiled_split": "train",
+    "queried_splits": [
+      "train"
+    ],
+    "test_accessed": false,
+    "train_record_count": 394564,
+    "validation_accessed": false
+  },
+  "decision": {
+    "maximum_length_selected": false,
+    "next_gate": "select_maximum_length_before_CT-302",
+    "requires_owner_approval": true
+  },
+  "measurement": {
+    "by_class": {
+      "Checking or savings account": {
+        "candidate_lengths": [
+          {
+            "maximum_length": 128,
+            "records_exceeding": 19552,
+            "retained_token_ratio": 0.390475,
+            "share_records_exceeding": 0.710956
+          },
+          {
+            "maximum_length": 256,
+            "records_exceeding": 11041,
+            "retained_token_ratio": 0.631785,
+            "share_records_exceeding": 0.401476
+          },
+          {
+            "maximum_length": 384,
+            "records_exceeding": 6198,
+            "retained_token_ratio": 0.765893,
+            "share_records_exceeding": 0.225374
+          },
+          {
+            "maximum_length": 512,
+            "records_exceeding": 3579,
+            "retained_token_ratio": 0.842365,
+            "share_records_exceeding": 0.130141
+          }
+        ],
+        "maximum": 7222,
+        "mean": 290.029635,
+        "minimum": 5,
+        "quantiles": {
+          "p50": 210,
+          "p75": 361,
+          "p90": 584,
+          "p95": 782,
+          "p99": 1481
+        },
+        "record_count": 27501,
+        "token_count": 7976105
+      },
+      "Credit card": {
+        "candidate_lengths": [
+          {
+            "maximum_length": 128,
+            "records_exceeding": 20054,
+            "retained_token_ratio": 0.394705,
+            "share_records_exceeding": 0.665759
+          },
+          {
+            "maximum_length": 256,
+            "records_exceeding": 11479,
+            "retained_token_ratio": 0.63293,
+            "share_records_exceeding": 0.381084
+          },
+          {
+            "maximum_length": 384,
+            "records_exceeding": 6336,
+            "retained_token_ratio": 0.765562,
+            "share_records_exceeding": 0.210345
+          },
+          {
+            "maximum_length": 512,
+            "records_exceeding": 3658,
+            "retained_token_ratio": 0.839724,
+            "share_records_exceeding": 0.121439
+          }
+        ],
+        "maximum": 6800,
+        "mean": 276.639234,
+        "minimum": 4,
+        "quantiles": {
+          "p50": 197,
+          "p75": 346,
+          "p90": 559,
+          "p95": 771,
+          "p99": 1460
+        },
+        "record_count": 30122,
+        "token_count": 8332927
+      },
+      "Credit reporting or other personal consumer reports": {
+        "candidate_lengths": [
+          {
+            "maximum_length": 128,
+            "records_exceeding": 164935,
+            "retained_token_ratio": 0.36814,
+            "share_records_exceeding": 0.664894
+          },
+          {
+            "maximum_length": 256,
+            "records_exceeding": 93323,
+            "retained_token_ratio": 0.586324,
+            "share_records_exceeding": 0.376208
+          },
+          {
+            "maximum_length": 384,
+            "records_exceeding": 51554,
+            "retained_token_ratio": 0.708465,
+            "share_records_exceeding": 0.207827
+          },
+          {
+            "maximum_length": 512,
+            "records_exceeding": 32421,
+            "retained_token_ratio": 0.77923,
+            "share_records_exceeding": 0.130697
+          }
+        ],
+        "maximum": 10712,
+        "mean": 298.374999,
+        "minimum": 4,
+        "quantiles": {
+          "p50": 193,
+          "p75": 344,
+          "p90": 603,
+          "p95": 842,
+          "p99": 2058
+        },
+        "record_count": 248062,
+        "token_count": 74015499
+      },
+      "Debt collection": {
+        "candidate_lengths": [
+          {
+            "maximum_length": 128,
+            "records_exceeding": 23120,
+            "retained_token_ratio": 0.447645,
+            "share_records_exceeding": 0.559468
+          },
+          {
+            "maximum_length": 256,
+            "records_exceeding": 11557,
+            "retained_token_ratio": 0.673055,
+            "share_records_exceeding": 0.279661
+          },
+          {
+            "maximum_length": 384,
+            "records_exceeding": 6255,
+            "retained_token_ratio": 0.790231,
+            "share_records_exceeding": 0.151361
+          },
+          {
+            "maximum_length": 512,
+            "records_exceeding": 3585,
+            "retained_token_ratio": 0.855302,
+            "share_records_exceeding": 0.086751
+          }
+        ],
+        "maximum": 6949,
+        "mean": 228.131059,
+        "minimum": 3,
+        "quantiles": {
+          "p50": 148,
+          "p75": 280,
+          "p90": 479,
+          "p95": 652,
+          "p99": 1295
+        },
+        "record_count": 41325,
+        "token_count": 9427516
+      },
+      "Debt or credit management": {
+        "candidate_lengths": [
+          {
+            "maximum_length": 128,
+            "records_exceeding": 631,
+            "retained_token_ratio": 0.428126,
+            "share_records_exceeding": 0.537937
+          },
+          {
+            "maximum_length": 256,
+            "records_exceeding": 340,
+            "retained_token_ratio": 0.652422,
+            "share_records_exceeding": 0.289855
+          },
+          {
+            "maximum_length": 384,
+            "records_exceeding": 203,
+            "retained_token_ratio": 0.778259,
+            "share_records_exceeding": 0.173061
+          },
+          {
+            "maximum_length": 512,
+            "records_exceeding": 125,
+            "retained_token_ratio": 0.852152,
+            "share_records_exceeding": 0.106564
+          }
+        ],
+        "maximum": 2688,
+        "mean": 231.228474,
+        "minimum": 6,
+        "quantiles": {
+          "p50": 145,
+          "p75": 293,
+          "p90": 530,
+          "p95": 731,
+          "p99": 1317
+        },
+        "record_count": 1173,
+        "token_count": 271231
+      },
+      "Money transfer, virtual currency, or money service": {
+        "candidate_lengths": [
+          {
+            "maximum_length": 128,
+            "records_exceeding": 6668,
+            "retained_token_ratio": 0.380859,
+            "share_records_exceeding": 0.704714
+          },
+          {
+            "maximum_length": 256,
+            "records_exceeding": 3857,
+            "retained_token_ratio": 0.616665,
+            "share_records_exceeding": 0.407631
+          },
+          {
+            "maximum_length": 384,
+            "records_exceeding": 2121,
+            "retained_token_ratio": 0.748404,
+            "share_records_exceeding": 0.22416
+          },
+          {
+            "maximum_length": 512,
+            "records_exceeding": 1269,
+            "retained_token_ratio": 0.824446,
+            "share_records_exceeding": 0.134115
+          }
+        ],
+        "maximum": 6050,
+        "mean": 296.364088,
+        "minimum": 5,
+        "quantiles": {
+          "p50": 210,
+          "p75": 361,
+          "p90": 597,
+          "p95": 830,
+          "p99": 1571
+        },
+        "record_count": 9462,
+        "token_count": 2804197
+      },
+      "Mortgage": {
+        "candidate_lengths": [
+          {
+            "maximum_length": 128,
+            "records_exceeding": 9762,
+            "retained_token_ratio": 0.312233,
+            "share_records_exceeding": 0.804384
+          },
+          {
+            "maximum_length": 256,
+            "records_exceeding": 6227,
+            "retained_token_ratio": 0.532779,
+            "share_records_exceeding": 0.513102
+          },
+          {
+            "maximum_length": 384,
+            "records_exceeding": 3829,
+            "retained_token_ratio": 0.669487,
+            "share_records_exceeding": 0.315508
+          },
+          {
+            "maximum_length": 512,
+            "records_exceeding": 2484,
+            "retained_token_ratio": 0.755616,
+            "share_records_exceeding": 0.20468
+          }
+        ],
+        "maximum": 6977,
+        "mean": 379.669331,
+        "minimum": 4,
+        "quantiles": {
+          "p50": 263,
+          "p75": 452,
+          "p90": 755,
+          "p95": 1042,
+          "p99": 2236
+        },
+        "record_count": 12136,
+        "token_count": 4607667
+      },
+      "Payday loan, title loan, personal loan, or advance loan": {
+        "candidate_lengths": [
+          {
+            "maximum_length": 128,
+            "records_exceeding": 2939,
+            "retained_token_ratio": 0.41353,
+            "share_records_exceeding": 0.618607
+          },
+          {
+            "maximum_length": 256,
+            "records_exceeding": 1582,
+            "retained_token_ratio": 0.646066,
+            "share_records_exceeding": 0.332983
+          },
+          {
+            "maximum_length": 384,
+            "records_exceeding": 862,
+            "retained_token_ratio": 0.769705,
+            "share_records_exceeding": 0.181435
+          },
+          {
+            "maximum_length": 512,
+            "records_exceeding": 499,
+            "retained_token_ratio": 0.839781,
+            "share_records_exceeding": 0.105031
+          }
+        ],
+        "maximum": 7251,
+        "mean": 255.152599,
+        "minimum": 5,
+        "quantiles": {
+          "p50": 173,
+          "p75": 312,
+          "p90": 524,
+          "p95": 731,
+          "p99": 1510
+        },
+        "record_count": 4751,
+        "token_count": 1212230
+      },
+      "Prepaid card": {
+        "candidate_lengths": [
+          {
+            "maximum_length": 128,
+            "records_exceeding": 2406,
+            "retained_token_ratio": 0.479724,
+            "share_records_exceeding": 0.628198
+          },
+          {
+            "maximum_length": 256,
+            "records_exceeding": 1131,
+            "retained_token_ratio": 0.729307,
+            "share_records_exceeding": 0.2953
+          },
+          {
+            "maximum_length": 384,
+            "records_exceeding": 511,
+            "retained_token_ratio": 0.846734,
+            "share_records_exceeding": 0.13342
+          },
+          {
+            "maximum_length": 512,
+            "records_exceeding": 266,
+            "retained_token_ratio": 0.901878,
+            "share_records_exceeding": 0.069452
+          }
+        ],
+        "maximum": 5522,
+        "mean": 227.245953,
+        "minimum": 6,
+        "quantiles": {
+          "p50": 168,
+          "p75": 289,
+          "p90": 440,
+          "p95": 583,
+          "p99": 1077
+        },
+        "record_count": 3830,
+        "token_count": 870352
+      },
+      "Student loan": {
+        "candidate_lengths": [
+          {
+            "maximum_length": 128,
+            "records_exceeding": 6811,
+            "retained_token_ratio": 0.39305,
+            "share_records_exceeding": 0.744372
+          },
+          {
+            "maximum_length": 256,
+            "records_exceeding": 3776,
+            "retained_token_ratio": 0.637751,
+            "share_records_exceeding": 0.412678
+          },
+          {
+            "maximum_length": 384,
+            "records_exceeding": 2054,
+            "retained_token_ratio": 0.771807,
+            "share_records_exceeding": 0.224481
+          },
+          {
+            "maximum_length": 512,
+            "records_exceeding": 1211,
+            "retained_token_ratio": 0.847197,
+            "share_records_exceeding": 0.13235
+          }
+        ],
+        "maximum": 5840,
+        "mean": 295.85224,
+        "minimum": 7,
+        "quantiles": {
+          "p50": 215,
+          "p75": 361,
+          "p90": 593,
+          "p95": 781,
+          "p99": 1463
+        },
+        "record_count": 9150,
+        "token_count": 2707048
+      },
+      "Vehicle loan or lease": {
+        "candidate_lengths": [
+          {
+            "maximum_length": 128,
+            "records_exceeding": 4655,
+            "retained_token_ratio": 0.364844,
+            "share_records_exceeding": 0.660096
+          },
+          {
+            "maximum_length": 256,
+            "records_exceeding": 2802,
+            "retained_token_ratio": 0.588461,
+            "share_records_exceeding": 0.397334
+          },
+          {
+            "maximum_length": 384,
+            "records_exceeding": 1650,
+            "retained_token_ratio": 0.720219,
+            "share_records_exceeding": 0.233976
+          },
+          {
+            "maximum_length": 512,
+            "records_exceeding": 1000,
+            "retained_token_ratio": 0.799381,
+            "share_records_exceeding": 0.141804
+          }
+        ],
+        "maximum": 6710,
+        "mean": 297.41591,
+        "minimum": 6,
+        "quantiles": {
+          "p50": 199,
+          "p75": 367,
+          "p90": 616,
+          "p95": 886,
+          "p99": 1747
+        },
+        "record_count": 7052,
+        "token_count": 2097377
+      }
+    },
+    "candidate_maximum_lengths": [
+      128,
+      256,
+      384,
+      512
+    ],
+    "elapsed_seconds": 39.604,
+    "overall": {
+      "candidate_lengths": [
+        {
+          "maximum_length": 128,
+          "records_exceeding": 261533,
+          "retained_token_ratio": 0.378252,
+          "share_records_exceeding": 0.662841
+        },
+        {
+          "maximum_length": 256,
+          "records_exceeding": 147115,
+          "retained_token_ratio": 0.601767,
+          "share_records_exceeding": 0.372855
+        },
+        {
+          "maximum_length": 384,
+          "records_exceeding": 81573,
+          "retained_token_ratio": 0.726368,
+          "share_records_exceeding": 0.206742
+        },
+        {
+          "maximum_length": 512,
+          "records_exceeding": 50097,
+          "retained_token_ratio": 0.798203,
+          "share_records_exceeding": 0.126968
+        }
+      ],
+      "maximum": 10712,
+      "mean": 289.74298,
+      "minimum": 3,
+      "quantiles": {
+        "p50": 192,
+        "p75": 343,
+        "p90": 587,
+        "p95": 813,
+        "p99": 1828
+      },
+      "record_count": 394564,
+      "token_count": 114322149
+    },
+    "quantile_method": "nearest_rank"
+  },
+  "privacy": {
+    "cache_contains_governed_vocabulary": true,
+    "cache_git_tracking_allowed": false,
+    "contains_complaint_ids": false,
+    "contains_narratives": false,
+    "contains_row_values": false,
+    "contains_token_ids": false,
+    "contains_vocabulary": false,
+    "report_git_tracking_allowed": true
+  },
+  "report_version": "tokenizer-profile-1.0.0",
+  "run_id": "cfpb-run-20260722T130728Z-2b7815d4c850",
+  "software": {
+    "huggingface_hub": "1.24.0",
+    "python": "3.12.10",
+    "tokenizers": "0.22.2",
+    "transformers": "5.14.1"
+  },
+  "source": {
+    "profiling_implementation_commit_sha": "7f5816f2602ecccc5698b4f0f1d96e3304c5fb10",
+    "split_manifest_sha256": "8685eefd10d764d813dee2891e930323c22592850d537b0571956f390afe554b",
+    "split_version": "1.0.0"
+  },
+  "tokenizer": {
+    "add_special_tokens": true,
+    "batch_size": 256,
+    "config_class": "BertConfig",
+    "fast": true,
+    "hidden_layers": 12,
+    "hidden_size": 384,
+    "model_id": "microsoft/MiniLM-L12-H384-uncased",
+    "model_max_position_embeddings": 512,
+    "padding_during_measurement": false,
+    "revision": "9a201d7b3ebebc5feabf9fbb4b3a4ec5d3f2440d",
+    "special_tokens_per_single_sequence": 2,
+    "tokenizer_class": "BertTokenizer",
+    "truncation_during_measurement": false,
+    "vocabulary_size": 30522
+  }
+}
