@@ -1,0 +1,196 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/cj-ancheta/Complaint-Triage/contracts/cfpb-tfidf-logreg-report.schema.json",
+  "title": "CFPB TF-IDF logistic-regression validation selection report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["report_version", "run_id", "trained_at_utc", "source", "data", "vectorizer", "estimator", "selection", "candidates", "artifact", "software", "checks", "claims", "privacy"],
+  "properties": {
+    "report_version": { "const": "tfidf-logreg-selection-1.0.0" },
+    "run_id": { "type": "string", "pattern": "^cfpb-run-[0-9]{8}T[0-9]{6}Z-[0-9a-f]{12}$" },
+    "trained_at_utc": { "$ref": "#/$defs/utcTimestamp" },
+    "source": {
+      "type": "object", "additionalProperties": false,
+      "required": ["split_manifest_sha256", "split_version", "training_implementation_commit_sha"],
+      "properties": {
+        "split_manifest_sha256": { "$ref": "#/$defs/sha256" },
+        "split_version": { "const": "1.0.0" },
+        "training_implementation_commit_sha": { "$ref": "#/$defs/gitCommitSha" }
+      }
+    },
+    "data": {
+      "type": "object", "additionalProperties": false,
+      "required": ["feature_input", "train_record_count", "validation_record_count", "test_accessed", "labels"],
+      "properties": {
+        "feature_input": { "const": "consumer_complaint_narrative_only" },
+        "train_record_count": { "type": "integer", "minimum": 1 },
+        "validation_record_count": { "type": "integer", "minimum": 1 },
+        "test_accessed": { "const": false },
+        "labels": { "$ref": "#/$defs/labels" }
+      }
+    },
+    "vectorizer": {
+      "type": "object", "additionalProperties": false,
+      "required": ["kind", "ngram_range", "min_df", "max_df", "max_features", "sublinear_tf", "norm", "dtype", "fit_split", "feature_count", "train_matrix_nnz", "validation_matrix_nnz"],
+      "properties": {
+        "kind": { "const": "TfidfVectorizer" },
+        "ngram_range": { "const": [1, 2] },
+        "min_df": { "const": 5 },
+        "max_df": { "const": 0.995 },
+        "max_features": { "const": 200000 },
+        "sublinear_tf": { "const": true },
+        "norm": { "const": "l2" },
+        "dtype": { "const": "float64" },
+        "fit_split": { "const": "train" },
+        "feature_count": { "type": "integer", "minimum": 1, "maximum": 200000 },
+        "train_matrix_nnz": { "type": "integer", "minimum": 1 },
+        "validation_matrix_nnz": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "estimator": {
+      "type": "object", "additionalProperties": false,
+      "required": ["kind", "solver", "penalty", "max_iter", "tol", "random_seed"],
+      "properties": {
+        "kind": { "const": "LogisticRegression" },
+        "solver": { "const": "saga" },
+        "penalty": { "const": "l2" },
+        "max_iter": { "const": 200 },
+        "tol": { "const": 0.001 },
+        "random_seed": { "const": 42 }
+      }
+    },
+    "selection": {
+      "type": "object", "additionalProperties": false,
+      "required": ["split", "candidate_order", "eligibility", "ranking", "selected_candidate_id"],
+      "properties": {
+        "split": { "const": "validation" },
+        "candidate_order": { "const": ["c0p5-unweighted", "c1p0-unweighted", "c0p5-balanced", "c1p0-balanced"] },
+        "eligibility": { "const": "converged_only" },
+        "ranking": { "const": ["highest_validation_macro_f1", "highest_validation_worst_class_recall", "highest_validation_weighted_f1", "lower_c", "stable_candidate_id"] },
+        "selected_candidate_id": { "$ref": "#/$defs/candidateId" }
+      }
+    },
+    "candidates": {
+      "type": "array", "minItems": 4, "maxItems": 4,
+      "prefixItems": [
+        { "$ref": "#/$defs/candidate" }, { "$ref": "#/$defs/candidate" },
+        { "$ref": "#/$defs/candidate" }, { "$ref": "#/$defs/candidate" }
+      ],
+      "items": false
+    },
+    "artifact": {
+      "type": "object", "additionalProperties": false,
+      "required": ["version", "relative_path", "sha256", "byte_count", "retention"],
+      "properties": {
+        "version": { "const": "tfidf-logreg-pipeline-1.0.0" },
+        "relative_path": { "type": "string", "pattern": "^artifacts/cfpb/tfidf-logreg/cfpb-run-[^/]+/tfidf-logreg-pipeline-1\\.0\\.0\\.joblib$" },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "byte_count": { "type": "integer", "minimum": 1 },
+        "retention": { "const": "local_only_governed_until_2026-11-19" }
+      }
+    },
+    "software": {
+      "type": "object", "additionalProperties": false,
+      "required": ["scikit_learn", "numpy", "scipy", "joblib"],
+      "properties": {
+        "scikit_learn": { "type": "string", "minLength": 1 },
+        "numpy": { "type": "string", "minLength": 1 },
+        "scipy": { "type": "string", "minLength": 1 },
+        "joblib": { "type": "string", "minLength": 1 }
+      }
+    },
+    "checks": {
+      "type": "object", "additionalProperties": false,
+      "required": ["source_counts_reconcile", "taxonomy_complete", "vectorizer_fit_on_train_only", "selection_uses_validation_only", "test_accessed", "all_candidates_converged", "selected_artifact_hashed"],
+      "properties": {
+        "source_counts_reconcile": { "const": true },
+        "taxonomy_complete": { "const": true },
+        "vectorizer_fit_on_train_only": { "const": true },
+        "selection_uses_validation_only": { "const": true },
+        "test_accessed": { "const": false },
+        "all_candidates_converged": { "type": "boolean" },
+        "selected_artifact_hashed": { "const": true }
+      }
+    },
+    "claims": {
+      "type": "object", "additionalProperties": false,
+      "required": ["portfolio_promotion_approved", "test_used_for_training_or_tuning", "interpretation"],
+      "properties": {
+        "portfolio_promotion_approved": { "const": false },
+        "test_used_for_training_or_tuning": { "const": false },
+        "interpretation": { "const": "validation_selected_baseline_not_final_test_evidence" }
+      }
+    },
+    "privacy": {
+      "type": "object", "additionalProperties": false,
+      "required": ["contains_row_values", "contains_narratives", "contains_complaint_ids", "contains_vocabulary", "artifact_contains_governed_vocabulary", "artifact_git_tracking_allowed", "report_git_tracking_allowed"],
+      "properties": {
+        "contains_row_values": { "const": false },
+        "contains_narratives": { "const": false },
+        "contains_complaint_ids": { "const": false },
+        "contains_vocabulary": { "const": false },
+        "artifact_contains_governed_vocabulary": { "const": true },
+        "artifact_git_tracking_allowed": { "const": false },
+        "report_git_tracking_allowed": { "const": true }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "gitCommitSha": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "utcTimestamp": { "type": "string", "format": "date-time", "pattern": "Z$" },
+    "candidateId": { "enum": ["c0p5-unweighted", "c1p0-unweighted", "c0p5-balanced", "c1p0-balanced"] },
+    "labels": { "type": "array", "minItems": 11, "maxItems": 11, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+    "score": { "type": "number", "minimum": 0, "maximum": 1 },
+    "perClass": {
+      "type": "object", "minProperties": 11, "maxProperties": 11,
+      "additionalProperties": {
+        "type": "object", "additionalProperties": false,
+        "required": ["support", "precision", "recall", "f1"],
+        "properties": {
+          "support": { "type": "integer", "minimum": 1 },
+          "precision": { "$ref": "#/$defs/score" },
+          "recall": { "$ref": "#/$defs/score" },
+          "f1": { "$ref": "#/$defs/score" }
+        }
+      }
+    },
+    "matrix": {
+      "type": "object", "additionalProperties": false,
+      "required": ["orientation", "labels", "rows"],
+      "properties": {
+        "orientation": { "const": "rows_actual_columns_predicted" },
+        "labels": { "$ref": "#/$defs/labels" },
+        "rows": {
+          "type": "array", "minItems": 11, "maxItems": 11,
+          "items": { "type": "array", "minItems": 11, "maxItems": 11, "items": { "type": "integer", "minimum": 0 } }
+        }
+      }
+    },
+    "candidate": {
+      "type": "object", "additionalProperties": false,
+      "required": ["candidate_id", "c", "class_weight", "converged", "n_iter", "fit_seconds", "validation"],
+      "properties": {
+        "candidate_id": { "$ref": "#/$defs/candidateId" },
+        "c": { "enum": [0.5, 1.0] },
+        "class_weight": { "enum": [null, "balanced"] },
+        "converged": { "type": "boolean" },
+        "n_iter": { "type": "array", "minItems": 1, "items": { "type": "integer", "minimum": 1, "maximum": 200 } },
+        "fit_seconds": { "type": "number", "minimum": 0 },
+        "validation": {
+          "type": "object", "additionalProperties": false,
+          "required": ["record_count", "accuracy", "macro_f1", "worst_class_recall", "weighted_f1", "per_class", "confusion_matrix"],
+          "properties": {
+            "record_count": { "type": "integer", "minimum": 1 },
+            "accuracy": { "$ref": "#/$defs/score" },
+            "macro_f1": { "$ref": "#/$defs/score" },
+            "worst_class_recall": { "$ref": "#/$defs/score" },
+            "weighted_f1": { "$ref": "#/$defs/score" },
+            "per_class": { "$ref": "#/$defs/perClass" },
+            "confusion_matrix": { "$ref": "#/$defs/matrix" }
+          }
+        }
+      }
+    }
+  }
+}

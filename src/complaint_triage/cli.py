@@ -46,6 +46,12 @@ from complaint_triage.temporal_split import (
     build_temporal_split,
     safe_temporal_split_error,
 )
+from complaint_triage.tfidf_logreg import (
+    TfidfLogregError,
+    safe_tfidf_logreg_error,
+    smoke_tfidf_logreg,
+    train_tfidf_logreg,
+)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -110,6 +116,16 @@ def build_parser() -> argparse.ArgumentParser:
         help="Evaluate the training-majority reference against the accepted split.",
     )
     majority_parser.add_argument("--split-manifest", type=Path, required=True)
+    tfidf_parser = subcommands.add_parser(
+        "train-tfidf-logreg",
+        help="Run the approved validation-only TF-IDF logistic search.",
+    )
+    tfidf_parser.add_argument("--split-manifest", type=Path, required=True)
+    tfidf_parser.add_argument(
+        "--smoke",
+        action="store_true",
+        help="Fit a bounded training-only sample without writing evidence.",
+    )
     return parser
 
 
@@ -285,6 +301,28 @@ def main(argv: Sequence[str] | None = None) -> int:
             report = evaluate_majority_baseline(args.split_manifest)
         except MajorityBaselineError as error:
             print(json.dumps(safe_majority_baseline_error(error), indent=2, sort_keys=True))
+            return 1
+        print(json.dumps(report, indent=2, sort_keys=True))
+        return 0
+
+    if args.command == "train-tfidf-logreg":
+        try:
+            report = (
+                smoke_tfidf_logreg(args.split_manifest)
+                if args.smoke
+                else train_tfidf_logreg(args.split_manifest)
+            )
+        except TfidfLogregError as error:
+            print(json.dumps(safe_tfidf_logreg_error(error), indent=2, sort_keys=True))
+            return 1
+        except DatabaseSettingsError:
+            print(
+                json.dumps(
+                    safe_tfidf_logreg_error(TfidfLogregError("database_configuration_invalid")),
+                    indent=2,
+                    sort_keys=True,
+                )
+            )
             return 1
         print(json.dumps(report, indent=2, sort_keys=True))
         return 0

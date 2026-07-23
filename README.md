@@ -4,16 +4,16 @@ An educational portfolio project exploring how a human-in-the-loop NLP system ca
 
 ## Current status
 
-**Phase 2 is active; CT-202 is accepted and real extraction is next.**
+**Phase 2 is active; CT-205 implementation is in progress.**
 
 The repository includes privacy-safe CFPB source and taxonomy profilers with
 mocked network and contract tests. On 22 July 2026, the aggregate-only taxonomy
 command successfully measured the current-form transition without requesting,
 logging, or persisting complaint rows or narratives. ADR 0007 accepts the eleven
 August 2023 form labels and a September 2023 through December 2024 window. The
-accepted raw and staging layers remain
-synthetic-only and do not select a modelling population. No real source data has
-been ingested and no model has been trained. Any future metric must come from a
+accepted raw, staging, population, and temporal-split layers have processed the
+locally retained real run. Source narratives remain governed local data; only
+closed aggregate evidence is commit-safe. Any model metric must come from a
 versioned evaluation artifact before it appears here or in the portfolio.
 
 CT-202 implements an accepted, append-only eligibility report over staged
@@ -29,6 +29,9 @@ approved as a portfolio claim. CT-203's reconciled temporal split and normalized
 duplicate-isolation evidence are accepted as pipeline evidence.
 CT-204's training-only majority reference baseline is accepted as issue
 evidence; no model metric is approved as a portfolio claim.
+ADR 0011 accepts CT-205's fixed train-only TF-IDF representation, four logistic
+candidates, validation-only selection rule, untouched-test boundary, and
+local-only fitted artifact. Real CT-205 training evidence is not yet accepted.
 
 ## Intended use
 
@@ -70,7 +73,9 @@ This project will not:
 - [CT-110 live-run record](docs/ct110_live_run.md)
 - [Temporal split and duplicate isolation](docs/temporal_split.md)
 - [Majority reference baseline](docs/majority_baseline.md)
+- [TF-IDF logistic-regression baseline](docs/tfidf_logreg.md)
 - [Accepted temporal split ADR](docs/decisions/0010-temporal-split-duplicate-isolation.md)
+- [Accepted TF-IDF selection ADR](docs/decisions/0011-tfidf-logreg-validation-selection.md)
 - [Architecture](docs/architecture.md)
 - [Learning log](docs/learning_log.md)
 

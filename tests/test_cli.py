@@ -10,6 +10,7 @@ from complaint_triage.real_run_report import RealRunReportError
 from complaint_triage.staging import StagingError
 from complaint_triage.taxonomy_profile import TaxonomyProfileError
 from complaint_triage.temporal_split import TemporalSplitError
+from complaint_triage.tfidf_logreg import TfidfLogregError
 
 
 def test_profile_command_prints_safe_json(monkeypatch, capsys) -> None:
@@ -376,4 +377,39 @@ def test_majority_baseline_command_prints_safe_error(monkeypatch, capsys) -> Non
 
     assert exit_code == 1
     assert output["error"] == {"code": "majority_label_tie", "tied_label_count": 2}
+
+
+def test_tfidf_command_runs_training_only_smoke(monkeypatch, capsys) -> None:
+    monkeypatch.setattr(
+        cli,
+        "smoke_tfidf_logreg",
+        lambda path: {
+            "status": "ok",
+            "mode": "training_only_smoke",
+            "test_accessed": False,
+        },
+    )
+
+    exit_code = cli.main(["train-tfidf-logreg", "--split-manifest", "split.json", "--smoke"])
+
+    assert exit_code == 0
+    assert json.loads(capsys.readouterr().out) == {
+        "mode": "training_only_smoke",
+        "status": "ok",
+        "test_accessed": False,
+    }
+
+
+def test_tfidf_command_prints_privacy_safe_error(monkeypatch, capsys) -> None:
+    def fail(path):
+        raise TfidfLogregError("tfidf_no_converged_candidate")
+
+    monkeypatch.setattr(cli, "train_tfidf_logreg", fail)
+
+    exit_code = cli.main(["train-tfidf-logreg", "--split-manifest", "split.json"])
+    output = json.loads(capsys.readouterr().out)
+
+    assert exit_code == 1
+    assert output["error"] == {"code": "tfidf_no_converged_candidate"}
+    assert output["privacy"]["vocabulary_logged"] is False
     assert output["privacy"]["narratives_logged"] is False

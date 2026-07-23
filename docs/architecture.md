@@ -53,7 +53,9 @@ split runs and outcomes without copying narratives or complaint identifiers;
 the accepted first real split reconciles with zero included fingerprint overlap.
 CT-204 evaluates a constant training-majority reference directly from the
 commit-safe split counts; its first aggregate report is accepted as issue
-evidence.
+evidence. Accepted ADR 0011 fixes CT-205's train-only TF-IDF vocabulary,
+four-candidate sparse logistic search, validation-only selection rule, and
+local-only fitted-artifact boundary. Its real training evidence is pending.
 
 ## Architecture decisions
 
@@ -67,3 +69,4 @@ evidence.
 - [ADR 0008: Analytical population and exclusions](decisions/0008-proposed-analytical-population.md)
 - [ADR 0009: Local-only 120-day real-data retention](decisions/0009-local-real-data-retention.md)
 - [ADR 0010: Temporal split and normalized duplicate isolation](decisions/0010-temporal-split-duplicate-isolation.md)
+- [ADR 0011: Validation-only TF-IDF logistic-regression selection](decisions/0011-tfidf-logreg-validation-selection.md)

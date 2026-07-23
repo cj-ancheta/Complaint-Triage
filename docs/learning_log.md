@@ -668,3 +668,52 @@ baseline is a floor rather than a candidate for deployment.
 
 - CT-205 must define a validation-only search space for TF-IDF and logistic
   regression without using the frozen test metrics for selection.
+
+---
+
+## CT-205 draft: validation-only TF-IDF logistic regression
+
+**Date:** 2026-07-23
+
+**Status:** Draft until the real smoke and four-candidate run are reviewed and
+accepted.
+
+**What the AI generated**
+
+An accepted selection ADR, fixed TF-IDF and sparse logistic implementation,
+closed aggregate report contract, governed local artifact writer, CLI smoke and
+full-run modes, operator guide, and synthetic leakage/selection tests. The full
+loader reads training and validation only; the smoke loader reads training only.
+
+**How I will verify it**
+
+Inspect `docs/tfidf_logreg.md`; run the training-only smoke; checkpoint the
+clean implementation; run the real four-candidate search; reconcile both source
+splits and eleven labels; inspect convergence and aggregate validation metrics;
+verify the artifact hash and ignore status; search the report for prohibited
+source text; then run lint, formatting, default tests, and PostgreSQL tests.
+
+**What can fail in production**
+
+Missing or changed split evidence, database outage, count or taxonomy drift,
+memory pressure, vocabulary construction failure, slow or non-convergent SAGA
+optimization, dirty lineage, unsafe artifact paths, partial artifact writes,
+report schema drift, or changed replay evidence fails closed. Validation scores
+can also be overinterpreted because the same split chooses the candidate.
+
+**What I can explain in an interview**
+
+Why TF-IDF is a strong sparse-text baseline; why the vocabulary is learned from
+training only; what L2 normalization and regularization do; why class weighting
+may trade precision for rare-class recall; why macro F1 leads the selection;
+why convergence is an eligibility gate; how ordered tie-breaks make model
+selection reproducible; and why the selected pipeline is governed even though
+its public report is aggregate-only.
+
+**Questions still open**
+
+- Which of the four accepted candidates converges and wins on validation?
+- Does the selected candidate materially improve macro F1 and worst-class
+  recall over the majority reference?
+- After CT-205 acceptance, what exact CT-206 error-analysis artifacts can be
+  produced without exposing narratives or consuming the test partition early?
