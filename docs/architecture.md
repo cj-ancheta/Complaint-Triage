@@ -50,7 +50,7 @@ layer records one versioned eligibility outcome per staged row without copying
 narratives. Accepted ADR 0010 fixes whole-month train, validation, and test
 boundaries plus a normalized SHA-256 duplicate rule. CT-203 adds append-only
 split runs and outcomes without copying narratives or complaint identifiers;
-real-run reconciliation remains the completion gate.
+the accepted first real split reconciles with zero included fingerprint overlap.
 
 ## Architecture decisions
 

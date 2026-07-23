@@ -1,0 +1,94 @@
+{
+  "boundaries": {
+    "train_end_exclusive": "2024-09-01",
+    "validation_end_exclusive": "2024-11-01",
+    "window_end_exclusive": "2025-01-01",
+    "window_start_inclusive": "2023-09-01"
+  },
+  "checks": {
+    "all_splits_present": true,
+    "assignments_reconciled": true,
+    "dispositions_reconciled": true,
+    "included_fingerprints_unique": true,
+    "input_output_reconciled": true,
+    "source_population_reconciled": true,
+    "split_dates_valid": true
+  },
+  "class_counts_by_split": {
+    "test": {
+      "Checking or savings account": 5629,
+      "Credit card": 5223,
+      "Credit reporting or other personal consumer reports": 57234,
+      "Debt collection": 9055,
+      "Debt or credit management": 416,
+      "Money transfer, virtual currency, or money service": 2038,
+      "Mortgage": 2022,
+      "Payday loan, title loan, personal loan, or advance loan": 916,
+      "Prepaid card": 675,
+      "Student loan": 1227,
+      "Vehicle loan or lease": 1351
+    },
+    "train": {
+      "Checking or savings account": 27501,
+      "Credit card": 30122,
+      "Credit reporting or other personal consumer reports": 248062,
+      "Debt collection": 41325,
+      "Debt or credit management": 1173,
+      "Money transfer, virtual currency, or money service": 9462,
+      "Mortgage": 12136,
+      "Payday loan, title loan, personal loan, or advance loan": 4751,
+      "Prepaid card": 3830,
+      "Student loan": 9150,
+      "Vehicle loan or lease": 7052
+    },
+    "validation": {
+      "Checking or savings account": 4961,
+      "Credit card": 5195,
+      "Credit reporting or other personal consumer reports": 54012,
+      "Debt collection": 8784,
+      "Debt or credit management": 227,
+      "Money transfer, virtual currency, or money service": 1684,
+      "Mortgage": 2036,
+      "Payday loan, title loan, personal loan, or advance loan": 905,
+      "Prepaid card": 452,
+      "Student loan": 1481,
+      "Vehicle loan or lease": 1255
+    }
+  },
+  "counts": {
+    "excluded_record_count": 417852,
+    "included_record_count": 561342,
+    "input_eligible_count": 979194,
+    "output_record_count": 979194
+  },
+  "created_at_utc": "2026-07-22T16:28:31.493131Z",
+  "exclusion_reason_counts": {
+    "duplicate_label_conflict": 101646,
+    "duplicate_same_label": 316206
+  },
+  "privacy": {
+    "contains_complaint_ids": false,
+    "contains_narratives": false,
+    "contains_row_values": false,
+    "git_tracking_allowed": true
+  },
+  "run_id": "cfpb-run-20260722T130728Z-2b7815d4c850",
+  "source": {
+    "extraction_commit_sha": "46b7402d1b4537842d2f96ae1adbd7740a4e6560",
+    "run_manifest_sha256": "2a6747e00a9380239e73af9dac3dc86c028d7d7cb7932286c831c886bb473daf",
+    "split_implementation_commit_sha": "8518461e9eaa10467819c6642090fa1ca5075b80"
+  },
+  "split_counts": {
+    "test": 85786,
+    "train": 394564,
+    "validation": 80992
+  },
+  "split_manifest_version": "1.0.0",
+  "versions": {
+    "analytical_population": "1.0.0",
+    "fingerprint": "nfc-casefold-whitespace-sha256-v1",
+    "split": "1.0.0",
+    "staging_transformation": "1.1.0",
+    "taxonomy": "cfpb-product-2023-08-24"
+  }
+}

@@ -91,3 +91,34 @@ $env:RUN_POSTGRES_TESTS = "1"
 The PostgreSQL tests use synthetic narratives and prove normalization,
 canonical-earliest selection, label-conflict exclusion, no fingerprint overlap,
 idempotency, rollback, database constraints, and append-only behavior.
+
+## First retained real split
+
+The first authoritative build completed locally on 2026-07-23 Asia/Singapore
+for run `cfpb-run-20260722T130728Z-2b7815d4c850`. It records implementation
+commit `8518461e9eaa10467819c6642090fa1ca5075b80` and exactly reproduces the
+approved diagnostic totals:
+
+| Disposition | Count |
+|---|---:|
+| Eligible input | 979,194 |
+| Included canonical rows | 561,342 |
+| Excluded: same-label duplicate | 316,206 |
+| Excluded: conflicting-label group | 101,646 |
+
+| Split | Count | Share of included | Rarest-class support |
+|---|---:|---:|---:|
+| Train | 394,564 | 70.289% | 1,173 |
+| Validation | 80,992 | 14.428% | 227 |
+| Test | 85,786 | 15.282% | 416 |
+
+All eleven target classes are present in every split. Database verification
+found 561,342 distinct fingerprints among 561,342 included rows and zero
+fingerprint groups crossing assignments. The manifest replay is byte-identical,
+all seven fail-closed checks are true, and the file contains no row values,
+narratives, complaint IDs, or individual fingerprints.
+
+The canonical commit-safe artifact is
+`data/manifests/cfpb/splits/cfpb-run-20260722T130728Z-2b7815d4c850-split-1.0.0.json`.
+These are data-pipeline review results, not model performance or an approved
+portfolio claim.

@@ -579,3 +579,49 @@ reconciled; and why population prevalence is not a model-performance metric.
 
 - What temporal split and duplicate-isolation policy should CT-203 adopt given
   the accepted population and severe class imbalance?
+
+---
+
+## CT-203: temporal split and duplicate isolation
+
+**Date:** 2026-07-23
+
+**What the AI generated**
+
+An accepted split ADR, closed commit-safe manifest contract, append-only
+PostgreSQL migration, streaming fingerprint pipeline, CLI command, operator
+guide, synthetic leakage fixtures, and real aggregate split evidence. The
+pipeline normalizes case and whitespace conservatively, excludes contradictory
+label groups, retains one earliest same-label narrative, and assigns only the
+canonical row by its own date.
+
+**How I verified it**
+
+Inspect `docs/temporal_split.md` and the generated split
+manifest; rerun `complaint-triage build-temporal-split`; enable PostgreSQL tests
+and run the full suite. The real database independently reconciles 979,194
+outcomes, 561,342 unique included fingerprints, zero cross-split fingerprint
+groups, valid date boundaries, and all eleven targets in every split.
+
+**What can fail in production**
+
+A partial population, unexpected date, invalid staging contract, dirty source
+commit, database write rejection, manifest identity conflict, or changed rule
+version fails closed. Exact normalized hashing does not catch paraphrases or
+semantic near-duplicates, and aggressive fuzzy matching could incorrectly merge
+different complaints. The deduplication rate also shows that naïve row counts
+can substantially overstate independent training evidence.
+
+**What I can explain in an interview**
+
+Why future-facing evaluation uses whole-month temporal
+boundaries; how grouping before assignment prevents leakage; why conflicting
+labels invalidate an entire fingerprint group; why the canonical row is the
+earliest observation; why the test set remains untouched during tuning; and why
+the public manifest contains aggregate evidence while row-level fingerprints
+remain in governed local storage.
+
+**Questions still open**
+
+- After CT-203 acceptance, should CT-204's majority baseline be defined globally
+  from training labels only and evaluated unchanged on validation and test?

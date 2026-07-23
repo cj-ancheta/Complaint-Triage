@@ -25,8 +25,8 @@ November 2026. CT-108 provides accepted manifest-level retention enforcement;
 CT-109 provides an accepted synthetic-tested monthly writer and cleanup
 workflow. CT-110's first retained real run and aggregate population evidence are
 accepted as pipeline evidence; no model has been trained and no metric is
-approved as a portfolio claim. CT-203 is implementing the accepted temporal
-split and normalized duplicate-isolation policy in ADR 0010.
+approved as a portfolio claim. CT-203's reconciled temporal split and normalized
+duplicate-isolation evidence are accepted as pipeline evidence.
 
 ## Intended use
 
