@@ -721,3 +721,52 @@ its public report is aggregate-only.
   management` recall remains only 0.057269.
 - After CT-205 acceptance, what exact CT-206 error-analysis artifacts can be
   produced without exposing narratives or consuming the test partition early?
+
+---
+
+## CT-206 draft: validation-only baseline error analysis
+
+**Date:** 2026-07-23
+
+**Status:** Draft until the real aggregate report is reviewed and accepted.
+
+**What the AI generated**
+
+A validation-only diagnostic command, closed aggregate JSON contract, verified
+artifact loader, batched scorer, fixed month and narrative-length slices,
+training-defined rare/common grouping, stable confusion ranking, operator
+guide, safe CLI errors, and synthetic privacy/leakage/replay tests.
+
+**How I will verify it**
+
+Checkpoint the implementation from a clean commit; run the command against the
+accepted CT-205 report and governed local pipeline; reproduce CT-205 metrics;
+reconcile all temporal and length counts to 80,992 validation rows; inspect
+per-class, confusion, rarity, and slice findings; confirm test is absent; then
+run schema, privacy, lint, formatting, default, and PostgreSQL validation.
+
+**What can fail in production**
+
+Missing or changed model evidence, unsafe artifact path, size or hash mismatch,
+incompatible package versions, untrusted artifact deserialization, incomplete
+validation rows, taxonomy drift, date leakage, length-count mismatch, metric
+reproduction failure, empty required slices, dirty lineage, or report schema
+drift fails closed. Small slices can also produce unstable rates even when the
+software behaves correctly.
+
+**What I can explain in an interview**
+
+Why error analysis follows model selection; why validation diagnostics are not
+a final test estimate; how an actual-to-predicted confusion differs from a
+class error rate; why slice boundaries and rarity rules are frozen in advance;
+why class support must accompany slice metrics; why operational slices are not
+demographic fairness evidence; and why aggregate diagnostics survive deletion
+while narratives and the fitted vocabulary do not.
+
+**Questions still open**
+
+- Which confusion pair accounts for the most validation errors?
+- How much do macro F1 and worst-class recall change between September and
+  October and across narrative-length bands?
+- Which labels fall below the fixed 1% training-share definition, and how large
+  is the rare/common macro-F1 gap?

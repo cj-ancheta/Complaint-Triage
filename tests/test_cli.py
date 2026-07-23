@@ -2,6 +2,7 @@ import json
 
 from complaint_triage import cli
 from complaint_triage.analytical_population import PopulationError
+from complaint_triage.baseline_error_analysis import BaselineErrorAnalysisError
 from complaint_triage.cfpb_profile import ProfileError
 from complaint_triage.majority_baseline import MajorityBaselineError
 from complaint_triage.raw_ingestion import RawIngestionError
@@ -412,4 +413,35 @@ def test_tfidf_command_prints_privacy_safe_error(monkeypatch, capsys) -> None:
     assert exit_code == 1
     assert output["error"] == {"code": "tfidf_no_converged_candidate"}
     assert output["privacy"]["vocabulary_logged"] is False
+
+
+def test_error_analysis_command_prints_aggregate_result(monkeypatch, capsys) -> None:
+    monkeypatch.setattr(
+        cli,
+        "analyze_baseline_errors",
+        lambda path: {
+            "report_version": "baseline-error-analysis-1.0.0",
+            "data": {"evaluation_split": "validation", "test_accessed": False},
+        },
+    )
+
+    exit_code = cli.main(["analyze-baseline-errors", "--model-report", "model.json"])
+    output = json.loads(capsys.readouterr().out)
+
+    assert exit_code == 0
+    assert output["data"] == {"evaluation_split": "validation", "test_accessed": False}
+
+
+def test_error_analysis_command_prints_safe_error(monkeypatch, capsys) -> None:
+    def fail(path):
+        raise BaselineErrorAnalysisError("error_analysis_artifact_missing_or_changed")
+
+    monkeypatch.setattr(cli, "analyze_baseline_errors", fail)
+
+    exit_code = cli.main(["analyze-baseline-errors", "--model-report", "model.json"])
+    output = json.loads(capsys.readouterr().out)
+
+    assert exit_code == 1
+    assert output["error"] == {"code": "error_analysis_artifact_missing_or_changed"}
+    assert output["privacy"]["narratives_logged"] is False
     assert output["privacy"]["narratives_logged"] is False

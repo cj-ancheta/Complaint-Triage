@@ -33,7 +33,7 @@ This backlog converts `SPEC.md` into bounded delivery issues. Status values are 
 | CT-203 | Implement temporal split and duplicate isolation | complete | Accepted reconciled metadata-only split manifest and leakage tests |
 | CT-204 | Implement majority baseline | complete | Accepted reproducible aggregate baseline report |
 | CT-205 | Implement TF-IDF logistic-regression baseline | complete | Accepted tracked training and validation run |
-| CT-206 | Produce per-class and temporal baseline error analysis | pending | Generated report with limitations |
+| CT-206 | Produce per-class and temporal baseline error analysis | in progress | Generated report with limitations |
 
 ## Phase 3 onward
 
@@ -56,3 +56,5 @@ reference is reproducible from the split manifest and its aggregate report
 reconciles all eleven classes. CT-205 is complete: its accepted validation-only
 run selected the converged unweighted `C=1.0` candidate, retained the governed
 pipeline locally, and left test untouched. CT-206 is the next bounded issue.
+CT-206 implementation is in progress with validation-only per-class, confusion,
+month, narrative-length, and common-versus-rare aggregate diagnostics.

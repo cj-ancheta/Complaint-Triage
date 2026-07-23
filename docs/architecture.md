@@ -58,6 +58,9 @@ four-candidate sparse logistic search, validation-only selection rule, and
 local-only fitted-artifact boundary. The real run selected the converged
 unweighted `C=1.0` candidate and retained its governed pipeline locally; the
 aggregate validation evidence is accepted and test remains untouched.
+CT-206 adds a validation-only diagnostic layer over the frozen selected
+pipeline. It publishes closed aggregate class, confusion, month, length, and
+rarity slices without retaining row-level predictions or accessing test.
 
 ## Architecture decisions
 

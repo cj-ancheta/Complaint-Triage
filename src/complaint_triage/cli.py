@@ -12,6 +12,11 @@ from complaint_triage.analytical_population import (
     report_analytical_population,
     safe_population_error,
 )
+from complaint_triage.baseline_error_analysis import (
+    BaselineErrorAnalysisError,
+    analyze_baseline_errors,
+    safe_baseline_error,
+)
 from complaint_triage.cfpb_profile import ProfileError, fetch_cfpb_profile, safe_error_report
 from complaint_triage.db import DatabaseSettingsError
 from complaint_triage.live_extraction import acquire_real_run, safe_live_result
@@ -126,6 +131,11 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Fit a bounded training-only sample without writing evidence.",
     )
+    error_analysis_parser = subcommands.add_parser(
+        "analyze-baseline-errors",
+        help="Produce validation-only aggregate error analysis for the selected baseline.",
+    )
+    error_analysis_parser.add_argument("--model-report", type=Path, required=True)
     return parser
 
 
@@ -319,6 +329,26 @@ def main(argv: Sequence[str] | None = None) -> int:
             print(
                 json.dumps(
                     safe_tfidf_logreg_error(TfidfLogregError("database_configuration_invalid")),
+                    indent=2,
+                    sort_keys=True,
+                )
+            )
+            return 1
+        print(json.dumps(report, indent=2, sort_keys=True))
+        return 0
+
+    if args.command == "analyze-baseline-errors":
+        try:
+            report = analyze_baseline_errors(args.model_report)
+        except BaselineErrorAnalysisError as error:
+            print(json.dumps(safe_baseline_error(error), indent=2, sort_keys=True))
+            return 1
+        except DatabaseSettingsError:
+            print(
+                json.dumps(
+                    safe_baseline_error(
+                        BaselineErrorAnalysisError("database_configuration_invalid")
+                    ),
                     indent=2,
                     sort_keys=True,
                 )

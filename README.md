@@ -4,7 +4,7 @@ An educational portfolio project exploring how a human-in-the-loop NLP system ca
 
 ## Current status
 
-**Phase 2 is active; CT-205 is accepted and CT-206 is next.**
+**Phase 2 is active; CT-205 is accepted and CT-206 is in progress.**
 
 The repository includes privacy-safe CFPB source and taxonomy profilers with
 mocked network and contract tests. On 22 July 2026, the aggregate-only taxonomy
@@ -77,6 +77,7 @@ This project will not:
 - [Temporal split and duplicate isolation](docs/temporal_split.md)
 - [Majority reference baseline](docs/majority_baseline.md)
 - [TF-IDF logistic-regression baseline](docs/tfidf_logreg.md)
+- [Validation-only baseline error analysis](docs/baseline_error_analysis.md)
 - [Accepted temporal split ADR](docs/decisions/0010-temporal-split-duplicate-isolation.md)
 - [Accepted TF-IDF selection ADR](docs/decisions/0011-tfidf-logreg-validation-selection.md)
 - [Architecture](docs/architecture.md)

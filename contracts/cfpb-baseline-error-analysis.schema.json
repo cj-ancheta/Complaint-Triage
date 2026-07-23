@@ -1,0 +1,256 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/cj-ancheta/Complaint-Triage/contracts/cfpb-baseline-error-analysis.schema.json",
+  "title": "CFPB validation-only baseline error analysis",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["report_version", "run_id", "analyzed_at_utc", "source", "data", "slice_definitions", "analysis", "software", "checks", "limitations", "claims", "privacy"],
+  "properties": {
+    "report_version": { "const": "baseline-error-analysis-1.0.0" },
+    "run_id": { "type": "string", "pattern": "^cfpb-run-[0-9]{8}T[0-9]{6}Z-[0-9a-f]{12}$" },
+    "analyzed_at_utc": { "$ref": "#/$defs/utcTimestamp" },
+    "source": {
+      "type": "object", "additionalProperties": false,
+      "required": ["model_report_sha256", "model_artifact_sha256", "split_manifest_sha256", "selected_candidate_id", "analysis_implementation_commit_sha"],
+      "properties": {
+        "model_report_sha256": { "$ref": "#/$defs/sha256" },
+        "model_artifact_sha256": { "$ref": "#/$defs/sha256" },
+        "split_manifest_sha256": { "$ref": "#/$defs/sha256" },
+        "selected_candidate_id": { "const": "c1p0-unweighted" },
+        "analysis_implementation_commit_sha": { "$ref": "#/$defs/gitCommitSha" }
+      }
+    },
+    "data": {
+      "type": "object", "additionalProperties": false,
+      "required": ["evaluation_split", "record_count", "months", "labels", "test_accessed"],
+      "properties": {
+        "evaluation_split": { "const": "validation" },
+        "record_count": { "type": "integer", "minimum": 1 },
+        "months": { "const": ["2024-09", "2024-10"] },
+        "labels": { "$ref": "#/$defs/labels" },
+        "test_accessed": { "const": false }
+      }
+    },
+    "slice_definitions": {
+      "type": "object", "additionalProperties": false,
+      "required": ["temporal", "narrative_length_unit", "narrative_length_bands", "rare_class_definition", "top_confusion_limit"],
+      "properties": {
+        "temporal": { "const": "calendar_month" },
+        "narrative_length_unit": { "const": "staging_narrative_character_count" },
+        "narrative_length_bands": {
+          "const": [
+            { "band_id": "chars-1-499", "minimum_inclusive": 1, "maximum_inclusive": 499 },
+            { "band_id": "chars-500-999", "minimum_inclusive": 500, "maximum_inclusive": 999 },
+            { "band_id": "chars-1000-1999", "minimum_inclusive": 1000, "maximum_inclusive": 1999 },
+            { "band_id": "chars-2000-3999", "minimum_inclusive": 2000, "maximum_inclusive": 3999 },
+            { "band_id": "chars-4000-plus", "minimum_inclusive": 4000, "maximum_inclusive": null }
+          ]
+        },
+        "rare_class_definition": { "const": "training_share_below_0.01" },
+        "top_confusion_limit": { "const": 20 }
+      }
+    },
+    "analysis": {
+      "type": "object", "additionalProperties": false,
+      "required": ["overall", "top_confusions", "temporal", "narrative_length", "rarity_groups", "findings"],
+      "properties": {
+        "overall": { "$ref": "#/$defs/overall" },
+        "top_confusions": { "type": "array", "minItems": 1, "maxItems": 20, "items": { "$ref": "#/$defs/confusion" } },
+        "temporal": {
+          "type": "array", "minItems": 2, "maxItems": 2,
+          "prefixItems": [
+            { "allOf": [{ "$ref": "#/$defs/slice" }, { "properties": { "month": { "const": "2024-09" } }, "required": ["month"] }] },
+            { "allOf": [{ "$ref": "#/$defs/slice" }, { "properties": { "month": { "const": "2024-10" } }, "required": ["month"] }] }
+          ],
+          "items": false
+        },
+        "narrative_length": {
+          "type": "array", "minItems": 5, "maxItems": 5,
+          "prefixItems": [
+            { "allOf": [{ "$ref": "#/$defs/slice" }, { "properties": { "band_id": { "const": "chars-1-499" } }, "required": ["band_id"] }] },
+            { "allOf": [{ "$ref": "#/$defs/slice" }, { "properties": { "band_id": { "const": "chars-500-999" } }, "required": ["band_id"] }] },
+            { "allOf": [{ "$ref": "#/$defs/slice" }, { "properties": { "band_id": { "const": "chars-1000-1999" } }, "required": ["band_id"] }] },
+            { "allOf": [{ "$ref": "#/$defs/slice" }, { "properties": { "band_id": { "const": "chars-2000-3999" } }, "required": ["band_id"] }] },
+            { "allOf": [{ "$ref": "#/$defs/slice" }, { "properties": { "band_id": { "const": "chars-4000-plus" } }, "required": ["band_id"] }] }
+          ],
+          "items": false
+        },
+        "rarity_groups": {
+          "type": "array", "minItems": 2, "maxItems": 2,
+          "prefixItems": [
+            { "allOf": [{ "$ref": "#/$defs/rarity" }, { "properties": { "group_id": { "const": "rare" } } }] },
+            { "allOf": [{ "$ref": "#/$defs/rarity" }, { "properties": { "group_id": { "const": "common" } } }] }
+          ],
+          "items": false
+        },
+        "findings": {
+          "type": "object", "additionalProperties": false,
+          "required": ["weakest_recall_label", "weakest_recall", "largest_confusion", "monthly_macro_f1_range", "length_band_macro_f1_range"],
+          "properties": {
+            "weakest_recall_label": { "type": "string", "minLength": 1 },
+            "weakest_recall": { "$ref": "#/$defs/score" },
+            "largest_confusion": { "$ref": "#/$defs/confusion" },
+            "monthly_macro_f1_range": { "$ref": "#/$defs/range" },
+            "length_band_macro_f1_range": { "$ref": "#/$defs/range" }
+          }
+        }
+      }
+    },
+    "software": {
+      "type": "object", "additionalProperties": false,
+      "required": ["scikit_learn", "numpy", "scipy", "joblib"],
+      "properties": {
+        "scikit_learn": { "type": "string", "minLength": 1 },
+        "numpy": { "type": "string", "minLength": 1 },
+        "scipy": { "type": "string", "minLength": 1 },
+        "joblib": { "type": "string", "minLength": 1 }
+      }
+    },
+    "checks": {
+      "type": "object", "additionalProperties": false,
+      "required": ["source_counts_reconcile", "selected_metrics_reproduced", "artifact_verified_before_load", "all_validation_rows_scored_once", "temporal_slices_reconcile", "length_slices_reconcile", "test_accessed"],
+      "properties": {
+        "source_counts_reconcile": { "const": true },
+        "selected_metrics_reproduced": { "const": true },
+        "artifact_verified_before_load": { "const": true },
+        "all_validation_rows_scored_once": { "const": true },
+        "temporal_slices_reconcile": { "const": true },
+        "length_slices_reconcile": { "const": true },
+        "test_accessed": { "const": false }
+      }
+    },
+    "limitations": {
+      "const": [
+        "validation_was_used_for_model_selection",
+        "temporal_analysis_covers_only_two_months",
+        "submission_channel_unavailable_in_accepted_staging_contract",
+        "window_contains_single_post_transition_taxonomy",
+        "operational_slices_are_not_demographic_fairness_evidence",
+        "no_narrative_level_examples_published_due_to_retention_policy",
+        "no_calibration_or_abstention_decision_in_ct206"
+      ]
+    },
+    "claims": {
+      "type": "object", "additionalProperties": false,
+      "required": ["portfolio_promotion_approved", "test_used_for_analysis", "model_selection_changed", "demographic_fairness_assessed", "interpretation"],
+      "properties": {
+        "portfolio_promotion_approved": { "const": false },
+        "test_used_for_analysis": { "const": false },
+        "model_selection_changed": { "const": false },
+        "demographic_fairness_assessed": { "const": false },
+        "interpretation": { "const": "validation_only_descriptive_error_analysis" }
+      }
+    },
+    "privacy": {
+      "type": "object", "additionalProperties": false,
+      "required": ["contains_row_values", "contains_narratives", "contains_complaint_ids", "contains_vocabulary", "contains_token_linked_coefficients", "git_tracking_allowed"],
+      "properties": {
+        "contains_row_values": { "const": false },
+        "contains_narratives": { "const": false },
+        "contains_complaint_ids": { "const": false },
+        "contains_vocabulary": { "const": false },
+        "contains_token_linked_coefficients": { "const": false },
+        "git_tracking_allowed": { "const": true }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "gitCommitSha": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "utcTimestamp": { "type": "string", "format": "date-time", "pattern": "Z$" },
+    "score": { "type": "number", "minimum": 0, "maximum": 1 },
+    "labels": { "type": "array", "minItems": 11, "maxItems": 11, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+    "metrics": {
+      "type": "object", "additionalProperties": false,
+      "required": ["accuracy", "macro_f1", "worst_class_recall", "weighted_f1", "top2_accuracy"],
+      "properties": {
+        "accuracy": { "$ref": "#/$defs/score" },
+        "macro_f1": { "$ref": "#/$defs/score" },
+        "worst_class_recall": { "$ref": "#/$defs/score" },
+        "weighted_f1": { "$ref": "#/$defs/score" },
+        "top2_accuracy": { "$ref": "#/$defs/score" }
+      }
+    },
+    "perClass": {
+      "type": "object", "minProperties": 11, "maxProperties": 11,
+      "additionalProperties": {
+        "type": "object", "additionalProperties": false,
+        "required": ["support", "precision", "recall", "f1"],
+        "properties": {
+          "support": { "type": "integer", "minimum": 1 },
+          "precision": { "$ref": "#/$defs/score" },
+          "recall": { "$ref": "#/$defs/score" },
+          "f1": { "$ref": "#/$defs/score" }
+        }
+      }
+    },
+    "matrix": {
+      "type": "object", "additionalProperties": false,
+      "required": ["orientation", "labels", "rows"],
+      "properties": {
+        "orientation": { "const": "rows_actual_columns_predicted" },
+        "labels": { "$ref": "#/$defs/labels" },
+        "rows": { "type": "array", "minItems": 11, "maxItems": 11, "items": { "type": "array", "minItems": 11, "maxItems": 11, "items": { "type": "integer", "minimum": 0 } } }
+      }
+    },
+    "overall": {
+      "type": "object", "additionalProperties": false,
+      "required": ["record_count", "error_count", "metrics", "per_class", "confusion_matrix"],
+      "properties": {
+        "record_count": { "type": "integer", "minimum": 1 },
+        "error_count": { "type": "integer", "minimum": 1 },
+        "metrics": { "$ref": "#/$defs/metrics" },
+        "per_class": { "$ref": "#/$defs/perClass" },
+        "confusion_matrix": { "$ref": "#/$defs/matrix" }
+      }
+    },
+    "classCounts": { "type": "object", "minProperties": 11, "maxProperties": 11, "additionalProperties": { "type": "integer", "minimum": 0 } },
+    "classScores": { "type": "object", "minProperties": 11, "maxProperties": 11, "additionalProperties": { "$ref": "#/$defs/score" } },
+    "slice": {
+      "type": "object", "additionalProperties": false,
+      "required": ["record_count", "error_count", "metrics", "class_support", "per_class_recall"],
+      "properties": {
+        "month": { "type": "string" },
+        "band_id": { "type": "string" },
+        "record_count": { "type": "integer", "minimum": 1 },
+        "error_count": { "type": "integer", "minimum": 0 },
+        "metrics": { "$ref": "#/$defs/metrics" },
+        "class_support": { "$ref": "#/$defs/classCounts" },
+        "per_class_recall": { "$ref": "#/$defs/classScores" }
+      },
+      "oneOf": [{ "required": ["month"] }, { "required": ["band_id"] }]
+    },
+    "confusion": {
+      "type": "object", "additionalProperties": false,
+      "required": ["actual_label", "predicted_label", "count", "share_of_all_errors", "share_of_actual_class_errors"],
+      "properties": {
+        "actual_label": { "type": "string", "minLength": 1 },
+        "predicted_label": { "type": "string", "minLength": 1 },
+        "count": { "type": "integer", "minimum": 1 },
+        "share_of_all_errors": { "$ref": "#/$defs/score" },
+        "share_of_actual_class_errors": { "$ref": "#/$defs/score" }
+      }
+    },
+    "rarity": {
+      "type": "object", "additionalProperties": false,
+      "required": ["group_id", "labels", "validation_support", "macro_precision", "macro_recall", "macro_f1"],
+      "properties": {
+        "group_id": { "enum": ["rare", "common"] },
+        "labels": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+        "validation_support": { "type": "integer", "minimum": 1 },
+        "macro_precision": { "$ref": "#/$defs/score" },
+        "macro_recall": { "$ref": "#/$defs/score" },
+        "macro_f1": { "$ref": "#/$defs/score" }
+      }
+    },
+    "range": {
+      "type": "object", "additionalProperties": false,
+      "required": ["minimum", "maximum", "difference"],
+      "properties": {
+        "minimum": { "$ref": "#/$defs/score" },
+        "maximum": { "$ref": "#/$defs/score" },
+        "difference": { "$ref": "#/$defs/score" }
+      }
+    }
+  }
+}
