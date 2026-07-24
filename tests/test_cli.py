@@ -14,6 +14,7 @@ from complaint_triage.temporal_split import TemporalSplitError
 from complaint_triage.tfidf_logreg import TfidfLogregError
 from complaint_triage.transformer_dataset import TransformerDatasetError
 from complaint_triage.transformer_token_profile import TransformerTokenProfileError
+from complaint_triage.transformer_training import TransformerTrainingError
 
 
 def test_profile_command_prints_safe_json(monkeypatch, capsys) -> None:
@@ -509,3 +510,35 @@ def test_transformer_dataset_command_prints_safe_error(monkeypatch, capsys) -> N
     assert exit_code == 1
     assert output["error"] == {"code": "transformer_dataset_split_forbidden"}
     assert output["privacy"]["narratives_logged"] is False
+
+
+def test_transformer_training_smoke_command_prints_safe_result(monkeypatch, capsys) -> None:
+    monkeypatch.setattr(
+        cli,
+        "smoke_transformer_training",
+        lambda path: {
+            "status": "ok",
+            "mode": "synthetic_memory_and_training_only_integration_smoke",
+            "checks": {"validation_accessed": False, "test_accessed": False},
+        },
+    )
+
+    exit_code = cli.main(["smoke-transformer-training", "--split-manifest", "split.json"])
+    output = json.loads(capsys.readouterr().out)
+
+    assert exit_code == 0
+    assert output["checks"]["test_accessed"] is False
+
+
+def test_transformer_training_smoke_command_prints_safe_error(monkeypatch, capsys) -> None:
+    def fail(path):
+        raise TransformerTrainingError("transformer_training_no_batch_configuration_fits")
+
+    monkeypatch.setattr(cli, "smoke_transformer_training", fail)
+
+    exit_code = cli.main(["smoke-transformer-training", "--split-manifest", "split.json"])
+    output = json.loads(capsys.readouterr().out)
+
+    assert exit_code == 1
+    assert output["error"] == {"code": "transformer_training_no_batch_configuration_fits"}
+    assert output["privacy"]["token_ids_logged"] is False

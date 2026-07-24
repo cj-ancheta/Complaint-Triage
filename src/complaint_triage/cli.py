@@ -67,6 +67,11 @@ from complaint_triage.transformer_token_profile import (
     profile_transformer_tokens,
     safe_transformer_token_profile_error,
 )
+from complaint_triage.transformer_training import (
+    TransformerTrainingError,
+    safe_transformer_training_error,
+    smoke_transformer_training,
+)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -156,6 +161,11 @@ def build_parser() -> argparse.ArgumentParser:
         help="Validate deterministic train/validation tokenization and dynamic padding.",
     )
     dataset_parser.add_argument("--split-manifest", type=Path, required=True)
+    transformer_smoke_parser = subcommands.add_parser(
+        "smoke-transformer-training",
+        help="Run approved synthetic-memory and training-only MiniLM smokes.",
+    )
+    transformer_smoke_parser.add_argument("--split-manifest", type=Path, required=True)
     return parser
 
 
@@ -408,6 +418,26 @@ def main(argv: Sequence[str] | None = None) -> int:
                 json.dumps(
                     safe_transformer_dataset_error(
                         TransformerDatasetError("database_configuration_invalid")
+                    ),
+                    indent=2,
+                    sort_keys=True,
+                )
+            )
+            return 1
+        print(json.dumps(report, indent=2, sort_keys=True))
+        return 0
+
+    if args.command == "smoke-transformer-training":
+        try:
+            report = smoke_transformer_training(args.split_manifest)
+        except TransformerTrainingError as error:
+            print(json.dumps(safe_transformer_training_error(error), indent=2, sort_keys=True))
+            return 1
+        except DatabaseSettingsError:
+            print(
+                json.dumps(
+                    safe_transformer_training_error(
+                        TransformerTrainingError("database_configuration_invalid")
                     ),
                     indent=2,
                     sort_keys=True,
