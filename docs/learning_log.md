@@ -938,3 +938,61 @@ portfolio claim.
 - How well calibrated are the retained epoch-3 probabilities before CT-305?
 - Can later error analysis explain and responsibly improve the weak rare-class
   result without changing the approved target or test boundary?
+
+---
+
+## CT-304: governed validation model comparison
+
+**Date:** 2026-07-24
+
+**Status:** Accepted by Charles on 2026-07-24.
+
+**What the AI generated**
+
+A closed aggregate comparison schema; a CLI command that validates and hashes
+both accepted source reports; exact shared-metric and per-class deltas; explicit
+artifact and compute measurement scopes; privacy, lineage, replay, and test-set
+guards; a quality-only proposal to advance MiniLM to CT-305 calibration; and a
+documented boundary that reserves final operational selection for CT-306.
+
+**How I verified it**
+
+The accepted report reconciles the same split-manifest SHA-256, 394,564
+training rows, 80,992 validation rows, and eleven ordered labels across both
+models. MiniLM improves validation macro F1 by 0.03609, weighted F1 by 0.00740,
+accuracy by 0.00216, and worst-class recall by 0.14978. It wins per-class F1 for
+ten of eleven labels; TF-IDF retains the Mortgage F1 lead. The report schema has
+zero validation errors, both source hashes match, replay is byte-stable, and
+the report SHA-256 is
+`9623346c2feb6489b7a8637157142692e6b847bbcc11ea3809ea4b4c5aca04a3`.
+The PostgreSQL-enabled ordinary suite passed 253 tests with one intentional
+Torch-only skip, while the transformer environment passed all 254 tests.
+
+**What can fail in production**
+
+Unsafe report paths, malformed or changed source reports, run or split identity
+mismatch, count or label drift, missing selected candidates, non-finite metrics,
+changed source bytes at an existing report identity, a dirty implementation
+worktree, and output-schema drift fail closed. The comparison does not make
+unlike training-time scopes look comparable. It also cannot answer calibration,
+abstention, CPU latency, runtime memory, explainability, complexity, or cost
+questions that have not yet been measured under a fixed rule.
+
+**What I can explain in an interview**
+
+Why validation evidence can choose the next experiment without becoming a
+final test claim; why macro F1 and worst-class recall reveal improvements that
+accuracy mostly hides; why ten per-class wins still require discussing the one
+loss; why a 6.801287-times larger artifact matters operationally; why training
+time ratios are invalid when measurement scopes differ; and why MiniLM can
+advance to calibration while TF-IDF remains eligible for the final utility
+decision.
+
+**Questions still open**
+
+- Which fixed calibration method and fitting split should CT-305 approve without
+  tuning repeatedly on the same validation outcomes?
+- How should expected calibration error, Brier score, coverage, and selective
+  accuracy be defined and reported for the eleven-class problem?
+- Will MiniLM's quality gain still justify its larger artifact, latency,
+  explainability, complexity, and deployment cost in CT-306?

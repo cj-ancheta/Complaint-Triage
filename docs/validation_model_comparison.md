@@ -36,6 +36,39 @@ This means a MiniLM quality lead is evidence for calibrating MiniLM next, not a
 claim that it is already the best deployment choice. The frozen test set remains
 untouched and `portfolio_promotion_approved` remains false.
 
+## Accepted validation evidence
+
+The comparison was generated from clean implementation commit
+`f577da97873b08284e5274fc78c8e2ed4fa4fb7b`. Both source reports identify split
+manifest SHA-256
+`8685eefd10d764d813dee2891e930323c22592850d537b0571956f390afe554b`,
+394,564 training rows, 80,992 validation rows, the same eleven labels, and no
+test access.
+
+| Validation metric | TF-IDF logistic regression | MiniLM epoch 3 | MiniLM minus TF-IDF |
+|---|---:|---:|---:|
+| Accuracy | 0.883692 | 0.8858529237 | +0.0021609237 |
+| Macro F1 | 0.699661 | 0.7357461057 | +0.0360851057 |
+| Weighted F1 | 0.879291 | 0.8866921404 | +0.0074011404 |
+| Worst-class recall | 0.057269 | 0.2070484581 | +0.1497794581 |
+
+MiniLM has higher F1 for ten of eleven classes. TF-IDF retains a small F1 lead
+for Mortgage. The shared weakest-recall class is Debt or credit management;
+MiniLM raises its recall from 0.057269 to 0.2070484581 and its F1 from 0.106996
+to 0.2772861357.
+
+The retained TF-IDF pipeline is 19,625,755 bytes and the retained MiniLM weights
+are 133,480,388 bytes, making MiniLM 6.801287 times larger. The report records
+75.573 seconds for the selected TF-IDF candidate fit and 5,292.732 seconds for
+all three MiniLM training-and-validation epochs, but does not treat these
+different scopes as a benchmark.
+
+The proposed next action is
+`advance_transformer_to_ct305_calibration`. The final operational model remains
+null and deferred to CT-306. The generated report SHA-256 is
+`9623346c2feb6489b7a8637157142692e6b847bbcc11ea3809ea4b4c5aca04a3`.
+Charles accepted this CT-304 evidence and its bounded proposal on 2026-07-24.
+
 ## Reproducible command
 
 After the implementation is committed and the worktree is clean:

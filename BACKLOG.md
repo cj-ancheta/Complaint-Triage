@@ -42,7 +42,7 @@ This backlog converts `SPEC.md` into bounded delivery issues. Status values are 
 | CT-301 | Select the compact encoder boundary and profile tokenizer truncation | complete | Accepted ADR 0012, 384-token boundary, and reproducible training-only aggregate report |
 | CT-302 | Implement the versioned transformer dataset and tokenizer pipeline | complete | Accepted deterministic streaming loaders, length-grouped dynamic padding, and real aggregate validation |
 | CT-303 | Train and track the compact transformer candidate | complete | Accepted epoch-3 validation selection, aggregate report, and hashed local safetensors artifact |
-| CT-304 | Compare baseline and transformer on validation evidence | in progress | Aggregate validation comparison and proposed utility decision; test remains untouched |
+| CT-304 | Compare baseline and transformer on validation evidence | complete | Accepted aggregate validation comparison advances MiniLM to CT-305; test remains untouched and final selection remains deferred |
 | CT-305 | Calibrate the selected candidate probabilities | pending | Validation-only calibration report and governed calibrator artifact |
 | CT-306 | Record the baseline-versus-transformer decision | pending | Accepted utility ADR covering quality, calibration, latency, memory, explainability, complexity, and cost |
 
@@ -76,6 +76,7 @@ accepted pipeline reconciles all 475,556 train/validation rows, keeps test
 untouched, and reduces measured padding to 3.8157% for train and 3.6064% for
 validation through deterministic bounded length grouping. CT-303 is complete:
 epoch 3 is the accepted MiniLM validation selection, its governed safetensors
-artifact remains local, and test is untouched. CT-304 is now in progress and
-is limited to comparing the accepted aggregate validation reports before
-calibration or a final operational-model decision.
+artifact remains local, and test is untouched. CT-304 is complete: its accepted
+aggregate report advances MiniLM to CT-305 calibration but does not select a
+final operational model or access test. CT-305 is the next bounded issue and
+requires a fixed validation-only calibration design before fitting a calibrator.

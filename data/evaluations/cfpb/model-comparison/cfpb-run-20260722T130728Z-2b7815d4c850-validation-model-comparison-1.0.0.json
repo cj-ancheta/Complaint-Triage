@@ -1,0 +1,374 @@
+{
+  "checks": {
+    "labels_match": true,
+    "per_class_support_matches": true,
+    "run_identity_matches": true,
+    "selected_candidates_reconciled": true,
+    "source_reports_validation_only": true,
+    "split_identity_matches": true,
+    "test_accessed": false,
+    "train_counts_match": true,
+    "validation_counts_match": true
+  },
+  "claims": {
+    "interpretation": "validation_only_candidate_comparison",
+    "operational_model_selected": false,
+    "portfolio_promotion_approved": false,
+    "test_used_for_comparison": false
+  },
+  "compared_at_utc": "2026-07-24T12:17:22.702398Z",
+  "comparison": {
+    "artifact_footprint": {
+      "baseline_byte_count": 19625755,
+      "transformer_byte_count": 133480388,
+      "transformer_minus_baseline_bytes": 113854633,
+      "transformer_to_baseline_ratio": 6.801287
+    },
+    "class_f1_wins": {
+      "baseline": 1,
+      "tie": 0,
+      "transformer": 10
+    },
+    "metric_direction": "higher_is_better",
+    "non_comparable_evidence": {
+      "calibration": "not_yet_measured",
+      "cpu_inference_latency": "not_yet_measured",
+      "deployment_cost": "not_yet_assessed_under_fixed_rule",
+      "explainability": "not_yet_assessed_under_fixed_rule",
+      "operational_complexity": "not_yet_assessed_under_fixed_rule",
+      "runtime_memory": "not_comparable_across_models",
+      "selective_accuracy_after_abstention": "not_yet_measured",
+      "top_2_accuracy": "transformer_only"
+    },
+    "per_class": [
+      {
+        "baseline": {
+          "f1": 0.826354,
+          "precision": 0.801098,
+          "recall": 0.853255
+        },
+        "delta_transformer_minus_baseline": {
+          "f1": 0.008412953390678157,
+          "precision": 0.0273713269803455,
+          "recall": -0.012093943761338433
+        },
+        "f1_winner": "transformer",
+        "label": "Checking or savings account",
+        "support": 4961,
+        "transformer": {
+          "f1": 0.8347669533906782,
+          "precision": 0.8284693269803455,
+          "recall": 0.8411610562386616
+        }
+      },
+      {
+        "baseline": {
+          "f1": 0.770649,
+          "precision": 0.777212,
+          "recall": 0.764196
+        },
+        "delta_transformer_minus_baseline": {
+          "f1": 0.006908755775577591,
+          "precision": -0.015104791127541595,
+          "recall": 0.02945173820981717
+        },
+        "f1_winner": "transformer",
+        "label": "Credit card",
+        "support": 5195,
+        "transformer": {
+          "f1": 0.7775577557755776,
+          "precision": 0.7621072088724584,
+          "recall": 0.7936477382098172
+        }
+      },
+      {
+        "baseline": {
+          "f1": 0.941373,
+          "precision": 0.922831,
+          "recall": 0.960675
+        },
+        "delta_transformer_minus_baseline": {
+          "f1": 0.0010776860461853,
+          "precision": 0.029479745676212143,
+          "recall": -0.027882287269495598
+        },
+        "f1_winner": "transformer",
+        "label": "Credit reporting or other personal consumer reports",
+        "support": 54012,
+        "transformer": {
+          "f1": 0.9424506860461853,
+          "precision": 0.9523107456762121,
+          "recall": 0.9327927127305043
+        }
+      },
+      {
+        "baseline": {
+          "f1": 0.723931,
+          "precision": 0.774834,
+          "recall": 0.679303
+        },
+        "delta_transformer_minus_baseline": {
+          "f1": 0.02849210493585075,
+          "precision": -0.034072830667402076,
+          "recall": 0.0851551056466302
+        },
+        "f1_winner": "transformer",
+        "label": "Debt collection",
+        "support": 8784,
+        "transformer": {
+          "f1": 0.7524231049358507,
+          "precision": 0.740761169332598,
+          "recall": 0.7644581056466302
+        }
+      },
+      {
+        "baseline": {
+          "f1": 0.106996,
+          "precision": 0.8125,
+          "recall": 0.057269
+        },
+        "delta_transformer_minus_baseline": {
+          "f1": 0.17029013569321533,
+          "precision": -0.39285714285714285,
+          "recall": 0.14977945814977972
+        },
+        "f1_winner": "transformer",
+        "label": "Debt or credit management",
+        "support": 227,
+        "transformer": {
+          "f1": 0.2772861356932153,
+          "precision": 0.41964285714285715,
+          "recall": 0.20704845814977973
+        }
+      },
+      {
+        "baseline": {
+          "f1": 0.690515,
+          "precision": 0.771827,
+          "recall": 0.624703
+        },
+        "delta_transformer_minus_baseline": {
+          "f1": 0.03296533373063171,
+          "precision": -0.04575044497607661,
+          "recall": 0.09619961282660328
+        },
+        "f1_winner": "transformer",
+        "label": "Money transfer, virtual currency, or money service",
+        "support": 1684,
+        "transformer": {
+          "f1": 0.7234803337306317,
+          "precision": 0.7260765550239234,
+          "recall": 0.7209026128266033
+        }
+      },
+      {
+        "baseline": {
+          "f1": 0.876339,
+          "precision": 0.868726,
+          "recall": 0.884086
+        },
+        "delta_transformer_minus_baseline": {
+          "f1": -0.0027650768335273357,
+          "precision": -0.03827004603806994,
+          "recall": 0.037328538310412496
+        },
+        "f1_winner": "baseline",
+        "label": "Mortgage",
+        "support": 2036,
+        "transformer": {
+          "f1": 0.8735739231664726,
+          "precision": 0.8304559539619301,
+          "recall": 0.9214145383104125
+        }
+      },
+      {
+        "baseline": {
+          "f1": 0.534228,
+          "precision": 0.680342,
+          "recall": 0.439779
+        },
+        "delta_transformer_minus_baseline": {
+          "f1": 0.06294329387113673,
+          "precision": -0.1126129163346613,
+          "recall": 0.19005525414364638
+        },
+        "f1_winner": "transformer",
+        "label": "Payday loan, title loan, personal loan, or advance loan",
+        "support": 905,
+        "transformer": {
+          "f1": 0.5971712938711368,
+          "precision": 0.5677290836653387,
+          "recall": 0.6298342541436464
+        }
+      },
+      {
+        "baseline": {
+          "f1": 0.672,
+          "precision": 0.845638,
+          "recall": 0.557522
+        },
+        "delta_transformer_minus_baseline": {
+          "f1": 0.05466666666666675,
+          "precision": -0.1157272857142857,
+          "recall": 0.16592932743362832
+        },
+        "f1_winner": "transformer",
+        "label": "Prepaid card",
+        "support": 452,
+        "transformer": {
+          "f1": 0.7266666666666668,
+          "precision": 0.7299107142857143,
+          "recall": 0.7234513274336283
+        }
+      },
+      {
+        "baseline": {
+          "f1": 0.882227,
+          "precision": 0.935655,
+          "recall": 0.834571
+        },
+        "delta_transformer_minus_baseline": {
+          "f1": 0.002045997032641078,
+          "precision": -0.07160860824742266,
+          "recall": 0.07089827751519251
+        },
+        "f1_winner": "transformer",
+        "label": "Student loan",
+        "support": 1481,
+        "transformer": {
+          "f1": 0.8842729970326411,
+          "precision": 0.8640463917525774,
+          "recall": 0.9054692775151925
+        }
+      },
+      {
+        "baseline": {
+          "f1": 0.671655,
+          "precision": 0.750246,
+          "recall": 0.607968
+        },
+        "delta_transformer_minus_baseline": {
+          "f1": 0.03190231225296436,
+          "precision": -0.1095391937172775,
+          "recall": 0.1721116812749004
+        },
+        "f1_winner": "transformer",
+        "label": "Vehicle loan or lease",
+        "support": 1255,
+        "transformer": {
+          "f1": 0.7035573122529644,
+          "precision": 0.6407068062827225,
+          "recall": 0.7800796812749003
+        }
+      }
+    ],
+    "shared_validation_metrics": {
+      "accuracy": {
+        "baseline": 0.883692,
+        "delta_transformer_minus_baseline": 0.002160923745555099,
+        "transformer": 0.8858529237455551,
+        "winner": "transformer"
+      },
+      "macro_f1": {
+        "baseline": 0.699661,
+        "delta_transformer_minus_baseline": 0.036085105687456376,
+        "transformer": 0.7357461056874564,
+        "winner": "transformer"
+      },
+      "weighted_f1": {
+        "baseline": 0.879291,
+        "delta_transformer_minus_baseline": 0.0074011404292962935,
+        "transformer": 0.8866921404292963,
+        "winner": "transformer"
+      },
+      "worst_class_recall": {
+        "baseline": 0.057269,
+        "delta_transformer_minus_baseline": 0.14977945814977972,
+        "transformer": 0.20704845814977973,
+        "winner": "transformer"
+      }
+    }
+  },
+  "data": {
+    "evaluation_split": "validation",
+    "labels": [
+      "Checking or savings account",
+      "Credit card",
+      "Credit reporting or other personal consumer reports",
+      "Debt collection",
+      "Debt or credit management",
+      "Money transfer, virtual currency, or money service",
+      "Mortgage",
+      "Payday loan, title loan, personal loan, or advance loan",
+      "Prepaid card",
+      "Student loan",
+      "Vehicle loan or lease"
+    ],
+    "test_accessed": false,
+    "train_record_count": 394564,
+    "validation_record_count": 80992
+  },
+  "limitations": [
+    "validation_was_used_for_model_selection",
+    "baseline_metrics_are_rounded_to_six_decimals",
+    "training_compute_scopes_are_not_comparable",
+    "top_2_accuracy_is_available_only_for_transformer",
+    "calibration_and_abstention_are_deferred_to_ct305",
+    "latency_memory_explainability_complexity_and_cost_are_deferred_to_ct306",
+    "no_final_operational_model_selected_in_ct304"
+  ],
+  "models": {
+    "baseline": {
+      "artifact_byte_count": 19625755,
+      "compute_scope": "selected_candidate_fit_only",
+      "compute_seconds": 75.573,
+      "model_family": "tfidf_logistic_regression",
+      "selected_candidate_id": "c1p0-unweighted"
+    },
+    "transformer": {
+      "artifact_byte_count": 133480388,
+      "compute_scope": "all_completed_training_and_validation_epochs",
+      "compute_seconds": 5292.732,
+      "model_family": "minilm_full_fine_tune",
+      "selected_epoch": 3
+    }
+  },
+  "privacy": {
+    "contains_complaint_ids": false,
+    "contains_narratives": false,
+    "contains_row_values": false,
+    "contains_token_ids": false,
+    "contains_vocabulary": false,
+    "git_tracking_allowed": true
+  },
+  "report_version": "validation-model-comparison-1.0.0",
+  "run_id": "cfpb-run-20260722T130728Z-2b7815d4c850",
+  "source": {
+    "baseline_report_sha256": "c2bc40bda7c17168de6a01157fe4a4cdcd555afe5de200d47df50be936c1ae6e",
+    "comparison_implementation_commit_sha": "f577da97873b08284e5274fc78c8e2ed4fa4fb7b",
+    "split_manifest_sha256": "8685eefd10d764d813dee2891e930323c22592850d537b0571956f390afe554b",
+    "transformer_report_sha256": "b55188c31a9d28d0eaa424a1208578a9454368098cc803d3aebb87f8a2bd8cef"
+  },
+  "utility_proposal": {
+    "basis": "validation_quality_only",
+    "candidate_for_calibration": "transformer_minilm",
+    "final_decision_gate": "ct306_written_utility_adr",
+    "final_operational_model": null,
+    "rationale": [
+      "transformer_has_higher_validation_macro_f1",
+      "transformer_has_higher_validation_worst_class_recall",
+      "transformer_has_higher_validation_weighted_f1",
+      "transformer_has_higher_validation_accuracy"
+    ],
+    "status": "advance_transformer_to_ct305_calibration",
+    "unresolved_dimensions": [
+      "calibration",
+      "selective_accuracy_after_abstention",
+      "cpu_inference_latency",
+      "runtime_memory",
+      "explainability",
+      "operational_complexity",
+      "deployment_cost"
+    ]
+  }
+}
