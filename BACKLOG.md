@@ -41,7 +41,7 @@ This backlog converts `SPEC.md` into bounded delivery issues. Status values are 
 |---|---|---|---|
 | CT-301 | Select the compact encoder boundary and profile tokenizer truncation | complete | Accepted ADR 0012, 384-token boundary, and reproducible training-only aggregate report |
 | CT-302 | Implement the versioned transformer dataset and tokenizer pipeline | complete | Accepted deterministic streaming loaders, length-grouped dynamic padding, and real aggregate validation |
-| CT-303 | Train and track the compact transformer candidate | in progress | Reproducible validation-only experiment with early stopping and local governed artifact |
+| CT-303 | Train and track the compact transformer candidate | complete | Accepted epoch-3 validation selection, aggregate report, and hashed local safetensors artifact |
 | CT-304 | Compare baseline and transformer on validation evidence | pending | Aggregate validation comparison and proposed utility decision; test remains untouched |
 | CT-305 | Calibrate the selected candidate probabilities | pending | Validation-only calibration report and governed calibrator artifact |
 | CT-306 | Record the baseline-versus-transformer decision | pending | Accepted utility ADR covering quality, calibration, latency, memory, explainability, complexity, and cost |

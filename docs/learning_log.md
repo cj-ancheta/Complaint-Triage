@@ -879,3 +879,62 @@ the test partition is rejected before any database query.
 - Should the transformer use unweighted or moderated class-weighted loss?
 - What batch-size fallback, learning rate, early-stopping rule, and local
   experiment-tracking boundary should be approved before training?
+
+---
+
+## CT-303: governed MiniLM validation fit
+
+**Date:** 2026-07-24
+
+**Status:** Accepted by Charles on 2026-07-24.
+
+**What the AI generated**
+
+An accepted PyTorch/CUDA training configuration; hardware and bounded
+training-only smoke gates; a deterministic full train/validation loop; moderated
+class-weighted loss; FP16 gradient accumulation; aggregate epoch evaluation;
+early stopping and epoch selection; crash-safe safetensors plus trusted-local
+resume checkpoints; a closed report schema; CLI progress events; operator
+documentation; and synthetic, CUDA, privacy, lineage, artifact, and replay
+tests.
+
+**How I verified it**
+
+The implementation passed 244 tests in the transformer environment and 243
+tests plus one intentional CUDA-only skip in the ordinary environment, with
+PostgreSQL enabled. A real CUDA micro-fit and safetensors round trip passed
+before the full run. The authoritative fit reconciled 394,564 training and
+80,992 validation rows in every epoch. Epoch 3 was selected at validation
+macro-F1 0.73575, weighted-F1 0.88669, worst-class recall 0.20705, and top-2
+accuracy 0.96795. I independently revalidated the closed JSON Schema,
+idempotent replay, 201-tensor safetensors metadata, relative paths, byte counts,
+and every artifact SHA-256. Test access and portfolio promotion remained false.
+
+**What can fail in production**
+
+Database or tokenizer availability, changed split evidence, count or taxonomy
+drift, CUDA OOM, non-finite loss, driver or dependency mismatch, interrupted
+checkpoint writes, untrusted resume state, artifact tampering, disk exhaustion,
+and report-schema drift fail closed. Reproducibility is best effort within the
+recorded hardware and software boundary. The rare `Debt or credit management`
+class remains weak at only 0.20705 validation recall and 0.27729 F1, so aggregate
+accuracy must not conceal that operational limitation.
+
+**What I can explain in an interview**
+
+Why class weights change loss contribution without oversampling; how dynamic
+padding, effective batch size, gradient accumulation, FP16 scaling, warmup,
+and clipping interact; why early stopping and epoch selection are distinct;
+how a confusion matrix supports aggregate metrics without retaining row-level
+predictions; why safetensors is the deployable format while `.pt` resume state
+is trusted-local only; and why validation evidence cannot yet become a final
+portfolio claim.
+
+**Questions still open**
+
+- Does the transformer provide better validation utility than the TF-IDF
+  baseline after quality, rare-class recall, latency, memory, explainability,
+  complexity, and cost are considered in CT-304 and CT-306?
+- How well calibrated are the retained epoch-3 probabilities before CT-305?
+- Can later error analysis explain and responsibly improve the weak rare-class
+  result without changing the approved target or test boundary?

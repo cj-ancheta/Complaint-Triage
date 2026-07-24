@@ -85,3 +85,35 @@ Validation metrics are still tuning evidence. They cannot yet be promoted to
 the README, portfolio, or resume and do not prove that MiniLM has better
 operational utility than the TF-IDF baseline.
 
+## First full-fit evidence
+
+The authoritative validation-only run uses implementation commit
+`2669e5bc05ffdbdb3d2779478851f7fe2913072a`. All three epochs reconciled
+394,564 training rows and 80,992 validation rows. The test split was never
+queried. Epoch 3 was retained because each epoch improved validation macro-F1
+by more than the fixed 0.001 boundary.
+
+| Epoch | Train loss | Validation loss | Accuracy | Macro-F1 | Weighted-F1 | Worst recall | Top-2 accuracy | Train seconds | Validation seconds |
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 1 | 0.85123 | 0.59057 | 0.87136 | 0.68656 | 0.87339 | 0.00000 | 0.96109 | 1,656.278 | 120.521 |
+| 2 | 0.52874 | 0.54480 | 0.87921 | 0.72162 | 0.88178 | 0.16300 | 0.96333 | 1,614.567 | 114.544 |
+| 3 | 0.46151 | 0.53608 | 0.88585 | 0.73575 | 0.88669 | 0.20705 | 0.96795 | 1,667.727 | 119.095 |
+
+The weakest epoch-3 class is `Debt or credit management`: support 227,
+precision 0.41964, recall 0.20705, and F1 0.27729. This limitation is material
+despite the much stronger aggregate and majority-class results. CT-304 must
+compare this validation evidence with the baseline rather than assuming the
+transformer wins, and CT-305 must assess calibration separately.
+
+Summed epoch train-plus-validation compute time was 5,292.732 seconds
+(88.212 minutes). Peak allocated CUDA memory was 1,908.24 MiB. The selected
+127.30 MiB safetensors artifact has SHA-256
+`c83f4ad8c225dea2a8b32424d9af6179ee028dc6adf6bc1eeea9f18932325415`.
+The closed report, idempotent replay, all retained artifact hashes, safetensors
+metadata, and ignored-artifact boundary were independently revalidated after
+the GPU released all memory.
+
+These are validation-selection results only. The report keeps
+`portfolio_promotion_approved=false`; no README, portfolio, resume, calibration,
+abstention, or final-test claim is authorized by CT-303.
+
