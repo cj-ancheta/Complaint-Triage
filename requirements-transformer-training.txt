@@ -1,0 +1,5 @@
+# CT-303: install in the isolated Python 3.12 environment with --no-cache-dir.
+# Official wheel SHA-256:
+# 2efab1e83604ca628c6d85b9e188c153690980498d1297081a9dad704919303c
+--index-url https://download.pytorch.org/whl/cu130
+torch==2.13.0+cu130
