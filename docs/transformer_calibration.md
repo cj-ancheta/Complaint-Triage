@@ -49,3 +49,42 @@ The report proposes calibrated probabilities for CT-306 only if October NLL
 improves, October Brier stays within the accepted guard, probabilities remain
 valid, predictions and top-2 membership remain unchanged, and all lineage and
 population checks pass. CT-306 still owns the final utility decision.
+
+## Accepted calibration evidence
+
+The governed run completed on 2026-07-25 from clean implementation commit
+`753b61a9a81b9c1b403af27e75588507a52582b3`. It reproduced the accepted epoch-3
+confusion matrix and original PyTorch FP16 top-2 result across all 80,992
+validation rows before fitting a temperature of `1.041049944456901`.
+
+| October validation metric | Before | After | Change |
+|---|---:|---:|---:|
+| Negative log-likelihood | 0.3714538016 | 0.3698036697 | -0.0016501319 |
+| Multiclass Brier loss | 0.1777332810 | 0.1770533041 | -0.0006799768 |
+| Equal-width top-label ECE, 15 bins | 0.0238944672 | 0.0173362285 | -0.0065582386 |
+| Equal-mass top-label ECE, 15 bins | 0.0235984646 | 0.0179463118 | -0.0056521529 |
+| Signed confidence minus accuracy | 0.0234235903 | 0.0166845511 | -0.0067390391 |
+
+October NLL improved by 0.4442% and multiclass Brier by 0.3826%. Equal-width
+and equal-mass ECE improved by 27.45% and 23.95% respectively. Accuracy and
+top-k rankings remained unchanged, as required.
+
+The class diagnostics are more mixed. One-versus-rest Brier improved for nine
+of eleven labels, while it worsened slightly for Credit reporting or other
+personal consumer reports and Debt or credit management. The absolute gap
+between each class's mean predicted probability and prevalence also worsened
+slightly for every label. This does not violate the approved global eligibility
+rule, but it demonstrates that one scalar temperature does not solve
+class-specific calibration and must remain visible in CT-306.
+
+All fixed eligibility checks passed. The report therefore proposes
+`calibrated_transformer_probabilities` for CT-306 while leaving the final model
+and abstention threshold unselected and test untouched. GPU inference took
+102.825 seconds.
+
+The generated report SHA-256 is
+`faa1125b99e5dbc9421628102b21e330940700952bbc501bee2cd2bdc46e655e`.
+The ignored scalar artifact SHA-256 is
+`3fc439322d7bc32d7f0bfbdef6f5383bfc0867e595bad340340aba9909a66800`.
+Charles accepted the CT-305 evidence, eligibility outcome, and documented
+class-specific limitation on 2026-07-25.

@@ -1,0 +1,1035 @@
+{
+  "artifact": {
+    "artifact_version": "temperature-scaling-1.0.0",
+    "byte_count": 1040,
+    "relative_path": "artifacts/cfpb/transformer/cfpb-run-20260722T130728Z-2b7815d4c850/calibration/temperature-scaling-1.0.0.json",
+    "retention": "local_only_governed_until_2026-11-19",
+    "sha256": "3fc439322d7bc32d7f0bfbdef6f5383bfc0867e595bad340340aba9909a66800"
+  },
+  "calibrated_at_utc": "2026-07-24T16:25:46.440783Z",
+  "checks": {
+    "accepted_predictions_reproduced": true,
+    "artifact_hashed": true,
+    "class_counts_reconcile": true,
+    "model_artifact_verified_before_load": true,
+    "partition_counts_reconcile": true,
+    "predictions_unchanged": true,
+    "probabilities_finite_and_normalized": true,
+    "source_identity_reconciled": true,
+    "test_accessed": false,
+    "top_2_unchanged": true
+  },
+  "claims": {
+    "final_operational_model_selected": false,
+    "interpretation": "validation_only_temperature_calibration",
+    "operational_threshold_selected": false,
+    "portfolio_promotion_approved": false,
+    "test_used_for_calibration": false
+  },
+  "data": {
+    "evaluation_split": "validation",
+    "labels": [
+      "Checking or savings account",
+      "Credit card",
+      "Credit reporting or other personal consumer reports",
+      "Debt collection",
+      "Debt or credit management",
+      "Money transfer, virtual currency, or money service",
+      "Mortgage",
+      "Payday loan, title loan, personal loan, or advance loan",
+      "Prepaid card",
+      "Student loan",
+      "Vehicle loan or lease"
+    ],
+    "partitions": [
+      {
+        "class_counts": {
+          "Checking or savings account": 2347,
+          "Credit card": 2543,
+          "Credit reporting or other personal consumer reports": 26300,
+          "Debt collection": 4101,
+          "Debt or credit management": 98,
+          "Money transfer, virtual currency, or money service": 782,
+          "Mortgage": 1025,
+          "Payday loan, title loan, personal loan, or advance loan": 414,
+          "Prepaid card": 184,
+          "Student loan": 756,
+          "Vehicle loan or lease": 611
+        },
+        "end_exclusive": "2024-10-01",
+        "partition": "calibration_fit",
+        "record_count": 39161,
+        "start_inclusive": "2024-09-01"
+      },
+      {
+        "class_counts": {
+          "Checking or savings account": 2614,
+          "Credit card": 2652,
+          "Credit reporting or other personal consumer reports": 27712,
+          "Debt collection": 4683,
+          "Debt or credit management": 129,
+          "Money transfer, virtual currency, or money service": 902,
+          "Mortgage": 1011,
+          "Payday loan, title loan, personal loan, or advance loan": 491,
+          "Prepaid card": 268,
+          "Student loan": 725,
+          "Vehicle loan or lease": 644
+        },
+        "end_exclusive": "2024-11-01",
+        "partition": "calibration_evaluation",
+        "record_count": 41831,
+        "start_inclusive": "2024-10-01"
+      }
+    ],
+    "test_accessed": false
+  },
+  "eligibility": {
+    "calibrator_eligible_for_ct306": true,
+    "checks": {
+      "argmax_unchanged": true,
+      "evaluation_brier_guard_passed": true,
+      "evaluation_nll_improved": true,
+      "optimizer_converged_away_from_bounds": true,
+      "partition_counts_reconcile": true,
+      "probabilities_valid": true,
+      "top_2_membership_unchanged": true
+    },
+    "final_operational_model_selected": false,
+    "proposal_for_ct306": "calibrated_transformer_probabilities"
+  },
+  "limitations": [
+    "base_model_selected_using_complete_validation_period",
+    "september_metrics_are_in_sample_calibration_fit_diagnostics",
+    "october_metrics_are_validation_tuning_evidence_not_final_test_evidence",
+    "temperature_scaling_cannot_fix_class_specific_or_input_dependent_miscalibration",
+    "ece_estimates_depend_on_declared_binning",
+    "rare_class_calibration_metrics_have_higher_variance",
+    "no_abstention_threshold_selected_in_ct305"
+  ],
+  "method": {
+    "kind": "scalar_temperature_scaling",
+    "maximum_iterations": 500,
+    "objective": "mean_categorical_negative_log_likelihood",
+    "optimizer_converged": true,
+    "optimizer_function_calls": 20,
+    "optimizer_iterations": 20,
+    "parameterization": "bounded_log_temperature",
+    "temperature": 1.041049944456901,
+    "temperature_lower_bound": 0.05,
+    "temperature_upper_bound": 20.0,
+    "xatol_log_temperature": 1e-08
+  },
+  "privacy": {
+    "artifact_git_tracking_allowed": false,
+    "contains_complaint_ids": false,
+    "contains_narratives": false,
+    "contains_row_logits": false,
+    "contains_row_probabilities": false,
+    "contains_row_values": false,
+    "contains_token_ids": false,
+    "report_git_tracking_allowed": true
+  },
+  "report_version": "transformer-temperature-calibration-1.0.0",
+  "results": {
+    "calibration_evaluation": {
+      "after": {
+        "accuracy": 0.882120915110803,
+        "equal_width_reliability_bins": [
+          {
+            "absolute_gap": null,
+            "accuracy": null,
+            "bin_index": 0,
+            "correct_count": 0,
+            "lower_inclusive": 0.0,
+            "mean_confidence": null,
+            "record_count": 0,
+            "upper_exclusive": 0.06666666666666667,
+            "upper_inclusive": null
+          },
+          {
+            "absolute_gap": null,
+            "accuracy": null,
+            "bin_index": 1,
+            "correct_count": 0,
+            "lower_inclusive": 0.06666666666666667,
+            "mean_confidence": null,
+            "record_count": 0,
+            "upper_exclusive": 0.13333333333333333,
+            "upper_inclusive": null
+          },
+          {
+            "absolute_gap": 0.016170121840300256,
+            "accuracy": 0.2,
+            "bin_index": 2,
+            "correct_count": 1,
+            "lower_inclusive": 0.13333333333333333,
+            "mean_confidence": 0.18382987815969976,
+            "record_count": 5,
+            "upper_exclusive": 0.2,
+            "upper_inclusive": null
+          },
+          {
+            "absolute_gap": 0.1102305781879715,
+            "accuracy": 0.3488372093023256,
+            "bin_index": 3,
+            "correct_count": 15,
+            "lower_inclusive": 0.2,
+            "mean_confidence": 0.2386066311143541,
+            "record_count": 43,
+            "upper_exclusive": 0.26666666666666666,
+            "upper_inclusive": null
+          },
+          {
+            "absolute_gap": 0.023115322224109836,
+            "accuracy": 0.328125,
+            "bin_index": 4,
+            "correct_count": 42,
+            "lower_inclusive": 0.26666666666666666,
+            "mean_confidence": 0.30500967777589016,
+            "record_count": 128,
+            "upper_exclusive": 0.3333333333333333,
+            "upper_inclusive": null
+          },
+          {
+            "absolute_gap": 0.002936673234046061,
+            "accuracy": 0.36824324324324326,
+            "bin_index": 5,
+            "correct_count": 109,
+            "lower_inclusive": 0.3333333333333333,
+            "mean_confidence": 0.3711799164772893,
+            "record_count": 296,
+            "upper_exclusive": 0.4,
+            "upper_inclusive": null
+          },
+          {
+            "absolute_gap": 0.01172471435369593,
+            "accuracy": 0.45090180360721444,
+            "bin_index": 6,
+            "correct_count": 225,
+            "lower_inclusive": 0.4,
+            "mean_confidence": 0.4391770892535185,
+            "record_count": 499,
+            "upper_exclusive": 0.4666666666666667,
+            "upper_inclusive": null
+          },
+          {
+            "absolute_gap": 0.003249566915494384,
+            "accuracy": 0.4984984984984985,
+            "bin_index": 7,
+            "correct_count": 498,
+            "lower_inclusive": 0.4666666666666667,
+            "mean_confidence": 0.5017480654139929,
+            "record_count": 999,
+            "upper_exclusive": 0.5333333333333333,
+            "upper_inclusive": null
+          },
+          {
+            "absolute_gap": 0.046392309438620716,
+            "accuracy": 0.5206136145733461,
+            "bin_index": 8,
+            "correct_count": 543,
+            "lower_inclusive": 0.5333333333333333,
+            "mean_confidence": 0.5670059240119668,
+            "record_count": 1043,
+            "upper_exclusive": 0.6,
+            "upper_inclusive": null
+          },
+          {
+            "absolute_gap": 0.04178626252666928,
+            "accuracy": 0.5920066611157369,
+            "bin_index": 9,
+            "correct_count": 711,
+            "lower_inclusive": 0.6,
+            "mean_confidence": 0.6337929236424061,
+            "record_count": 1201,
+            "upper_exclusive": 0.6666666666666666,
+            "upper_inclusive": null
+          },
+          {
+            "absolute_gap": 0.0348450122366335,
+            "accuracy": 0.6657223796033994,
+            "bin_index": 10,
+            "correct_count": 940,
+            "lower_inclusive": 0.6666666666666666,
+            "mean_confidence": 0.7005673918400329,
+            "record_count": 1412,
+            "upper_exclusive": 0.7333333333333333,
+            "upper_inclusive": null
+          },
+          {
+            "absolute_gap": 0.060808393532609806,
+            "accuracy": 0.7072152653548003,
+            "bin_index": 11,
+            "correct_count": 1186,
+            "lower_inclusive": 0.7333333333333333,
+            "mean_confidence": 0.7680236588874101,
+            "record_count": 1677,
+            "upper_exclusive": 0.8,
+            "upper_inclusive": null
+          },
+          {
+            "absolute_gap": 0.048955606026613196,
+            "accuracy": 0.7873859579531932,
+            "bin_index": 12,
+            "correct_count": 1985,
+            "lower_inclusive": 0.8,
+            "mean_confidence": 0.8363415639798064,
+            "record_count": 2521,
+            "upper_exclusive": 0.8666666666666667,
+            "upper_inclusive": null
+          },
+          {
+            "absolute_gap": 0.041558311395280434,
+            "accuracy": 0.863390254060808,
+            "bin_index": 13,
+            "correct_count": 4146,
+            "lower_inclusive": 0.8666666666666667,
+            "mean_confidence": 0.9049485654560885,
+            "record_count": 4802,
+            "upper_exclusive": 0.9333333333333333,
+            "upper_inclusive": null
+          },
+          {
+            "absolute_gap": 0.004951907263552213,
+            "accuracy": 0.9740488880720456,
+            "bin_index": 14,
+            "correct_count": 26499,
+            "lower_inclusive": 0.9333333333333333,
+            "mean_confidence": 0.9790007953355978,
+            "record_count": 27205,
+            "upper_exclusive": null,
+            "upper_inclusive": 1.0
+          }
+        ],
+        "mean_top_label_confidence": 0.8988054662316675,
+        "multiclass_brier_loss": 0.17705330414992662,
+        "negative_log_likelihood": 0.3698036697339236,
+        "record_count": 41831,
+        "signed_confidence_minus_accuracy": 0.01668455112086442,
+        "top_label_ece_equal_mass_15": 0.017946311758168004,
+        "top_label_ece_equal_width_15": 0.017336228545667375
+      },
+      "before": {
+        "accuracy": 0.882120915110803,
+        "equal_width_reliability_bins": [
+          {
+            "absolute_gap": null,
+            "accuracy": null,
+            "bin_index": 0,
+            "correct_count": 0,
+            "lower_inclusive": 0.0,
+            "mean_confidence": null,
+            "record_count": 0,
+            "upper_exclusive": 0.06666666666666667,
+            "upper_inclusive": null
+          },
+          {
+            "absolute_gap": null,
+            "accuracy": null,
+            "bin_index": 1,
+            "correct_count": 0,
+            "lower_inclusive": 0.06666666666666667,
+            "mean_confidence": null,
+            "record_count": 0,
+            "upper_exclusive": 0.13333333333333333,
+            "upper_inclusive": null
+          },
+          {
+            "absolute_gap": 0.17694552860891963,
+            "accuracy": 0.0,
+            "bin_index": 2,
+            "correct_count": 0,
+            "lower_inclusive": 0.13333333333333333,
+            "mean_confidence": 0.17694552860891963,
+            "record_count": 3,
+            "upper_exclusive": 0.2,
+            "upper_inclusive": null
+          },
+          {
+            "absolute_gap": 0.08606013276205948,
+            "accuracy": 0.325,
+            "bin_index": 3,
+            "correct_count": 13,
+            "lower_inclusive": 0.2,
+            "mean_confidence": 0.23893986723794053,
+            "record_count": 40,
+            "upper_exclusive": 0.26666666666666666,
+            "upper_inclusive": null
+          },
+          {
+            "absolute_gap": 0.05823837464581577,
+            "accuracy": 0.36363636363636365,
+            "bin_index": 4,
+            "correct_count": 40,
+            "lower_inclusive": 0.26666666666666666,
+            "mean_confidence": 0.3053979889905479,
+            "record_count": 110,
+            "upper_exclusive": 0.3333333333333333,
+            "upper_inclusive": null
+          },
+          {
+            "absolute_gap": 0.035777785781799465,
+            "accuracy": 0.3346153846153846,
+            "bin_index": 5,
+            "correct_count": 87,
+            "lower_inclusive": 0.3333333333333333,
+            "mean_confidence": 0.37039317039718406,
+            "record_count": 260,
+            "upper_exclusive": 0.4,
+            "upper_inclusive": null
+          },
+          {
+            "absolute_gap": 0.005129093487278857,
+            "accuracy": 0.4326710816777042,
+            "bin_index": 6,
+            "correct_count": 196,
+            "lower_inclusive": 0.4,
+            "mean_confidence": 0.43780017516498304,
+            "record_count": 453,
+            "upper_exclusive": 0.4666666666666667,
+            "upper_inclusive": null
+          },
+          {
+            "absolute_gap": 0.0024900247209235227,
+            "accuracy": 0.4994775339602926,
+            "bin_index": 7,
+            "correct_count": 478,
+            "lower_inclusive": 0.4666666666666667,
+            "mean_confidence": 0.5019675586812161,
+            "record_count": 957,
+            "upper_exclusive": 0.5333333333333333,
+            "upper_inclusive": null
+          },
+          {
+            "absolute_gap": 0.04505440343429257,
+            "accuracy": 0.5215646940822467,
+            "bin_index": 8,
+            "correct_count": 520,
+            "lower_inclusive": 0.5333333333333333,
+            "mean_confidence": 0.5666190975165393,
+            "record_count": 997,
+            "upper_exclusive": 0.6,
+            "upper_inclusive": null
+          },
+          {
+            "absolute_gap": 0.04999574508750804,
+            "accuracy": 0.58348134991119,
+            "bin_index": 9,
+            "correct_count": 657,
+            "lower_inclusive": 0.6,
+            "mean_confidence": 0.6334770949986981,
+            "record_count": 1126,
+            "upper_exclusive": 0.6666666666666666,
+            "upper_inclusive": null
+          },
+          {
+            "absolute_gap": 0.06124195045159886,
+            "accuracy": 0.639344262295082,
+            "bin_index": 10,
+            "correct_count": 858,
+            "lower_inclusive": 0.6666666666666666,
+            "mean_confidence": 0.7005862127466809,
+            "record_count": 1342,
+            "upper_exclusive": 0.7333333333333333,
+            "upper_inclusive": null
+          },
+          {
+            "absolute_gap": 0.06598476535962827,
+            "accuracy": 0.7016331658291457,
+            "bin_index": 11,
+            "correct_count": 1117,
+            "lower_inclusive": 0.7333333333333333,
+            "mean_confidence": 0.767617931188774,
+            "record_count": 1592,
+            "upper_exclusive": 0.8,
+            "upper_inclusive": null
+          },
+          {
+            "absolute_gap": 0.07278812885239816,
+            "accuracy": 0.763272410791993,
+            "bin_index": 12,
+            "correct_count": 1754,
+            "lower_inclusive": 0.8,
+            "mean_confidence": 0.8360605396443912,
+            "record_count": 2298,
+            "upper_exclusive": 0.8666666666666667,
+            "upper_inclusive": null
+          },
+          {
+            "absolute_gap": 0.05198381315724032,
+            "accuracy": 0.8523090992226795,
+            "bin_index": 13,
+            "correct_count": 3728,
+            "lower_inclusive": 0.8666666666666667,
+            "mean_confidence": 0.9042929123799198,
+            "record_count": 4374,
+            "upper_exclusive": 0.9333333333333333,
+            "upper_inclusive": null
+          },
+          {
+            "absolute_gap": 0.010327385144651924,
+            "accuracy": 0.9707556844301425,
+            "bin_index": 14,
+            "correct_count": 27452,
+            "lower_inclusive": 0.9333333333333333,
+            "mean_confidence": 0.9810830695747944,
+            "record_count": 28279,
+            "upper_exclusive": null,
+            "upper_inclusive": 1.0
+          }
+        ],
+        "mean_top_label_confidence": 0.9055445053640726,
+        "multiclass_brier_loss": 0.17773328098764596,
+        "negative_log_likelihood": 0.3714538016417792,
+        "record_count": 41831,
+        "signed_confidence_minus_accuracy": 0.023423590253269566,
+        "top_label_ece_equal_mass_15": 0.02359846464767079,
+        "top_label_ece_equal_width_15": 0.023894467187673435
+      },
+      "per_class": [
+        {
+          "after": {
+            "absolute_prevalence_gap": 0.001779421785776586,
+            "mean_probability": 0.060710119463536126,
+            "one_vs_rest_brier_loss": 0.015527538026146082
+          },
+          "before": {
+            "absolute_prevalence_gap": 0.0015900111136819134,
+            "mean_probability": 0.0608995301356308,
+            "one_vs_rest_brier_loss": 0.015616062305040855
+          },
+          "label": "Checking or savings account",
+          "prevalence": 0.06248954124931271,
+          "support": 2614
+        },
+        {
+          "after": {
+            "absolute_prevalence_gap": 0.008511554133272328,
+            "mean_probability": 0.07190951258513817,
+            "one_vs_rest_brier_loss": 0.021041207481070332
+          },
+          "before": {
+            "absolute_prevalence_gap": 0.007898312677655187,
+            "mean_probability": 0.07129627112952103,
+            "one_vs_rest_brier_loss": 0.021162513361508456
+          },
+          "label": "Credit card",
+          "prevalence": 0.06339795845186584,
+          "support": 2652
+        },
+        {
+          "after": {
+            "absolute_prevalence_gap": 0.034424816864836005,
+            "mean_probability": 0.6280503809549627,
+            "one_vs_rest_brier_loss": 0.05968824985451663
+          },
+          "before": {
+            "absolute_prevalence_gap": 0.03168655720485991,
+            "mean_probability": 0.6307886406149388,
+            "one_vs_rest_brier_loss": 0.05963794748899822
+          },
+          "label": "Credit reporting or other personal consumer reports",
+          "prevalence": 0.6624751978197987,
+          "support": 27712
+        },
+        {
+          "after": {
+            "absolute_prevalence_gap": 0.008211512229097384,
+            "mean_probability": 0.12016197958584238,
+            "one_vs_rest_brier_loss": 0.04290353653768728
+          },
+          "before": {
+            "absolute_prevalence_gap": 0.007761139390793689,
+            "mean_probability": 0.11971160674753868,
+            "one_vs_rest_brier_loss": 0.04309864862246938
+          },
+          "label": "Debt collection",
+          "prevalence": 0.11195046735674499,
+          "support": 4683
+        },
+        {
+          "after": {
+            "absolute_prevalence_gap": 0.00369711981498268,
+            "mean_probability": 0.006780957160491991,
+            "one_vs_rest_brier_loss": 0.0029264515888913515
+          },
+          "before": {
+            "absolute_prevalence_gap": 0.0030029759480696555,
+            "mean_probability": 0.006086813293578967,
+            "one_vs_rest_brier_loss": 0.002923569000181666
+          },
+          "label": "Debt or credit management",
+          "prevalence": 0.003083837345509311,
+          "support": 129
+        },
+        {
+          "after": {
+            "absolute_prevalence_gap": 0.0012718279268767452,
+            "mean_probability": 0.022834783629585263,
+            "one_vs_rest_brier_loss": 0.00944003683712955
+          },
+          "before": {
+            "absolute_prevalence_gap": 0.0011081837079269276,
+            "mean_probability": 0.022671139410635446,
+            "one_vs_rest_brier_loss": 0.009500852880021721
+          },
+          "label": "Money transfer, virtual currency, or money service",
+          "prevalence": 0.021562955702708518,
+          "support": 902
+        },
+        {
+          "after": {
+            "absolute_prevalence_gap": 0.003037095673288092,
+            "mean_probability": 0.027205774404372694,
+            "one_vs_rest_brier_loss": 0.005009993834896665
+          },
+          "before": {
+            "absolute_prevalence_gap": 0.002996770510041453,
+            "mean_probability": 0.027165449241126054,
+            "one_vs_rest_brier_loss": 0.00507437851783116
+          },
+          "label": "Mortgage",
+          "prevalence": 0.0241686787310846,
+          "support": 1011
+        },
+        {
+          "after": {
+            "absolute_prevalence_gap": 0.0027759053148141994,
+            "mean_probability": 0.014513611800434912,
+            "one_vs_rest_brier_loss": 0.006908955791959221
+          },
+          "before": {
+            "absolute_prevalence_gap": 0.0025048720472866277,
+            "mean_probability": 0.01424257853290734,
+            "one_vs_rest_brier_loss": 0.006984872987706101
+          },
+          "label": "Payday loan, title loan, personal loan, or advance loan",
+          "prevalence": 0.011737706485620713,
+          "support": 491
+        },
+        {
+          "after": {
+            "absolute_prevalence_gap": 0.001164677020916386,
+            "mean_probability": 0.007571408870501622,
+            "one_vs_rest_brier_loss": 0.002777524669513411
+          },
+          "before": {
+            "absolute_prevalence_gap": 0.000989732333109587,
+            "mean_probability": 0.007396464182694823,
+            "one_vs_rest_brier_loss": 0.0027993767163042994
+          },
+          "label": "Prepaid card",
+          "prevalence": 0.006406731849585236,
+          "support": 268
+        },
+        {
+          "after": {
+            "absolute_prevalence_gap": 0.0011813100132803019,
+            "mean_probability": 0.018512954009359765,
+            "one_vs_rest_brier_loss": 0.0029660226044487125
+          },
+          "before": {
+            "absolute_prevalence_gap": 0.001010582683583259,
+            "mean_probability": 0.01834222667966272,
+            "one_vs_rest_brier_loss": 0.002987189231103467
+          },
+          "label": "Student loan",
+          "prevalence": 0.017331643996079463,
+          "support": 725
+        },
+        {
+          "after": {
+            "absolute_prevalence_gap": 0.006353236524084451,
+            "mean_probability": 0.021748517535774347,
+            "one_vs_rest_brier_loss": 0.007863786923667406
+          },
+          "before": {
+            "absolute_prevalence_gap": 0.006003999020075462,
+            "mean_probability": 0.021399280031765357,
+            "one_vs_rest_brier_loss": 0.007947869876480634
+          },
+          "label": "Vehicle loan or lease",
+          "prevalence": 0.015395281011689896,
+          "support": 644
+        }
+      ]
+    },
+    "calibration_fit": {
+      "after": {
+        "accuracy": 0.8898393810168279,
+        "equal_width_reliability_bins": [
+          {
+            "absolute_gap": null,
+            "accuracy": null,
+            "bin_index": 0,
+            "correct_count": 0,
+            "lower_inclusive": 0.0,
+            "mean_confidence": null,
+            "record_count": 0,
+            "upper_exclusive": 0.06666666666666667,
+            "upper_inclusive": null
+          },
+          {
+            "absolute_gap": null,
+            "accuracy": null,
+            "bin_index": 1,
+            "correct_count": 0,
+            "lower_inclusive": 0.06666666666666667,
+            "mean_confidence": null,
+            "record_count": 0,
+            "upper_exclusive": 0.13333333333333333,
+            "upper_inclusive": null
+          },
+          {
+            "absolute_gap": 0.1755253425119148,
+            "accuracy": 0.0,
+            "bin_index": 2,
+            "correct_count": 0,
+            "lower_inclusive": 0.13333333333333333,
+            "mean_confidence": 0.1755253425119148,
+            "record_count": 6,
+            "upper_exclusive": 0.2,
+            "upper_inclusive": null
+          },
+          {
+            "absolute_gap": 0.030499482800682293,
+            "accuracy": 0.20754716981132076,
+            "bin_index": 3,
+            "correct_count": 11,
+            "lower_inclusive": 0.2,
+            "mean_confidence": 0.23804665261200306,
+            "record_count": 53,
+            "upper_exclusive": 0.26666666666666666,
+            "upper_inclusive": null
+          },
+          {
+            "absolute_gap": 0.01518401330638297,
+            "accuracy": 0.319672131147541,
+            "bin_index": 4,
+            "correct_count": 39,
+            "lower_inclusive": 0.26666666666666666,
+            "mean_confidence": 0.30448811784115803,
+            "record_count": 122,
+            "upper_exclusive": 0.3333333333333333,
+            "upper_inclusive": null
+          },
+          {
+            "absolute_gap": 0.040683055364092,
+            "accuracy": 0.4126984126984127,
+            "bin_index": 5,
+            "correct_count": 104,
+            "lower_inclusive": 0.3333333333333333,
+            "mean_confidence": 0.3720153573343207,
+            "record_count": 252,
+            "upper_exclusive": 0.4,
+            "upper_inclusive": null
+          },
+          {
+            "absolute_gap": 0.020132120161341194,
+            "accuracy": 0.45643153526970953,
+            "bin_index": 6,
+            "correct_count": 220,
+            "lower_inclusive": 0.4,
+            "mean_confidence": 0.43629941510836834,
+            "record_count": 482,
+            "upper_exclusive": 0.4666666666666667,
+            "upper_inclusive": null
+          },
+          {
+            "absolute_gap": 0.007170701023029247,
+            "accuracy": 0.4947033898305085,
+            "bin_index": 7,
+            "correct_count": 467,
+            "lower_inclusive": 0.4666666666666667,
+            "mean_confidence": 0.5018740908535377,
+            "record_count": 944,
+            "upper_exclusive": 0.5333333333333333,
+            "upper_inclusive": null
+          },
+          {
+            "absolute_gap": 0.0001654106418871315,
+            "accuracy": 0.5667903525046383,
+            "bin_index": 8,
+            "correct_count": 611,
+            "lower_inclusive": 0.5333333333333333,
+            "mean_confidence": 0.5666249418627511,
+            "record_count": 1078,
+            "upper_exclusive": 0.6,
+            "upper_inclusive": null
+          },
+          {
+            "absolute_gap": 0.049448965758549734,
+            "accuracy": 0.5847299813780261,
+            "bin_index": 9,
+            "correct_count": 628,
+            "lower_inclusive": 0.6,
+            "mean_confidence": 0.6341789471365759,
+            "record_count": 1074,
+            "upper_exclusive": 0.6666666666666666,
+            "upper_inclusive": null
+          },
+          {
+            "absolute_gap": 0.045427695142015945,
+            "accuracy": 0.6561514195583596,
+            "bin_index": 10,
+            "correct_count": 832,
+            "lower_inclusive": 0.6666666666666666,
+            "mean_confidence": 0.7015791147003756,
+            "record_count": 1268,
+            "upper_exclusive": 0.7333333333333333,
+            "upper_inclusive": null
+          },
+          {
+            "absolute_gap": 0.03448454540919155,
+            "accuracy": 0.7339743589743589,
+            "bin_index": 11,
+            "correct_count": 1145,
+            "lower_inclusive": 0.7333333333333333,
+            "mean_confidence": 0.7684589043835505,
+            "record_count": 1560,
+            "upper_exclusive": 0.8,
+            "upper_inclusive": null
+          },
+          {
+            "absolute_gap": 0.029404950785590134,
+            "accuracy": 0.8061694290976059,
+            "bin_index": 12,
+            "correct_count": 1751,
+            "lower_inclusive": 0.8,
+            "mean_confidence": 0.835574379883196,
+            "record_count": 2172,
+            "upper_exclusive": 0.8666666666666667,
+            "upper_inclusive": null
+          },
+          {
+            "absolute_gap": 0.029972230467856242,
+            "accuracy": 0.8758412624738918,
+            "bin_index": 13,
+            "correct_count": 3774,
+            "lower_inclusive": 0.8666666666666667,
+            "mean_confidence": 0.9058134929417481,
+            "record_count": 4309,
+            "upper_exclusive": 0.9333333333333333,
+            "upper_inclusive": null
+          },
+          {
+            "absolute_gap": 0.0011310427071001827,
+            "accuracy": 0.9777098409504276,
+            "bin_index": 14,
+            "correct_count": 25265,
+            "lower_inclusive": 0.9333333333333333,
+            "mean_confidence": 0.9788408836575277,
+            "record_count": 25841,
+            "upper_exclusive": null,
+            "upper_inclusive": 1.0
+          }
+        ],
+        "mean_top_label_confidence": 0.8993949020335018,
+        "multiclass_brier_loss": 0.16419524937995555,
+        "negative_log_likelihood": 0.3410212626216692,
+        "record_count": 39161,
+        "signed_confidence_minus_accuracy": 0.009555521016673896,
+        "top_label_ece_equal_mass_15": 0.012835874007263022,
+        "top_label_ece_equal_width_15": 0.010678402156831171
+      },
+      "before": {
+        "accuracy": 0.8898393810168279,
+        "equal_width_reliability_bins": [
+          {
+            "absolute_gap": null,
+            "accuracy": null,
+            "bin_index": 0,
+            "correct_count": 0,
+            "lower_inclusive": 0.0,
+            "mean_confidence": null,
+            "record_count": 0,
+            "upper_exclusive": 0.06666666666666667,
+            "upper_inclusive": null
+          },
+          {
+            "absolute_gap": null,
+            "accuracy": null,
+            "bin_index": 1,
+            "correct_count": 0,
+            "lower_inclusive": 0.06666666666666667,
+            "mean_confidence": null,
+            "record_count": 0,
+            "upper_exclusive": 0.13333333333333333,
+            "upper_inclusive": null
+          },
+          {
+            "absolute_gap": 0.16671019260532427,
+            "accuracy": 0.0,
+            "bin_index": 2,
+            "correct_count": 0,
+            "lower_inclusive": 0.13333333333333333,
+            "mean_confidence": 0.16671019260532427,
+            "record_count": 4,
+            "upper_exclusive": 0.2,
+            "upper_inclusive": null
+          },
+          {
+            "absolute_gap": 0.003551018720484106,
+            "accuracy": 0.23404255319148937,
+            "bin_index": 3,
+            "correct_count": 11,
+            "lower_inclusive": 0.2,
+            "mean_confidence": 0.23759357191197347,
+            "record_count": 47,
+            "upper_exclusive": 0.26666666666666666,
+            "upper_inclusive": null
+          },
+          {
+            "absolute_gap": 0.025417655209280077,
+            "accuracy": 0.2777777777777778,
+            "bin_index": 4,
+            "correct_count": 30,
+            "lower_inclusive": 0.26666666666666666,
+            "mean_confidence": 0.30319543298705787,
+            "record_count": 108,
+            "upper_exclusive": 0.3333333333333333,
+            "upper_inclusive": null
+          },
+          {
+            "absolute_gap": 0.03936005611937898,
+            "accuracy": 0.4107142857142857,
+            "bin_index": 5,
+            "correct_count": 92,
+            "lower_inclusive": 0.3333333333333333,
+            "mean_confidence": 0.3713542295949067,
+            "record_count": 224,
+            "upper_exclusive": 0.4,
+            "upper_inclusive": null
+          },
+          {
+            "absolute_gap": 0.017199823433274808,
+            "accuracy": 0.45308924485125857,
+            "bin_index": 6,
+            "correct_count": 198,
+            "lower_inclusive": 0.4,
+            "mean_confidence": 0.43588942141798376,
+            "record_count": 437,
+            "upper_exclusive": 0.4666666666666667,
+            "upper_inclusive": null
+          },
+          {
+            "absolute_gap": 0.0072430539670328975,
+            "accuracy": 0.4949944382647386,
+            "bin_index": 7,
+            "correct_count": 445,
+            "lower_inclusive": 0.4666666666666667,
+            "mean_confidence": 0.5022374922317715,
+            "record_count": 899,
+            "upper_exclusive": 0.5333333333333333,
+            "upper_inclusive": null
+          },
+          {
+            "absolute_gap": 0.024450104079198787,
+            "accuracy": 0.5428296438883542,
+            "bin_index": 8,
+            "correct_count": 564,
+            "lower_inclusive": 0.5333333333333333,
+            "mean_confidence": 0.567279747967553,
+            "record_count": 1039,
+            "upper_exclusive": 0.6,
+            "upper_inclusive": null
+          },
+          {
+            "absolute_gap": 0.0418671203722869,
+            "accuracy": 0.5924491771539206,
+            "bin_index": 9,
+            "correct_count": 612,
+            "lower_inclusive": 0.6,
+            "mean_confidence": 0.6343162975262076,
+            "record_count": 1033,
+            "upper_exclusive": 0.6666666666666666,
+            "upper_inclusive": null
+          },
+          {
+            "absolute_gap": 0.061894106843571106,
+            "accuracy": 0.6397621070518267,
+            "bin_index": 10,
+            "correct_count": 753,
+            "lower_inclusive": 0.6666666666666666,
+            "mean_confidence": 0.7016562138953978,
+            "record_count": 1177,
+            "upper_exclusive": 0.7333333333333333,
+            "upper_inclusive": null
+          },
+          {
+            "absolute_gap": 0.04982842325303394,
+            "accuracy": 0.7182620502376104,
+            "bin_index": 11,
+            "correct_count": 1058,
+            "lower_inclusive": 0.7333333333333333,
+            "mean_confidence": 0.7680904734906443,
+            "record_count": 1473,
+            "upper_exclusive": 0.8,
+            "upper_inclusive": null
+          },
+          {
+            "absolute_gap": 0.04713615819745287,
+            "accuracy": 0.7885548011639185,
+            "bin_index": 12,
+            "correct_count": 1626,
+            "lower_inclusive": 0.8,
+            "mean_confidence": 0.8356909593613714,
+            "record_count": 2062,
+            "upper_exclusive": 0.8666666666666667,
+            "upper_inclusive": null
+          },
+          {
+            "absolute_gap": 0.045714721379081724,
+            "accuracy": 0.8600416233090531,
+            "bin_index": 13,
+            "correct_count": 3306,
+            "lower_inclusive": 0.8666666666666667,
+            "mean_confidence": 0.9057563446881348,
+            "record_count": 3844,
+            "upper_exclusive": 0.9333333333333333,
+            "upper_inclusive": null
+          },
+          {
+            "absolute_gap": 0.005716023775581336,
+            "accuracy": 0.9753114044901917,
+            "bin_index": 14,
+            "correct_count": 26152,
+            "lower_inclusive": 0.9333333333333333,
+            "mean_confidence": 0.981027428265773,
+            "record_count": 26814,
+            "upper_exclusive": null,
+            "upper_inclusive": 1.0
+          }
+        ],
+        "mean_top_label_confidence": 0.9060506118053779,
+        "multiclass_brier_loss": 0.16467499429226942,
+        "negative_log_likelihood": 0.34159576970601546,
+        "record_count": 39161,
+        "signed_confidence_minus_accuracy": 0.016211230788550024,
+        "top_label_ece_equal_mass_15": 0.017637050804764534,
+        "top_label_ece_equal_width_15": 0.01704537574966341
+      }
+    }
+  },
+  "run_id": "cfpb-run-20260722T130728Z-2b7815d4c850",
+  "runtime": {
+    "cpu_optimization_seconds": 0.142783,
+    "gpu_inference_seconds": 102.825,
+    "peak_cuda_bytes": 240880128
+  },
+  "software": {
+    "numpy": "2.5.1",
+    "python": "3.12.10",
+    "safetensors": "0.8.0",
+    "scipy": "1.18.0",
+    "torch": "2.13.0+cu130",
+    "transformers": "5.14.1"
+  },
+  "source": {
+    "calibration_implementation_commit_sha": "753b61a9a81b9c1b403af27e75588507a52582b3",
+    "comparison_report_sha256": "9623346c2feb6489b7a8637157142692e6b847bbcc11ea3809ea4b4c5aca04a3",
+    "model_artifact_sha256": "c83f4ad8c225dea2a8b32424d9af6179ee028dc6adf6bc1eeea9f18932325415",
+    "split_manifest_sha256": "8685eefd10d764d813dee2891e930323c22592850d537b0571956f390afe554b",
+    "transformer_report_sha256": "b55188c31a9d28d0eaa424a1208578a9454368098cc803d3aebb87f8a2bd8cef"
+  }
+}

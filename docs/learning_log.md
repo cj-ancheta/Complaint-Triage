@@ -996,3 +996,70 @@ decision.
   accuracy be defined and reported for the eleven-class problem?
 - Will MiniLM's quality gain still justify its larger artifact, latency,
   explainability, complexity, and deployment cost in CT-306?
+
+---
+
+## CT-305: validation-only MiniLM probability calibration
+
+**Date:** 2026-07-25
+
+**Status:** Accepted by Charles on 2026-07-25.
+
+**What the AI generated**
+
+An accepted temporal calibration design; a canonical GPU inference path that
+reproduces epoch-3 predictions; scalar temperature optimization; negative
+log-likelihood, multiclass Brier, dual-ECE, reliability-bin, confidence-gap,
+and per-class probability diagnostics; a closed report schema; an ignored
+hashed calibrator artifact; a CLI command; and lineage, privacy, numerical,
+batch-equivalence, replay, and controlled-failure tests.
+
+**How I verified it**
+
+The run fitted a temperature of 1.0410499445 on 39,161 September validation
+rows and assessed it once on 41,831 October validation rows. October NLL fell
+from 0.371454 to 0.369804, multiclass Brier from 0.177733 to 0.177053,
+equal-width ECE from 0.023894 to 0.017336, and equal-mass ECE from 0.023598 to
+0.017946. Accuracy, argmax predictions, and PyTorch top-2 membership remained
+unchanged. All eligibility gates passed. The schema, source identities, model
+and calibrator hashes, byte counts, ignored-artifact boundary, and byte-stable
+replay were independently checked. The ordinary environment passed 266 tests
+with one intentional Torch-only skip; the transformer environment passed all
+267 tests.
+
+The first real pass failed closed because NumPy and PyTorch resolved lower-rank
+FP16 ties differently when reconstructing top-2. No partial artifact or report
+was written. The corrected path carries PyTorch's original top-2 correctness
+bit in memory, publishes only its aggregate count, and then reproduced the
+accepted CT-303 evidence exactly.
+
+**What can fail in production**
+
+Source-report, split, model-artifact, taxonomy, count, date, or label drift;
+unsafe paths; CUDA or dependency mismatch; changed batching; non-finite logits;
+optimizer non-convergence or boundary solutions; invalid probability sums;
+prediction or top-2 changes; artifact tampering; partial writes; and schema
+drift fail closed. A single global temperature cannot correct class-specific or
+input-dependent calibration. In fact, October one-versus-rest Brier improved
+for nine of eleven classes while the mean-probability/prevalence gap worsened
+slightly for every class, so aggregate calibration gains must not conceal that
+limitation.
+
+**What I can explain in an interview**
+
+Why calibration differs from classification accuracy; why September fits the
+temperature while later October assesses it; why this is still validation
+tuning rather than final test evidence; how temperature scaling preserves
+rankings; why NLL is optimized while ECE remains a bin-sensitive diagnostic;
+why a global calibration improvement can coexist with mixed classwise results;
+and how fail-closed lineage and memory-only logits protect reproducibility and
+privacy.
+
+**Questions still open**
+
+- Does calibrated MiniLM's quality and confidence evidence justify its larger
+  artifact, inference cost, and operational complexity in CT-306?
+- What fixed CPU latency and memory benchmark should the utility ADR require?
+- What explainability, deployment-cost, and operational-complexity evidence is
+  sufficient before selecting the final model?
+- Abstention-threshold selection remains a later explicitly approved decision.
