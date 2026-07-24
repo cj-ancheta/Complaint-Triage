@@ -1,0 +1,256 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/cj-ancheta/Complaint-Triage/contracts/cfpb-transformer-calibration.schema.json",
+  "title": "CFPB MiniLM validation-only temperature calibration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["report_version", "run_id", "calibrated_at_utc", "source", "data", "method", "results", "eligibility", "artifact", "runtime", "software", "checks", "limitations", "claims", "privacy"],
+  "properties": {
+    "report_version": { "const": "transformer-temperature-calibration-1.0.0" },
+    "run_id": { "type": "string", "pattern": "^cfpb-run-[0-9]{8}T[0-9]{6}Z-[0-9a-f]{12}$" },
+    "calibrated_at_utc": { "$ref": "#/$defs/utcTimestamp" },
+    "source": {
+      "type": "object", "additionalProperties": false,
+      "required": ["transformer_report_sha256", "comparison_report_sha256", "split_manifest_sha256", "model_artifact_sha256", "calibration_implementation_commit_sha"],
+      "properties": {
+        "transformer_report_sha256": { "$ref": "#/$defs/sha256" },
+        "comparison_report_sha256": { "$ref": "#/$defs/sha256" },
+        "split_manifest_sha256": { "$ref": "#/$defs/sha256" },
+        "model_artifact_sha256": { "$ref": "#/$defs/sha256" },
+        "calibration_implementation_commit_sha": { "$ref": "#/$defs/gitCommitSha" }
+      }
+    },
+    "data": {
+      "type": "object", "additionalProperties": false,
+      "required": ["evaluation_split", "labels", "partitions", "test_accessed"],
+      "properties": {
+        "evaluation_split": { "const": "validation" },
+        "labels": { "$ref": "#/$defs/labels" },
+        "partitions": {
+          "type": "array", "minItems": 2, "maxItems": 2,
+          "prefixItems": [
+            { "allOf": [{ "$ref": "#/$defs/partition" }, { "properties": { "partition": { "const": "calibration_fit" }, "start_inclusive": { "const": "2024-09-01" }, "end_exclusive": { "const": "2024-10-01" }, "record_count": { "const": 39161 } } }] },
+            { "allOf": [{ "$ref": "#/$defs/partition" }, { "properties": { "partition": { "const": "calibration_evaluation" }, "start_inclusive": { "const": "2024-10-01" }, "end_exclusive": { "const": "2024-11-01" }, "record_count": { "const": 41831 } } }] }
+          ],
+          "items": false
+        },
+        "test_accessed": { "const": false }
+      }
+    },
+    "method": {
+      "type": "object", "additionalProperties": false,
+      "required": ["kind", "objective", "parameterization", "temperature_lower_bound", "temperature_upper_bound", "xatol_log_temperature", "maximum_iterations", "temperature", "optimizer_iterations", "optimizer_function_calls", "optimizer_converged"],
+      "properties": {
+        "kind": { "const": "scalar_temperature_scaling" },
+        "objective": { "const": "mean_categorical_negative_log_likelihood" },
+        "parameterization": { "const": "bounded_log_temperature" },
+        "temperature_lower_bound": { "const": 0.05 },
+        "temperature_upper_bound": { "const": 20.0 },
+        "xatol_log_temperature": { "const": 1e-8 },
+        "maximum_iterations": { "const": 500 },
+        "temperature": { "type": "number", "exclusiveMinimum": 0.05, "exclusiveMaximum": 20.0 },
+        "optimizer_iterations": { "type": "integer", "minimum": 1, "maximum": 500 },
+        "optimizer_function_calls": { "type": "integer", "minimum": 1 },
+        "optimizer_converged": { "const": true }
+      }
+    },
+    "results": {
+      "type": "object", "additionalProperties": false,
+      "required": ["calibration_fit", "calibration_evaluation"],
+      "properties": {
+        "calibration_fit": { "$ref": "#/$defs/beforeAfter" },
+        "calibration_evaluation": { "$ref": "#/$defs/beforeAfterWithPerClass" }
+      }
+    },
+    "eligibility": {
+      "type": "object", "additionalProperties": false,
+      "required": ["checks", "calibrator_eligible_for_ct306", "proposal_for_ct306", "final_operational_model_selected"],
+      "properties": {
+        "checks": {
+          "type": "object", "additionalProperties": false,
+          "required": ["optimizer_converged_away_from_bounds", "probabilities_valid", "argmax_unchanged", "top_2_membership_unchanged", "partition_counts_reconcile", "evaluation_nll_improved", "evaluation_brier_guard_passed"],
+          "properties": {
+            "optimizer_converged_away_from_bounds": { "const": true },
+            "probabilities_valid": { "type": "boolean" },
+            "argmax_unchanged": { "type": "boolean" },
+            "top_2_membership_unchanged": { "type": "boolean" },
+            "partition_counts_reconcile": { "const": true },
+            "evaluation_nll_improved": { "type": "boolean" },
+            "evaluation_brier_guard_passed": { "type": "boolean" }
+          }
+        },
+        "calibrator_eligible_for_ct306": { "type": "boolean" },
+        "proposal_for_ct306": { "enum": ["calibrated_transformer_probabilities", "uncalibrated_transformer_probabilities"] },
+        "final_operational_model_selected": { "const": false }
+      }
+    },
+    "artifact": { "$ref": "#/$defs/artifact" },
+    "runtime": {
+      "type": "object", "additionalProperties": false,
+      "required": ["gpu_inference_seconds", "peak_cuda_bytes", "cpu_optimization_seconds"],
+      "properties": {
+        "gpu_inference_seconds": { "type": "number", "minimum": 0 },
+        "peak_cuda_bytes": { "type": "integer", "minimum": 0 },
+        "cpu_optimization_seconds": { "type": "number", "minimum": 0 }
+      }
+    },
+    "software": {
+      "type": "object", "additionalProperties": false,
+      "required": ["python", "numpy", "scipy", "torch", "transformers", "safetensors"],
+      "properties": {
+        "python": { "type": "string", "minLength": 1 },
+        "numpy": { "type": "string", "minLength": 1 },
+        "scipy": { "type": "string", "minLength": 1 },
+        "torch": { "type": "string", "minLength": 1 },
+        "transformers": { "type": "string", "minLength": 1 },
+        "safetensors": { "type": "string", "minLength": 1 }
+      }
+    },
+    "checks": {
+      "type": "object", "additionalProperties": false,
+      "required": ["source_identity_reconciled", "model_artifact_verified_before_load", "accepted_predictions_reproduced", "partition_counts_reconcile", "class_counts_reconcile", "probabilities_finite_and_normalized", "predictions_unchanged", "top_2_unchanged", "artifact_hashed", "test_accessed"],
+      "properties": {
+        "source_identity_reconciled": { "const": true },
+        "model_artifact_verified_before_load": { "const": true },
+        "accepted_predictions_reproduced": { "const": true },
+        "partition_counts_reconcile": { "const": true },
+        "class_counts_reconcile": { "const": true },
+        "probabilities_finite_and_normalized": { "type": "boolean" },
+        "predictions_unchanged": { "type": "boolean" },
+        "top_2_unchanged": { "type": "boolean" },
+        "artifact_hashed": { "const": true },
+        "test_accessed": { "const": false }
+      }
+    },
+    "limitations": {
+      "const": [
+        "base_model_selected_using_complete_validation_period",
+        "september_metrics_are_in_sample_calibration_fit_diagnostics",
+        "october_metrics_are_validation_tuning_evidence_not_final_test_evidence",
+        "temperature_scaling_cannot_fix_class_specific_or_input_dependent_miscalibration",
+        "ece_estimates_depend_on_declared_binning",
+        "rare_class_calibration_metrics_have_higher_variance",
+        "no_abstention_threshold_selected_in_ct305"
+      ]
+    },
+    "claims": {
+      "type": "object", "additionalProperties": false,
+      "required": ["portfolio_promotion_approved", "test_used_for_calibration", "operational_threshold_selected", "final_operational_model_selected", "interpretation"],
+      "properties": {
+        "portfolio_promotion_approved": { "const": false },
+        "test_used_for_calibration": { "const": false },
+        "operational_threshold_selected": { "const": false },
+        "final_operational_model_selected": { "const": false },
+        "interpretation": { "const": "validation_only_temperature_calibration" }
+      }
+    },
+    "privacy": {
+      "type": "object", "additionalProperties": false,
+      "required": ["contains_row_values", "contains_narratives", "contains_complaint_ids", "contains_row_logits", "contains_row_probabilities", "contains_token_ids", "artifact_git_tracking_allowed", "report_git_tracking_allowed"],
+      "properties": {
+        "contains_row_values": { "const": false },
+        "contains_narratives": { "const": false },
+        "contains_complaint_ids": { "const": false },
+        "contains_row_logits": { "const": false },
+        "contains_row_probabilities": { "const": false },
+        "contains_token_ids": { "const": false },
+        "artifact_git_tracking_allowed": { "const": false },
+        "report_git_tracking_allowed": { "const": true }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "gitCommitSha": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "utcTimestamp": { "type": "string", "format": "date-time", "pattern": "Z$" },
+    "score": { "type": "number", "minimum": 0, "maximum": 1 },
+    "labels": { "type": "array", "minItems": 11, "maxItems": 11, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+    "classCounts": { "type": "object", "minProperties": 11, "maxProperties": 11, "additionalProperties": { "type": "integer", "minimum": 0 } },
+    "partition": {
+      "type": "object", "additionalProperties": false,
+      "required": ["partition", "start_inclusive", "end_exclusive", "record_count", "class_counts"],
+      "properties": {
+        "partition": { "type": "string" },
+        "start_inclusive": { "type": "string", "format": "date" },
+        "end_exclusive": { "type": "string", "format": "date" },
+        "record_count": { "type": "integer", "minimum": 1 },
+        "class_counts": { "$ref": "#/$defs/classCounts" }
+      }
+    },
+    "bin": {
+      "type": "object", "additionalProperties": false,
+      "required": ["bin_index", "lower_inclusive", "upper_inclusive", "upper_exclusive", "record_count", "correct_count", "mean_confidence", "accuracy", "absolute_gap"],
+      "properties": {
+        "bin_index": { "type": "integer", "minimum": 0, "maximum": 14 },
+        "lower_inclusive": { "$ref": "#/$defs/score" },
+        "upper_inclusive": { "anyOf": [{ "$ref": "#/$defs/score" }, { "type": "null" }] },
+        "upper_exclusive": { "anyOf": [{ "$ref": "#/$defs/score" }, { "type": "null" }] },
+        "record_count": { "type": "integer", "minimum": 0 },
+        "correct_count": { "type": "integer", "minimum": 0 },
+        "mean_confidence": { "anyOf": [{ "$ref": "#/$defs/score" }, { "type": "null" }] },
+        "accuracy": { "anyOf": [{ "$ref": "#/$defs/score" }, { "type": "null" }] },
+        "absolute_gap": { "anyOf": [{ "$ref": "#/$defs/score" }, { "type": "null" }] }
+      }
+    },
+    "metrics": {
+      "type": "object", "additionalProperties": false,
+      "required": ["record_count", "negative_log_likelihood", "multiclass_brier_loss", "accuracy", "mean_top_label_confidence", "signed_confidence_minus_accuracy", "top_label_ece_equal_width_15", "top_label_ece_equal_mass_15", "equal_width_reliability_bins"],
+      "properties": {
+        "record_count": { "type": "integer", "minimum": 1 },
+        "negative_log_likelihood": { "type": "number", "minimum": 0 },
+        "multiclass_brier_loss": { "type": "number", "minimum": 0, "maximum": 2 },
+        "accuracy": { "$ref": "#/$defs/score" },
+        "mean_top_label_confidence": { "$ref": "#/$defs/score" },
+        "signed_confidence_minus_accuracy": { "type": "number", "minimum": -1, "maximum": 1 },
+        "top_label_ece_equal_width_15": { "$ref": "#/$defs/score" },
+        "top_label_ece_equal_mass_15": { "$ref": "#/$defs/score" },
+        "equal_width_reliability_bins": { "type": "array", "minItems": 15, "maxItems": 15, "items": { "$ref": "#/$defs/bin" } }
+      }
+    },
+    "beforeAfter": {
+      "type": "object", "additionalProperties": false,
+      "required": ["before", "after"],
+      "properties": { "before": { "$ref": "#/$defs/metrics" }, "after": { "$ref": "#/$defs/metrics" } }
+    },
+    "beforeAfterWithPerClass": {
+      "type": "object", "additionalProperties": false,
+      "required": ["before", "after", "per_class"],
+      "properties": {
+        "before": { "$ref": "#/$defs/metrics" },
+        "after": { "$ref": "#/$defs/metrics" },
+        "per_class": { "type": "array", "minItems": 11, "maxItems": 11, "items": { "$ref": "#/$defs/perClass" } }
+      }
+    },
+    "classProbabilityMetrics": {
+      "type": "object", "additionalProperties": false,
+      "required": ["mean_probability", "absolute_prevalence_gap", "one_vs_rest_brier_loss"],
+      "properties": {
+        "mean_probability": { "$ref": "#/$defs/score" },
+        "absolute_prevalence_gap": { "$ref": "#/$defs/score" },
+        "one_vs_rest_brier_loss": { "$ref": "#/$defs/score" }
+      }
+    },
+    "perClass": {
+      "type": "object", "additionalProperties": false,
+      "required": ["label", "support", "prevalence", "before", "after"],
+      "properties": {
+        "label": { "type": "string", "minLength": 1 },
+        "support": { "type": "integer", "minimum": 1 },
+        "prevalence": { "$ref": "#/$defs/score" },
+        "before": { "$ref": "#/$defs/classProbabilityMetrics" },
+        "after": { "$ref": "#/$defs/classProbabilityMetrics" }
+      }
+    },
+    "artifact": {
+      "type": "object", "additionalProperties": false,
+      "required": ["artifact_version", "relative_path", "sha256", "byte_count", "retention"],
+      "properties": {
+        "artifact_version": { "const": "temperature-scaling-1.0.0" },
+        "relative_path": { "type": "string", "pattern": "^artifacts/cfpb/transformer/.+/calibration/temperature-scaling-1\\.0\\.0\\.json$" },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "byte_count": { "type": "integer", "minimum": 1 },
+        "retention": { "const": "local_only_governed_until_2026-11-19" }
+      }
+    }
+  }
+}

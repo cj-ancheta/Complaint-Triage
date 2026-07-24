@@ -12,6 +12,7 @@ from complaint_triage.staging import StagingError
 from complaint_triage.taxonomy_profile import TaxonomyProfileError
 from complaint_triage.temporal_split import TemporalSplitError
 from complaint_triage.tfidf_logreg import TfidfLogregError
+from complaint_triage.transformer_calibration import TransformerCalibrationError
 from complaint_triage.transformer_dataset import TransformerDatasetError
 from complaint_triage.transformer_fit import TransformerFitError
 from complaint_triage.transformer_token_profile import TransformerTokenProfileError
@@ -626,3 +627,35 @@ def test_validation_comparison_command_prints_safe_error(monkeypatch, capsys) ->
     assert exit_code == 1
     assert output["error"] == {"code": "validation_comparison_source_identity_mismatch"}
     assert output["privacy"]["narratives_logged"] is False
+
+
+def test_transformer_calibration_command_prints_aggregate_result(monkeypatch, capsys) -> None:
+    monkeypatch.setattr(
+        cli,
+        "calibrate_transformer",
+        lambda path: {
+            "report_version": "transformer-temperature-calibration-1.0.0",
+            "source_path": str(path),
+            "data": {"evaluation_split": "validation", "test_accessed": False},
+        },
+    )
+
+    exit_code = cli.main(["calibrate-transformer", "--transformer-report", "transformer.json"])
+    output = json.loads(capsys.readouterr().out)
+
+    assert exit_code == 0
+    assert output["data"]["test_accessed"] is False
+
+
+def test_transformer_calibration_command_prints_safe_error(monkeypatch, capsys) -> None:
+    def fail(path):
+        raise TransformerCalibrationError("transformer_calibration_artifact_hash_mismatch")
+
+    monkeypatch.setattr(cli, "calibrate_transformer", fail)
+
+    exit_code = cli.main(["calibrate-transformer", "--transformer-report", "transformer.json"])
+    output = json.loads(capsys.readouterr().out)
+
+    assert exit_code == 1
+    assert output["error"] == {"code": "transformer_calibration_artifact_hash_mismatch"}
+    assert output["privacy"]["row_logits_logged"] is False

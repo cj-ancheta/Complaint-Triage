@@ -58,6 +58,11 @@ from complaint_triage.tfidf_logreg import (
     smoke_tfidf_logreg,
     train_tfidf_logreg,
 )
+from complaint_triage.transformer_calibration import (
+    TransformerCalibrationError,
+    calibrate_transformer,
+    safe_transformer_calibration_error,
+)
 from complaint_triage.transformer_dataset import (
     TransformerDatasetError,
     safe_transformer_dataset_error,
@@ -188,6 +193,11 @@ def build_parser() -> argparse.ArgumentParser:
     )
     comparison_parser.add_argument("--baseline-report", type=Path, required=True)
     comparison_parser.add_argument("--transformer-report", type=Path, required=True)
+    calibration_parser = subcommands.add_parser(
+        "calibrate-transformer",
+        help="Fit approved September temperature scaling and assess October validation.",
+    )
+    calibration_parser.add_argument("--transformer-report", type=Path, required=True)
     return parser
 
 
@@ -501,6 +511,26 @@ def main(argv: Sequence[str] | None = None) -> int:
             )
         except ValidationComparisonError as error:
             print(json.dumps(safe_validation_comparison_error(error), indent=2, sort_keys=True))
+            return 1
+        print(json.dumps(report, indent=2, sort_keys=True))
+        return 0
+
+    if args.command == "calibrate-transformer":
+        try:
+            report = calibrate_transformer(args.transformer_report)
+        except TransformerCalibrationError as error:
+            print(json.dumps(safe_transformer_calibration_error(error), indent=2, sort_keys=True))
+            return 1
+        except DatabaseSettingsError:
+            print(
+                json.dumps(
+                    safe_transformer_calibration_error(
+                        TransformerCalibrationError("database_configuration_invalid")
+                    ),
+                    indent=2,
+                    sort_keys=True,
+                )
+            )
             return 1
         print(json.dumps(report, indent=2, sort_keys=True))
         return 0
