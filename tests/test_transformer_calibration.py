@@ -200,6 +200,8 @@ def _accepted_shape_inference() -> CalibrationInference:
     accepted_top2 = round(selected["validation"]["metrics"]["top_2_accuracy"] * labels_array.size)
     additional_top2 = accepted_top2 - int(correct.sum())
     error_indices = np.flatnonzero(~correct)
+    top_2_correct = correct.copy()
+    top_2_correct[error_indices[:additional_top2]] = True
     logits[error_indices[:additional_top2], labels_array[error_indices[:additional_top2]]] = 4.0
     for index in error_indices[additional_top2:]:
         distractor = next(
@@ -212,6 +214,7 @@ def _accepted_shape_inference() -> CalibrationInference:
         logits=logits,
         labels=labels_array,
         partitions=np.asarray(partitions, dtype="U24"),
+        top_2_correct=top_2_correct,
         elapsed_seconds=12.5,
         peak_cuda_bytes=1234,
     )

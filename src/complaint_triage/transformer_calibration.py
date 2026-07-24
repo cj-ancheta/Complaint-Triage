@@ -110,6 +110,7 @@ class CalibrationInference:
     logits: np.ndarray
     labels: np.ndarray
     partitions: np.ndarray
+    top_2_correct: np.ndarray
     elapsed_seconds: float
     peak_cuda_bytes: int
 
@@ -554,6 +555,7 @@ def run_validation_inference(
     logits_parts: list[np.ndarray] = []
     label_parts: list[np.ndarray] = []
     partition_parts: list[np.ndarray] = []
+    top_2_parts: list[np.ndarray] = []
     started = time.perf_counter()
     torch.cuda.reset_peak_memory_stats()
     try:
@@ -572,10 +574,18 @@ def run_validation_inference(
                 logits_parts.append(logits.float().cpu().numpy().astype(np.float64))
                 label_parts.append(labels.cpu().numpy().astype(np.int64))
                 partition_parts.append(np.asarray(partitions, dtype="U24"))
+                top_2_parts.append(
+                    (logits.topk(k=2, dim=1).indices == labels.unsqueeze(1))
+                    .any(dim=1)
+                    .cpu()
+                    .numpy()
+                    .astype(bool)
+                )
         return CalibrationInference(
             logits=np.concatenate(logits_parts),
             labels=np.concatenate(label_parts),
             partitions=np.concatenate(partition_parts),
+            top_2_correct=np.concatenate(top_2_parts),
             elapsed_seconds=round(time.perf_counter() - started, 3),
             peak_cuda_bytes=int(torch.cuda.max_memory_allocated()),
         )
@@ -722,6 +732,8 @@ def _validate_inference(
     _validate_arrays(inference.logits, inference.labels)
     if inference.partitions.shape != inference.labels.shape:
         raise TransformerCalibrationError("transformer_calibration_partition_shape_invalid")
+    if inference.top_2_correct.shape != inference.labels.shape:
+        raise TransformerCalibrationError("transformer_calibration_top2_shape_invalid")
     counts = Counter(inference.partitions.tolist())
     if dict(counts) != EXPECTED_PARTITION_COUNTS:
         raise TransformerCalibrationError("transformer_calibration_partition_counts_mismatch")
@@ -747,8 +759,7 @@ def _validate_inference(
     np.add.at(matrix, (inference.labels, predictions), 1)
     if matrix.tolist() != selected["validation"]["metrics"]["confusion_matrix"]["rows"]:
         raise TransformerCalibrationError("transformer_calibration_predictions_do_not_reproduce")
-    top2 = np.argpartition(inference.logits, -2, axis=1)[:, -2:]
-    top2_count = int((top2 == inference.labels[:, None]).any(axis=1).sum())
+    top2_count = int(inference.top_2_correct.sum())
     expected_top2 = selected["validation"]["metrics"]["top_2_accuracy"]
     if not math.isclose(top2_count / inference.labels.size, expected_top2, abs_tol=1e-15):
         raise TransformerCalibrationError("transformer_calibration_top2_does_not_reproduce")
