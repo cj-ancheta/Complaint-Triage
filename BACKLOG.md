@@ -40,7 +40,7 @@ This backlog converts `SPEC.md` into bounded delivery issues. Status values are 
 | ID | Issue | Status | Exit evidence |
 |---|---|---|---|
 | CT-301 | Select the compact encoder boundary and profile tokenizer truncation | complete | Accepted ADR 0012, 384-token boundary, and reproducible training-only aggregate report |
-| CT-302 | Implement the versioned transformer dataset and tokenizer pipeline | in progress | Deterministic train/validation loaders with leakage and truncation tests |
+| CT-302 | Implement the versioned transformer dataset and tokenizer pipeline | complete | Accepted deterministic streaming loaders, length-grouped dynamic padding, and real aggregate validation |
 | CT-303 | Train and track the compact transformer candidate | pending | Reproducible validation-only experiment with early stopping and local governed artifact |
 | CT-304 | Compare baseline and transformer on validation evidence | pending | Aggregate validation comparison and proposed utility decision; test remains untouched |
 | CT-305 | Calibrate the selected candidate probabilities | pending | Validation-only calibration report and governed calibrator artifact |
@@ -65,11 +65,15 @@ metadata-only evidence. CT-204 is complete: its accepted training-only majority
 reference is reproducible from the split manifest and its aggregate report
 reconciles all eleven classes. CT-205 is complete: its accepted validation-only
 run selected the converged unweighted `C=1.0` candidate, retained the governed
-pipeline locally, and left test untouched. CT-206 is the next bounded issue.
-CT-206 is complete: its accepted validation-only per-class, confusion, month,
+pipeline locally, and left test untouched. CT-206 is complete: its accepted
+validation-only per-class, confusion, month,
 narrative-length, and common-versus-rare report leaves test untouched. Charles
 approved the Phase 2 to Phase 3 transition on 2026-07-23. CT-301 is complete:
 its accepted pinned MiniLM boundary and training-only aggregate profile select
 384 tokens without loading model weights or accessing validation or test rows.
-CT-302 is the next bounded issue; it will implement the deterministic dataset
-and tokenizer pipeline without training a classifier.
+CT-302 is complete: its
+accepted pipeline reconciles all 475,556 train/validation rows, keeps test
+untouched, and reduces measured padding to 3.8157% for train and 3.6064% for
+validation through deterministic bounded length grouping. CT-303 is the next
+bounded issue and requires a separate training-configuration decision before
+PyTorch installation or model fitting.

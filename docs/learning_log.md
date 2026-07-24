@@ -826,3 +826,56 @@ predictive superiority.
   66.9487% of its tokens are retained.
 - What deterministic padding, batching, and label encoding contract should
   CT-302 enforce before transformer training begins?
+
+---
+
+## CT-302: deterministic transformer dataset pipeline
+
+**Date:** 2026-07-24
+
+**Status:** Accepted by Charles on 2026-07-24.
+
+**What the AI generated**
+
+A framework-neutral streaming train/validation dataset pipeline, stable
+eleven-label integer mapping, accepted 384-token truncation, deterministic
+epoch shuffling, bounded length grouping, dynamic multiple-of-eight collation,
+closed aggregate report contract, CLI validator, operator guide, and synthetic
+leakage, shape, ordering, privacy, reconciliation, and replay tests.
+
+**How I verified it**
+
+The first full scan correctly reconciled every row but revealed that canonical
+32-example batches almost always padded to 384. I did not accept that nominal
+dynamic-padding result. After adding deterministic 1,024-example length-group
+pools, the authoritative scan reconciled 394,564 training and 80,992 validation
+rows while padding only 3.8157% and 3.6064% of their token slots respectively.
+I independently validated schema closure, label-map bijection, class totals,
+batch counts, token arithmetic, split boundaries, and byte-identical replay.
+Both Python environments passed lint, formatting, and all 217 tests with
+PostgreSQL online.
+
+**What can fail in production**
+
+Database or tokenizer availability, split or taxonomy drift, count mismatch,
+unsafe report paths, dependency incompatibility, malformed token fields,
+sequence overflow, non-bijective labels, partial writes, and schema drift fail
+closed. Bounded shuffling is deterministic but not a uniform global shuffle,
+and multi-worker loading remains unsupported until explicit no-duplication and
+partitioning tests exist.
+
+**What I can explain in an interview**
+
+Why labels need a stable bidirectional mapping; why truncation and padding are
+separate operations; why examples stay unpadded until a batch exists; why
+dynamic padding alone can still waste computation; how bounded length grouping
+reduced measured padding; why training and validation ordering differ; and why
+the test partition is rejected before any database query.
+
+**Questions still open**
+
+- What PyTorch/CUDA versions and precision mode should CT-303 pin for the RTX
+  5060 Laptop GPU?
+- Should the transformer use unweighted or moderated class-weighted loss?
+- What batch-size fallback, learning rate, early-stopping rule, and local
+  experiment-tracking boundary should be approved before training?
