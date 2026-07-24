@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from collections.abc import Sequence
 from pathlib import Path
 
@@ -61,6 +62,11 @@ from complaint_triage.transformer_dataset import (
     TransformerDatasetError,
     safe_transformer_dataset_error,
     validate_transformer_dataset,
+)
+from complaint_triage.transformer_fit import (
+    TransformerFitError,
+    safe_transformer_fit_error,
+    train_transformer,
 )
 from complaint_triage.transformer_token_profile import (
     TransformerTokenProfileError,
@@ -166,6 +172,11 @@ def build_parser() -> argparse.ArgumentParser:
         help="Run approved synthetic-memory and training-only MiniLM smokes.",
     )
     transformer_smoke_parser.add_argument("--split-manifest", type=Path, required=True)
+    transformer_fit_parser = subcommands.add_parser(
+        "train-transformer",
+        help="Run the approved validation-only MiniLM fit and epoch selection.",
+    )
+    transformer_fit_parser.add_argument("--split-manifest", type=Path, required=True)
     return parser
 
 
@@ -438,6 +449,30 @@ def main(argv: Sequence[str] | None = None) -> int:
                 json.dumps(
                     safe_transformer_training_error(
                         TransformerTrainingError("database_configuration_invalid")
+                    ),
+                    indent=2,
+                    sort_keys=True,
+                )
+            )
+            return 1
+        print(json.dumps(report, indent=2, sort_keys=True))
+        return 0
+
+    if args.command == "train-transformer":
+
+        def report_progress(event):
+            print(json.dumps(dict(event), sort_keys=True), file=sys.stderr, flush=True)
+
+        try:
+            report = train_transformer(args.split_manifest, progress=report_progress)
+        except TransformerFitError as error:
+            print(json.dumps(safe_transformer_fit_error(error), indent=2, sort_keys=True))
+            return 1
+        except DatabaseSettingsError:
+            print(
+                json.dumps(
+                    safe_transformer_fit_error(
+                        TransformerFitError("database_configuration_invalid")
                     ),
                     indent=2,
                     sort_keys=True,

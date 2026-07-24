@@ -1,0 +1,274 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/cj-ancheta/Complaint-Triage/contracts/cfpb-transformer-training.schema.json",
+  "title": "CFPB MiniLM validation-selection training report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["report_version", "run_id", "trained_at_utc", "source", "data", "model", "optimization", "selection", "epochs", "artifacts", "runtime", "software", "hardware", "checks", "claims", "privacy"],
+  "properties": {
+    "report_version": { "const": "transformer-minilm-selection-1.0.0" },
+    "run_id": { "type": "string", "pattern": "^cfpb-run-[0-9]{8}T[0-9]{6}Z-[0-9a-f]{12}$" },
+    "trained_at_utc": { "$ref": "#/$defs/utcTimestamp" },
+    "source": {
+      "type": "object", "additionalProperties": false,
+      "required": ["split_manifest_sha256", "split_version", "training_implementation_commit_sha"],
+      "properties": {
+        "split_manifest_sha256": { "$ref": "#/$defs/sha256" },
+        "split_version": { "const": "1.0.0" },
+        "training_implementation_commit_sha": { "$ref": "#/$defs/gitCommitSha" }
+      }
+    },
+    "data": {
+      "type": "object", "additionalProperties": false,
+      "required": ["feature_input", "train_record_count", "validation_record_count", "test_accessed", "labels"],
+      "properties": {
+        "feature_input": { "const": "consumer_complaint_narrative_only" },
+        "train_record_count": { "type": "integer", "minimum": 1 },
+        "validation_record_count": { "type": "integer", "minimum": 1 },
+        "test_accessed": { "const": false },
+        "labels": { "$ref": "#/$defs/labels" }
+      }
+    },
+    "model": {
+      "type": "object", "additionalProperties": false,
+      "required": ["model_id", "model_revision", "maximum_length", "label_count", "full_fine_tune", "safetensors_required"],
+      "properties": {
+        "model_id": { "const": "microsoft/MiniLM-L12-H384-uncased" },
+        "model_revision": { "const": "9a201d7b3ebebc5feabf9fbb4b3a4ec5d3f2440d" },
+        "maximum_length": { "const": 384 },
+        "label_count": { "const": 11 },
+        "full_fine_tune": { "const": true },
+        "safetensors_required": { "const": true }
+      }
+    },
+    "optimization": {
+      "type": "object", "additionalProperties": false,
+      "required": ["optimizer", "learning_rate", "weight_decay", "betas", "epsilon", "scheduler", "warmup_ratio", "maximum_epochs", "gradient_clip_l2", "mixed_precision", "random_seed", "per_device_batch_size", "gradient_accumulation_steps", "gradient_checkpointing", "effective_batch_size", "optimizer_steps_per_epoch", "class_weights", "batch_probe_attempts"],
+      "properties": {
+        "optimizer": { "const": "AdamW" },
+        "learning_rate": { "const": 0.00002 },
+        "weight_decay": { "const": 0.01 },
+        "betas": { "const": [0.9, 0.999] },
+        "epsilon": { "const": 1e-8 },
+        "scheduler": { "const": "linear_decay" },
+        "warmup_ratio": { "const": 0.06 },
+        "maximum_epochs": { "const": 3 },
+        "gradient_clip_l2": { "const": 1.0 },
+        "mixed_precision": { "const": "fp16" },
+        "random_seed": { "const": 42 },
+        "per_device_batch_size": { "enum": [4, 8, 16] },
+        "gradient_accumulation_steps": { "enum": [2, 4, 8] },
+        "gradient_checkpointing": { "type": "boolean" },
+        "effective_batch_size": { "const": 32 },
+        "optimizer_steps_per_epoch": { "type": "integer", "minimum": 1 },
+        "class_weights": {
+          "type": "object", "minProperties": 11, "maxProperties": 11,
+          "additionalProperties": { "type": "number", "exclusiveMinimum": 0 }
+        },
+        "batch_probe_attempts": {
+          "type": "array", "minItems": 1, "maxItems": 3,
+          "items": { "$ref": "#/$defs/batchProbe" }
+        }
+      }
+    },
+    "selection": {
+      "type": "object", "additionalProperties": false,
+      "required": ["split", "monitored_metric", "minimum_improvement", "patience_completed_epochs", "ranking", "completed_epochs", "stopped_early", "selected_epoch"],
+      "properties": {
+        "split": { "const": "validation" },
+        "monitored_metric": { "const": "macro_f1" },
+        "minimum_improvement": { "const": 0.001 },
+        "patience_completed_epochs": { "const": 1 },
+        "ranking": { "const": ["highest_validation_macro_f1", "highest_validation_worst_class_recall", "highest_validation_weighted_f1", "earlier_epoch"] },
+        "completed_epochs": { "type": "integer", "minimum": 1, "maximum": 3 },
+        "stopped_early": { "type": "boolean" },
+        "selected_epoch": { "type": "integer", "minimum": 1, "maximum": 3 }
+      }
+    },
+    "epochs": {
+      "type": "array", "minItems": 1, "maxItems": 3,
+      "items": { "$ref": "#/$defs/epoch" }
+    },
+    "artifacts": {
+      "type": "object", "additionalProperties": false,
+      "required": ["best_model", "latest_model", "latest_training_state", "latest_resume_manifest"],
+      "properties": {
+        "best_model": { "$ref": "#/$defs/artifact" },
+        "latest_model": { "$ref": "#/$defs/artifact" },
+        "latest_training_state": { "$ref": "#/$defs/artifact" },
+        "latest_resume_manifest": { "$ref": "#/$defs/artifact" }
+      }
+    },
+    "runtime": {
+      "type": "object", "additionalProperties": false,
+      "required": ["summed_epoch_compute_seconds", "peak_cuda_bytes"],
+      "properties": {
+        "summed_epoch_compute_seconds": { "type": "number", "minimum": 0 },
+        "peak_cuda_bytes": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "software": {
+      "type": "object", "additionalProperties": false,
+      "required": ["python", "torch", "cuda_runtime", "transformers", "tokenizers", "safetensors", "numpy"],
+      "properties": {
+        "python": { "type": "string", "minLength": 1 },
+        "torch": { "const": "2.13.0+cu130" },
+        "cuda_runtime": { "const": "13.0" },
+        "transformers": { "type": "string", "minLength": 1 },
+        "tokenizers": { "type": "string", "minLength": 1 },
+        "safetensors": { "type": "string", "minLength": 1 },
+        "numpy": { "type": "string", "minLength": 1 }
+      }
+    },
+    "hardware": {
+      "type": "object", "additionalProperties": false,
+      "required": ["device", "compute_capability"],
+      "properties": {
+        "device": { "type": "string", "minLength": 1 },
+        "compute_capability": { "const": [12, 0] }
+      }
+    },
+    "checks": {
+      "type": "object", "additionalProperties": false,
+      "required": ["source_counts_reconcile", "taxonomy_complete", "training_uses_train_only", "selection_uses_validation_only", "test_accessed", "losses_finite", "selected_artifacts_hashed", "no_rows_persisted"],
+      "properties": {
+        "source_counts_reconcile": { "const": true },
+        "taxonomy_complete": { "const": true },
+        "training_uses_train_only": { "const": true },
+        "selection_uses_validation_only": { "const": true },
+        "test_accessed": { "const": false },
+        "losses_finite": { "const": true },
+        "selected_artifacts_hashed": { "const": true },
+        "no_rows_persisted": { "const": true }
+      }
+    },
+    "claims": {
+      "type": "object", "additionalProperties": false,
+      "required": ["portfolio_promotion_approved", "test_used_for_training_or_tuning", "interpretation"],
+      "properties": {
+        "portfolio_promotion_approved": { "const": false },
+        "test_used_for_training_or_tuning": { "const": false },
+        "interpretation": { "const": "validation_selected_transformer_not_final_test_evidence" }
+      }
+    },
+    "privacy": {
+      "type": "object", "additionalProperties": false,
+      "required": ["contains_row_values", "contains_narratives", "contains_complaint_ids", "contains_token_ids", "contains_vocabulary", "artifact_git_tracking_allowed", "report_git_tracking_allowed"],
+      "properties": {
+        "contains_row_values": { "const": false },
+        "contains_narratives": { "const": false },
+        "contains_complaint_ids": { "const": false },
+        "contains_token_ids": { "const": false },
+        "contains_vocabulary": { "const": false },
+        "artifact_git_tracking_allowed": { "const": false },
+        "report_git_tracking_allowed": { "const": true }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "gitCommitSha": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "utcTimestamp": { "type": "string", "format": "date-time", "pattern": "Z$" },
+    "score": { "type": "number", "minimum": 0, "maximum": 1 },
+    "labels": { "type": "array", "minItems": 11, "maxItems": 11, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+    "batchProbe": {
+      "type": "object", "additionalProperties": false,
+      "required": ["per_device_batch_size", "gradient_accumulation_steps", "gradient_checkpointing", "status"],
+      "properties": {
+        "per_device_batch_size": { "enum": [4, 8, 16] },
+        "gradient_accumulation_steps": { "enum": [2, 4, 8] },
+        "gradient_checkpointing": { "type": "boolean" },
+        "status": { "enum": ["cuda_out_of_memory", "passed"] }
+      }
+    },
+    "perClass": {
+      "type": "object", "minProperties": 11, "maxProperties": 11,
+      "additionalProperties": {
+        "type": "object", "additionalProperties": false,
+        "required": ["support", "precision", "recall", "f1"],
+        "properties": {
+          "support": { "type": "integer", "minimum": 1 },
+          "precision": { "$ref": "#/$defs/score" },
+          "recall": { "$ref": "#/$defs/score" },
+          "f1": { "$ref": "#/$defs/score" }
+        }
+      }
+    },
+    "matrix": {
+      "type": "object", "additionalProperties": false,
+      "required": ["orientation", "labels", "rows"],
+      "properties": {
+        "orientation": { "const": "rows_actual_columns_predicted" },
+        "labels": { "$ref": "#/$defs/labels" },
+        "rows": {
+          "type": "array", "minItems": 11, "maxItems": 11,
+          "items": { "type": "array", "minItems": 11, "maxItems": 11, "items": { "type": "integer", "minimum": 0 } }
+        }
+      }
+    },
+    "metrics": {
+      "type": "object", "additionalProperties": false,
+      "required": ["accuracy", "macro_f1", "weighted_f1", "worst_class_recall", "top_2_accuracy", "per_class", "confusion_matrix"],
+      "properties": {
+        "accuracy": { "$ref": "#/$defs/score" },
+        "macro_f1": { "$ref": "#/$defs/score" },
+        "weighted_f1": { "$ref": "#/$defs/score" },
+        "worst_class_recall": { "$ref": "#/$defs/score" },
+        "top_2_accuracy": { "$ref": "#/$defs/score" },
+        "per_class": { "$ref": "#/$defs/perClass" },
+        "confusion_matrix": { "$ref": "#/$defs/matrix" }
+      }
+    },
+    "epoch": {
+      "type": "object", "additionalProperties": false,
+      "required": ["epoch", "training", "validation", "early_stopping"],
+      "properties": {
+        "epoch": { "type": "integer", "minimum": 1, "maximum": 3 },
+        "training": {
+          "type": "object", "additionalProperties": false,
+          "required": ["record_count", "class_counts", "optimizer_steps", "mean_loss", "elapsed_seconds", "peak_cuda_bytes", "loss_finite"],
+          "properties": {
+            "record_count": { "type": "integer", "minimum": 1 },
+            "class_counts": { "type": "object", "minProperties": 11, "maxProperties": 11, "additionalProperties": { "type": "integer", "minimum": 1 } },
+            "optimizer_steps": { "type": "integer", "minimum": 1 },
+            "mean_loss": { "type": "number", "minimum": 0 },
+            "elapsed_seconds": { "type": "number", "minimum": 0 },
+            "peak_cuda_bytes": { "type": "integer", "minimum": 1 },
+            "loss_finite": { "const": true }
+          }
+        },
+        "validation": {
+          "type": "object", "additionalProperties": false,
+          "required": ["record_count", "mean_loss", "elapsed_seconds", "peak_cuda_bytes", "loss_finite", "metrics"],
+          "properties": {
+            "record_count": { "type": "integer", "minimum": 1 },
+            "mean_loss": { "type": "number", "minimum": 0 },
+            "elapsed_seconds": { "type": "number", "minimum": 0 },
+            "peak_cuda_bytes": { "type": "integer", "minimum": 1 },
+            "loss_finite": { "const": true },
+            "metrics": { "$ref": "#/$defs/metrics" }
+          }
+        },
+        "early_stopping": {
+          "type": "object", "additionalProperties": false,
+          "required": ["minimum_improvement_met", "monitored_best_macro_f1", "non_improving_epochs"],
+          "properties": {
+            "minimum_improvement_met": { "type": "boolean" },
+            "monitored_best_macro_f1": { "$ref": "#/$defs/score" },
+            "non_improving_epochs": { "type": "integer", "minimum": 0, "maximum": 1 }
+          }
+        }
+      }
+    },
+    "artifact": {
+      "type": "object", "additionalProperties": false,
+      "required": ["relative_path", "sha256", "byte_count", "retention"],
+      "properties": {
+        "relative_path": { "type": "string", "pattern": "^artifacts/cfpb/transformer/cfpb-run-[^/]+/[^/]+$" },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "byte_count": { "type": "integer", "minimum": 1 },
+        "retention": { "const": "local_only_governed_until_2026-11-19" }
+      }
+    }
+  }
+}

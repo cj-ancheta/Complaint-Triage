@@ -13,6 +13,7 @@ from complaint_triage.taxonomy_profile import TaxonomyProfileError
 from complaint_triage.temporal_split import TemporalSplitError
 from complaint_triage.tfidf_logreg import TfidfLogregError
 from complaint_triage.transformer_dataset import TransformerDatasetError
+from complaint_triage.transformer_fit import TransformerFitError
 from complaint_triage.transformer_token_profile import TransformerTokenProfileError
 from complaint_triage.transformer_training import TransformerTrainingError
 
@@ -541,4 +542,38 @@ def test_transformer_training_smoke_command_prints_safe_error(monkeypatch, capsy
 
     assert exit_code == 1
     assert output["error"] == {"code": "transformer_training_no_batch_configuration_fits"}
+    assert output["privacy"]["token_ids_logged"] is False
+
+
+def test_transformer_fit_command_prints_safe_result_and_progress(monkeypatch, capsys) -> None:
+    def fit(path, *, progress):
+        progress({"event": "transformer_fit_epoch_completed", "epoch": 1})
+        return {
+            "report_version": "transformer-minilm-selection-1.0.0",
+            "selection": {"selected_epoch": 1},
+            "checks": {"test_accessed": False},
+        }
+
+    monkeypatch.setattr(cli, "train_transformer", fit)
+
+    exit_code = cli.main(["train-transformer", "--split-manifest", "split.json"])
+    captured = capsys.readouterr()
+    output = json.loads(captured.out)
+
+    assert exit_code == 0
+    assert output["checks"]["test_accessed"] is False
+    assert json.loads(captured.err)["event"] == "transformer_fit_epoch_completed"
+
+
+def test_transformer_fit_command_prints_safe_error(monkeypatch, capsys) -> None:
+    def fail(path, *, progress):
+        raise TransformerFitError("transformer_fit_requires_clean_commit")
+
+    monkeypatch.setattr(cli, "train_transformer", fail)
+
+    exit_code = cli.main(["train-transformer", "--split-manifest", "split.json"])
+    output = json.loads(capsys.readouterr().out)
+
+    assert exit_code == 1
+    assert output["error"] == {"code": "transformer_fit_requires_clean_commit"}
     assert output["privacy"]["token_ids_logged"] is False
