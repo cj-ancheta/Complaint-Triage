@@ -1,0 +1,260 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/cj-ancheta/Complaint-Triage/contracts/cfpb-validation-model-comparison.schema.json",
+  "title": "CFPB validation-only model comparison",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["report_version", "run_id", "compared_at_utc", "source", "data", "models", "comparison", "utility_proposal", "checks", "limitations", "claims", "privacy"],
+  "properties": {
+    "report_version": { "const": "validation-model-comparison-1.0.0" },
+    "run_id": { "type": "string", "pattern": "^cfpb-run-[0-9]{8}T[0-9]{6}Z-[0-9a-f]{12}$" },
+    "compared_at_utc": { "$ref": "#/$defs/utcTimestamp" },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["baseline_report_sha256", "transformer_report_sha256", "split_manifest_sha256", "comparison_implementation_commit_sha"],
+      "properties": {
+        "baseline_report_sha256": { "$ref": "#/$defs/sha256" },
+        "transformer_report_sha256": { "$ref": "#/$defs/sha256" },
+        "split_manifest_sha256": { "$ref": "#/$defs/sha256" },
+        "comparison_implementation_commit_sha": { "$ref": "#/$defs/gitCommitSha" }
+      }
+    },
+    "data": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evaluation_split", "train_record_count", "validation_record_count", "labels", "test_accessed"],
+      "properties": {
+        "evaluation_split": { "const": "validation" },
+        "train_record_count": { "type": "integer", "minimum": 1 },
+        "validation_record_count": { "type": "integer", "minimum": 1 },
+        "labels": { "$ref": "#/$defs/labels" },
+        "test_accessed": { "const": false }
+      }
+    },
+    "models": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["baseline", "transformer"],
+      "properties": {
+        "baseline": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["model_family", "selected_candidate_id", "artifact_byte_count", "compute_seconds", "compute_scope"],
+          "properties": {
+            "model_family": { "const": "tfidf_logistic_regression" },
+            "selected_candidate_id": { "type": "string", "minLength": 1 },
+            "artifact_byte_count": { "type": "integer", "minimum": 1 },
+            "compute_seconds": { "type": "number", "exclusiveMinimum": 0 },
+            "compute_scope": { "const": "selected_candidate_fit_only" }
+          }
+        },
+        "transformer": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["model_family", "selected_epoch", "artifact_byte_count", "compute_seconds", "compute_scope"],
+          "properties": {
+            "model_family": { "const": "minilm_full_fine_tune" },
+            "selected_epoch": { "type": "integer", "minimum": 1 },
+            "artifact_byte_count": { "type": "integer", "minimum": 1 },
+            "compute_seconds": { "type": "number", "exclusiveMinimum": 0 },
+            "compute_scope": { "const": "all_completed_training_and_validation_epochs" }
+          }
+        }
+      }
+    },
+    "comparison": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["metric_direction", "shared_validation_metrics", "per_class", "class_f1_wins", "artifact_footprint", "non_comparable_evidence"],
+      "properties": {
+        "metric_direction": { "const": "higher_is_better" },
+        "shared_validation_metrics": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["accuracy", "macro_f1", "weighted_f1", "worst_class_recall"],
+          "properties": {
+            "accuracy": { "$ref": "#/$defs/metricComparison" },
+            "macro_f1": { "$ref": "#/$defs/metricComparison" },
+            "weighted_f1": { "$ref": "#/$defs/metricComparison" },
+            "worst_class_recall": { "$ref": "#/$defs/metricComparison" }
+          }
+        },
+        "per_class": {
+          "type": "array",
+          "minItems": 11,
+          "maxItems": 11,
+          "items": { "$ref": "#/$defs/perClassComparison" }
+        },
+        "class_f1_wins": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["baseline", "transformer", "tie"],
+          "properties": {
+            "baseline": { "type": "integer", "minimum": 0, "maximum": 11 },
+            "transformer": { "type": "integer", "minimum": 0, "maximum": 11 },
+            "tie": { "type": "integer", "minimum": 0, "maximum": 11 }
+          }
+        },
+        "artifact_footprint": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["baseline_byte_count", "transformer_byte_count", "transformer_minus_baseline_bytes", "transformer_to_baseline_ratio"],
+          "properties": {
+            "baseline_byte_count": { "type": "integer", "minimum": 1 },
+            "transformer_byte_count": { "type": "integer", "minimum": 1 },
+            "transformer_minus_baseline_bytes": { "type": "integer" },
+            "transformer_to_baseline_ratio": { "type": "number", "exclusiveMinimum": 0 }
+          }
+        },
+        "non_comparable_evidence": {
+          "const": {
+            "top_2_accuracy": "transformer_only",
+            "calibration": "not_yet_measured",
+            "selective_accuracy_after_abstention": "not_yet_measured",
+            "cpu_inference_latency": "not_yet_measured",
+            "runtime_memory": "not_comparable_across_models",
+            "explainability": "not_yet_assessed_under_fixed_rule",
+            "operational_complexity": "not_yet_assessed_under_fixed_rule",
+            "deployment_cost": "not_yet_assessed_under_fixed_rule"
+          }
+        }
+      }
+    },
+    "utility_proposal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "basis", "candidate_for_calibration", "final_operational_model", "final_decision_gate", "rationale", "unresolved_dimensions"],
+      "properties": {
+        "status": { "const": "advance_transformer_to_ct305_calibration" },
+        "basis": { "const": "validation_quality_only" },
+        "candidate_for_calibration": { "const": "transformer_minilm" },
+        "final_operational_model": { "type": "null" },
+        "final_decision_gate": { "const": "ct306_written_utility_adr" },
+        "rationale": {
+          "const": [
+            "transformer_has_higher_validation_macro_f1",
+            "transformer_has_higher_validation_worst_class_recall",
+            "transformer_has_higher_validation_weighted_f1",
+            "transformer_has_higher_validation_accuracy"
+          ]
+        },
+        "unresolved_dimensions": {
+          "const": [
+            "calibration",
+            "selective_accuracy_after_abstention",
+            "cpu_inference_latency",
+            "runtime_memory",
+            "explainability",
+            "operational_complexity",
+            "deployment_cost"
+          ]
+        }
+      }
+    },
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["run_identity_matches", "split_identity_matches", "train_counts_match", "validation_counts_match", "labels_match", "per_class_support_matches", "selected_candidates_reconciled", "source_reports_validation_only", "test_accessed"],
+      "properties": {
+        "run_identity_matches": { "const": true },
+        "split_identity_matches": { "const": true },
+        "train_counts_match": { "const": true },
+        "validation_counts_match": { "const": true },
+        "labels_match": { "const": true },
+        "per_class_support_matches": { "const": true },
+        "selected_candidates_reconciled": { "const": true },
+        "source_reports_validation_only": { "const": true },
+        "test_accessed": { "const": false }
+      }
+    },
+    "limitations": {
+      "const": [
+        "validation_was_used_for_model_selection",
+        "baseline_metrics_are_rounded_to_six_decimals",
+        "training_compute_scopes_are_not_comparable",
+        "top_2_accuracy_is_available_only_for_transformer",
+        "calibration_and_abstention_are_deferred_to_ct305",
+        "latency_memory_explainability_complexity_and_cost_are_deferred_to_ct306",
+        "no_final_operational_model_selected_in_ct304"
+      ]
+    },
+    "claims": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["portfolio_promotion_approved", "test_used_for_comparison", "operational_model_selected", "interpretation"],
+      "properties": {
+        "portfolio_promotion_approved": { "const": false },
+        "test_used_for_comparison": { "const": false },
+        "operational_model_selected": { "const": false },
+        "interpretation": { "const": "validation_only_candidate_comparison" }
+      }
+    },
+    "privacy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["contains_row_values", "contains_narratives", "contains_complaint_ids", "contains_vocabulary", "contains_token_ids", "git_tracking_allowed"],
+      "properties": {
+        "contains_row_values": { "const": false },
+        "contains_narratives": { "const": false },
+        "contains_complaint_ids": { "const": false },
+        "contains_vocabulary": { "const": false },
+        "contains_token_ids": { "const": false },
+        "git_tracking_allowed": { "const": true }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "gitCommitSha": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "utcTimestamp": { "type": "string", "format": "date-time", "pattern": "Z$" },
+    "score": { "type": "number", "minimum": 0, "maximum": 1 },
+    "delta": { "type": "number", "minimum": -1, "maximum": 1 },
+    "winner": { "enum": ["baseline", "transformer", "tie"] },
+    "labels": { "type": "array", "minItems": 11, "maxItems": 11, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+    "metricComparison": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["baseline", "transformer", "delta_transformer_minus_baseline", "winner"],
+      "properties": {
+        "baseline": { "$ref": "#/$defs/score" },
+        "transformer": { "$ref": "#/$defs/score" },
+        "delta_transformer_minus_baseline": { "$ref": "#/$defs/delta" },
+        "winner": { "$ref": "#/$defs/winner" }
+      }
+    },
+    "classMetrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["precision", "recall", "f1"],
+      "properties": {
+        "precision": { "$ref": "#/$defs/score" },
+        "recall": { "$ref": "#/$defs/score" },
+        "f1": { "$ref": "#/$defs/score" }
+      }
+    },
+    "classDeltas": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["precision", "recall", "f1"],
+      "properties": {
+        "precision": { "$ref": "#/$defs/delta" },
+        "recall": { "$ref": "#/$defs/delta" },
+        "f1": { "$ref": "#/$defs/delta" }
+      }
+    },
+    "perClassComparison": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label", "support", "baseline", "transformer", "delta_transformer_minus_baseline", "f1_winner"],
+      "properties": {
+        "label": { "type": "string", "minLength": 1 },
+        "support": { "type": "integer", "minimum": 1 },
+        "baseline": { "$ref": "#/$defs/classMetrics" },
+        "transformer": { "$ref": "#/$defs/classMetrics" },
+        "delta_transformer_minus_baseline": { "$ref": "#/$defs/classDeltas" },
+        "f1_winner": { "$ref": "#/$defs/winner" }
+      }
+    }
+  }
+}

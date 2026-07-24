@@ -78,6 +78,11 @@ from complaint_triage.transformer_training import (
     safe_transformer_training_error,
     smoke_transformer_training,
 )
+from complaint_triage.validation_comparison import (
+    ValidationComparisonError,
+    compare_validation_models,
+    safe_validation_comparison_error,
+)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -177,6 +182,12 @@ def build_parser() -> argparse.ArgumentParser:
         help="Run the approved validation-only MiniLM fit and epoch selection.",
     )
     transformer_fit_parser.add_argument("--split-manifest", type=Path, required=True)
+    comparison_parser = subcommands.add_parser(
+        "compare-validation-models",
+        help="Compare accepted TF-IDF and MiniLM validation evidence.",
+    )
+    comparison_parser.add_argument("--baseline-report", type=Path, required=True)
+    comparison_parser.add_argument("--transformer-report", type=Path, required=True)
     return parser
 
 
@@ -478,6 +489,18 @@ def main(argv: Sequence[str] | None = None) -> int:
                     sort_keys=True,
                 )
             )
+            return 1
+        print(json.dumps(report, indent=2, sort_keys=True))
+        return 0
+
+    if args.command == "compare-validation-models":
+        try:
+            report = compare_validation_models(
+                args.baseline_report,
+                args.transformer_report,
+            )
+        except ValidationComparisonError as error:
+            print(json.dumps(safe_validation_comparison_error(error), indent=2, sort_keys=True))
             return 1
         print(json.dumps(report, indent=2, sort_keys=True))
         return 0

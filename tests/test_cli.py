@@ -16,6 +16,7 @@ from complaint_triage.transformer_dataset import TransformerDatasetError
 from complaint_triage.transformer_fit import TransformerFitError
 from complaint_triage.transformer_token_profile import TransformerTokenProfileError
 from complaint_triage.transformer_training import TransformerTrainingError
+from complaint_triage.validation_comparison import ValidationComparisonError
 
 
 def test_profile_command_prints_safe_json(monkeypatch, capsys) -> None:
@@ -577,3 +578,51 @@ def test_transformer_fit_command_prints_safe_error(monkeypatch, capsys) -> None:
     assert exit_code == 1
     assert output["error"] == {"code": "transformer_fit_requires_clean_commit"}
     assert output["privacy"]["token_ids_logged"] is False
+
+
+def test_validation_comparison_command_prints_aggregate_result(monkeypatch, capsys) -> None:
+    monkeypatch.setattr(
+        cli,
+        "compare_validation_models",
+        lambda baseline, transformer: {
+            "report_version": "validation-model-comparison-1.0.0",
+            "source_paths": [str(baseline), str(transformer)],
+            "data": {"evaluation_split": "validation", "test_accessed": False},
+        },
+    )
+
+    exit_code = cli.main(
+        [
+            "compare-validation-models",
+            "--baseline-report",
+            "baseline.json",
+            "--transformer-report",
+            "transformer.json",
+        ]
+    )
+    output = json.loads(capsys.readouterr().out)
+
+    assert exit_code == 0
+    assert output["data"] == {"evaluation_split": "validation", "test_accessed": False}
+
+
+def test_validation_comparison_command_prints_safe_error(monkeypatch, capsys) -> None:
+    def fail(baseline, transformer):
+        raise ValidationComparisonError("validation_comparison_source_identity_mismatch")
+
+    monkeypatch.setattr(cli, "compare_validation_models", fail)
+
+    exit_code = cli.main(
+        [
+            "compare-validation-models",
+            "--baseline-report",
+            "baseline.json",
+            "--transformer-report",
+            "transformer.json",
+        ]
+    )
+    output = json.loads(capsys.readouterr().out)
+
+    assert exit_code == 1
+    assert output["error"] == {"code": "validation_comparison_source_identity_mismatch"}
+    assert output["privacy"]["narratives_logged"] is False
