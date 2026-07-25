@@ -239,7 +239,6 @@ def calibrate_transformer(
         "evaluation_brier_guard_passed": eval_after["multiclass_brier_loss"]
         <= eval_before["multiclass_brier_loss"] + BRIER_GUARD_TOLERANCE,
     }
-    eligible = all(eligibility_checks.values())
     artifact_path = _artifact_path(root, run_id)
     artifact_value = {
         "artifact_version": ARTIFACT_VERSION,
@@ -253,7 +252,58 @@ def calibrate_transformer(
     _atomic_json(artifact_path, artifact_value)
     artifact = _artifact_metadata(artifact_path, root)
 
-    report = {
+    report = _build_calibration_report(
+        run_id=run_id,
+        calibrated_at=calibrated_at,
+        source_hashes=source_hashes,
+        commit_sha=commit_sha,
+        inference=inference,
+        temperature=temperature,
+        fit_result=fit_result,
+        fit_before=fit_before,
+        fit_after=fit_after,
+        eval_before=eval_before,
+        eval_after=eval_after,
+        eligibility_checks=eligibility_checks,
+        artifact=artifact,
+        optimization_seconds=optimization_seconds,
+        numerical=numerical,
+        invariance=invariance,
+        software=(software_reader or _software_versions)(),
+    )
+    _validate_report(report)
+    _atomic_json(report_path, report)
+    return report
+
+
+def _build_calibration_report(
+    *,
+    run_id: str,
+    calibrated_at: datetime,
+    source_hashes: Mapping[str, str],
+    commit_sha: str,
+    inference: CalibrationInference,
+    temperature: float,
+    fit_result: Mapping[str, float | int],
+    fit_before: Mapping[str, Any],
+    fit_after: Mapping[str, Any],
+    eval_before: Mapping[str, Any],
+    eval_after: Mapping[str, Any],
+    eligibility_checks: Mapping[str, bool],
+    artifact: Mapping[str, Any],
+    optimization_seconds: float,
+    numerical: Mapping[str, bool],
+    invariance: Mapping[str, bool],
+    software: Mapping[str, str],
+) -> dict[str, Any]:
+    """Build privacy-bounded calibration evidence from validated aggregates."""
+    eligible = all(eligibility_checks.values())
+    evaluation_per_class = per_class_calibration(
+        inference.logits[inference.partitions == "calibration_evaluation"],
+        inference.labels[inference.partitions == "calibration_evaluation"],
+        temperature,
+    )
+    return {
         "report_version": REPORT_VERSION,
         "run_id": run_id,
         "calibrated_at_utc": calibrated_at.isoformat().replace("+00:00", "Z"),
@@ -282,7 +332,7 @@ def calibrate_transformer(
             "calibration_evaluation": {
                 "before": eval_before,
                 "after": eval_after,
-                "per_class": per_class_calibration(eval_logits, eval_labels, temperature),
+                "per_class": evaluation_per_class,
             },
         },
         "eligibility": {
@@ -301,7 +351,7 @@ def calibrate_transformer(
             "peak_cuda_bytes": inference.peak_cuda_bytes,
             "cpu_optimization_seconds": optimization_seconds,
         },
-        "software": dict((software_reader or _software_versions)()),
+        "software": dict(software),
         "checks": {
             "source_identity_reconciled": True,
             "model_artifact_verified_before_load": True,
@@ -341,9 +391,6 @@ def calibrate_transformer(
             "report_git_tracking_allowed": True,
         },
     }
-    _validate_report(report)
-    _atomic_json(report_path, report)
-    return report
 
 
 def fit_temperature(logits: np.ndarray, labels: np.ndarray) -> dict[str, float | int]:

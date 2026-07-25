@@ -5,8 +5,9 @@ from __future__ import annotations
 import argparse
 import json
 import sys
-from collections.abc import Sequence
-from pathlib import Path
+from collections.abc import Callable, Mapping, Sequence
+from dataclasses import dataclass
+from typing import Any
 
 from complaint_triage.abstention_analysis import (
     AbstentionAnalysisError,
@@ -24,6 +25,7 @@ from complaint_triage.baseline_error_analysis import (
     safe_baseline_error,
 )
 from complaint_triage.cfpb_profile import ProfileError, fetch_cfpb_profile, safe_error_report
+from complaint_triage.cli_parser import build_parser
 from complaint_triage.db import DatabaseSettingsError
 from complaint_triage.live_extraction import acquire_real_run, safe_live_result
 from complaint_triage.majority_baseline import (
@@ -36,11 +38,7 @@ from complaint_triage.model_selection import (
     safe_model_selection_error,
     select_operational_model,
 )
-from complaint_triage.raw_ingestion import (
-    RawIngestionError,
-    ingest_raw_batch,
-    safe_ingestion_error,
-)
+from complaint_triage.raw_ingestion import RawIngestionError, ingest_raw_batch, safe_ingestion_error
 from complaint_triage.real_extraction import (
     ExtractionError,
     cleanup_real_data,
@@ -99,500 +97,255 @@ from complaint_triage.validation_comparison import (
     safe_validation_comparison_error,
 )
 
+JsonReport = Mapping[str, Any]
+ErrorRenderer = Callable[[Any], JsonReport]
+FailureFactory = Callable[[], JsonReport]
 
-def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="complaint-triage")
-    subcommands = parser.add_subparsers(dest="command", required=True)
-    subcommands.add_parser(
-        "profile-cfpb",
-        help="Run one fixed, five-hit CFPB source-contract check.",
-    )
-    ingest_parser = subcommands.add_parser(
-        "ingest-raw-batch",
-        help="Validate and load one content-addressed CFPB raw batch.",
-    )
-    ingest_parser.add_argument(
-        "--manifest",
-        type=Path,
-        required=True,
-        help="Manifest under data/manifests/cfpb/.",
-    )
-    stage_parser = subcommands.add_parser(
-        "stage-raw-batch",
-        help="Create versioned staging outcomes for one ingested raw batch.",
-    )
-    stage_parser.add_argument("--batch-id", required=True, help="Raw ingestion batch ID.")
-    subcommands.add_parser(
-        "profile-taxonomy",
-        help="Run the fixed aggregate-only CFPB taxonomy stability profile.",
-    )
-    population_parser = subcommands.add_parser(
-        "report-population",
-        help="Create a versioned aggregate analytical-population report.",
-    )
-    population_parser.add_argument("--batch-id", required=True, help="Staged raw batch ID.")
-    cleanup_parser = subcommands.add_parser(
-        "cleanup-real-data",
-        help="Inventory an extraction run, or delete it with exact confirmation.",
-    )
-    cleanup_parser.add_argument("--run-manifest", type=Path, required=True)
-    cleanup_parser.add_argument("--execute", action="store_true")
-    cleanup_parser.add_argument("--confirmation")
-    acquire_parser = subcommands.add_parser(
-        "acquire-real-run",
-        help="Acquire the approved retained CFPB run from a clean commit.",
-    )
-    acquire_parser.add_argument(
-        "--confirmation",
-        required=True,
-        help="Must exactly match the accepted retention policy ID.",
-    )
-    run_report_parser = subcommands.add_parser(
-        "report-real-run",
-        help="Reconcile and publish an aggregate-only report for one real run.",
-    )
-    run_report_parser.add_argument("--run-manifest", type=Path, required=True)
-    split_parser = subcommands.add_parser(
-        "build-temporal-split",
-        help="Build the approved deduplicated temporal split for one real run.",
-    )
-    split_parser.add_argument("--run-manifest", type=Path, required=True)
-    majority_parser = subcommands.add_parser(
-        "evaluate-majority-baseline",
-        help="Evaluate the training-majority reference against the accepted split.",
-    )
-    majority_parser.add_argument("--split-manifest", type=Path, required=True)
-    tfidf_parser = subcommands.add_parser(
-        "train-tfidf-logreg",
-        help="Run the approved validation-only TF-IDF logistic search.",
-    )
-    tfidf_parser.add_argument("--split-manifest", type=Path, required=True)
-    tfidf_parser.add_argument(
-        "--smoke",
-        action="store_true",
-        help="Fit a bounded training-only sample without writing evidence.",
-    )
-    error_analysis_parser = subcommands.add_parser(
-        "analyze-baseline-errors",
-        help="Produce validation-only aggregate error analysis for the selected baseline.",
-    )
-    error_analysis_parser.add_argument("--model-report", type=Path, required=True)
-    token_profile_parser = subcommands.add_parser(
-        "profile-transformer-tokens",
-        help="Profile pinned MiniLM token lengths using training narratives only.",
-    )
-    token_profile_parser.add_argument("--split-manifest", type=Path, required=True)
-    dataset_parser = subcommands.add_parser(
-        "validate-transformer-dataset",
-        help="Validate deterministic train/validation tokenization and dynamic padding.",
-    )
-    dataset_parser.add_argument("--split-manifest", type=Path, required=True)
-    transformer_smoke_parser = subcommands.add_parser(
-        "smoke-transformer-training",
-        help="Run approved synthetic-memory and training-only MiniLM smokes.",
-    )
-    transformer_smoke_parser.add_argument("--split-manifest", type=Path, required=True)
-    transformer_fit_parser = subcommands.add_parser(
-        "train-transformer",
-        help="Run the approved validation-only MiniLM fit and epoch selection.",
-    )
-    transformer_fit_parser.add_argument("--split-manifest", type=Path, required=True)
-    comparison_parser = subcommands.add_parser(
-        "compare-validation-models",
-        help="Compare accepted TF-IDF and MiniLM validation evidence.",
-    )
-    comparison_parser.add_argument("--baseline-report", type=Path, required=True)
-    comparison_parser.add_argument("--transformer-report", type=Path, required=True)
-    calibration_parser = subcommands.add_parser(
-        "calibrate-transformer",
-        help="Fit approved September temperature scaling and assess October validation.",
-    )
-    calibration_parser.add_argument("--transformer-report", type=Path, required=True)
-    selection_parser = subcommands.add_parser(
-        "select-operational-model",
-        help="Run the approved CT-306 CPU benchmark and operational model decision.",
-    )
-    selection_parser.add_argument("--calibration-report", type=Path, required=True)
-    abstention_parser = subcommands.add_parser(
-        "analyze-abstention",
-        help="Evaluate the approved validation-only abstention threshold grid.",
-    )
-    abstention_parser.add_argument("--model-selection-report", type=Path, required=True)
-    return parser
+
+@dataclass(frozen=True)
+class CommandSpec:
+    """Declarative adapter for one ordinary report command."""
+
+    runner_name: str
+    argument_names: tuple[str, ...]
+    error_type: type[Exception]
+    error_renderer: ErrorRenderer
+    database_failure: FailureFactory | None = None
+
+
+def _emit(report: JsonReport, exit_code: int = 0) -> int:
+    print(json.dumps(report, indent=2, sort_keys=True))
+    return exit_code
+
+
+def _database_error(privacy: Mapping[str, bool]) -> JsonReport:
+    return {
+        "status": "error",
+        "error": {"code": "database_configuration_invalid"},
+        "privacy": privacy,
+    }
+
+
+SIMPLE_COMMANDS = {
+    "profile-cfpb": CommandSpec("fetch_cfpb_profile", (), ProfileError, safe_error_report),
+    "ingest-raw-batch": CommandSpec(
+        "ingest_raw_batch",
+        ("manifest",),
+        RawIngestionError,
+        safe_ingestion_error,
+        lambda: _database_error({"source_values_logged": False, "raw_payload_logged": False}),
+    ),
+    "stage-raw-batch": CommandSpec(
+        "stage_raw_batch",
+        ("batch_id",),
+        StagingError,
+        safe_staging_error,
+        lambda: _database_error({"source_values_logged": False, "raw_payload_logged": False}),
+    ),
+    "profile-taxonomy": CommandSpec(
+        "fetch_taxonomy_profile", (), TaxonomyProfileError, safe_taxonomy_error_report
+    ),
+    "report-population": CommandSpec(
+        "report_analytical_population",
+        ("batch_id",),
+        PopulationError,
+        safe_population_error,
+        lambda: _database_error(
+            {
+                "narratives_logged": False,
+                "narratives_in_report": False,
+                "narratives_copied_to_analytical": False,
+            }
+        ),
+    ),
+    "report-real-run": CommandSpec(
+        "report_real_run",
+        ("run_manifest",),
+        RealRunReportError,
+        safe_real_run_report_error,
+        lambda: safe_real_run_report_error(RealRunReportError("database_configuration_invalid")),
+    ),
+    "build-temporal-split": CommandSpec(
+        "build_temporal_split",
+        ("run_manifest",),
+        TemporalSplitError,
+        safe_temporal_split_error,
+        lambda: safe_temporal_split_error(TemporalSplitError("database_configuration_invalid")),
+    ),
+    "evaluate-majority-baseline": CommandSpec(
+        "evaluate_majority_baseline",
+        ("split_manifest",),
+        MajorityBaselineError,
+        safe_majority_baseline_error,
+    ),
+    "analyze-baseline-errors": CommandSpec(
+        "analyze_baseline_errors",
+        ("model_report",),
+        BaselineErrorAnalysisError,
+        safe_baseline_error,
+        lambda: safe_baseline_error(BaselineErrorAnalysisError("database_configuration_invalid")),
+    ),
+    "profile-transformer-tokens": CommandSpec(
+        "profile_transformer_tokens",
+        ("split_manifest",),
+        TransformerTokenProfileError,
+        safe_transformer_token_profile_error,
+        lambda: safe_transformer_token_profile_error(
+            TransformerTokenProfileError("database_configuration_invalid")
+        ),
+    ),
+    "validate-transformer-dataset": CommandSpec(
+        "validate_transformer_dataset",
+        ("split_manifest",),
+        TransformerDatasetError,
+        safe_transformer_dataset_error,
+        lambda: safe_transformer_dataset_error(
+            TransformerDatasetError("database_configuration_invalid")
+        ),
+    ),
+    "smoke-transformer-training": CommandSpec(
+        "smoke_transformer_training",
+        ("split_manifest",),
+        TransformerTrainingError,
+        safe_transformer_training_error,
+        lambda: safe_transformer_training_error(
+            TransformerTrainingError("database_configuration_invalid")
+        ),
+    ),
+    "compare-validation-models": CommandSpec(
+        "compare_validation_models",
+        ("baseline_report", "transformer_report"),
+        ValidationComparisonError,
+        safe_validation_comparison_error,
+    ),
+    "calibrate-transformer": CommandSpec(
+        "calibrate_transformer",
+        ("transformer_report",),
+        TransformerCalibrationError,
+        safe_transformer_calibration_error,
+        lambda: safe_transformer_calibration_error(
+            TransformerCalibrationError("database_configuration_invalid")
+        ),
+    ),
+    "select-operational-model": CommandSpec(
+        "select_operational_model",
+        ("calibration_report",),
+        ModelSelectionError,
+        safe_model_selection_error,
+        lambda: safe_model_selection_error(ModelSelectionError("database_configuration_invalid")),
+    ),
+    "analyze-abstention": CommandSpec(
+        "analyze_abstention_thresholds",
+        ("model_selection_report",),
+        AbstentionAnalysisError,
+        safe_abstention_analysis_error,
+        lambda: safe_abstention_analysis_error(
+            AbstentionAnalysisError("database_configuration_invalid")
+        ),
+    ),
+}
+
+
+def _command_runners() -> dict[str, Callable[..., JsonReport]]:
+    """Resolve runners at dispatch time so tests and adapters can replace them."""
+    return {
+        "fetch_cfpb_profile": fetch_cfpb_profile,
+        "ingest_raw_batch": ingest_raw_batch,
+        "stage_raw_batch": stage_raw_batch,
+        "fetch_taxonomy_profile": fetch_taxonomy_profile,
+        "report_analytical_population": report_analytical_population,
+        "report_real_run": report_real_run,
+        "build_temporal_split": build_temporal_split,
+        "evaluate_majority_baseline": evaluate_majority_baseline,
+        "analyze_baseline_errors": analyze_baseline_errors,
+        "profile_transformer_tokens": profile_transformer_tokens,
+        "validate_transformer_dataset": validate_transformer_dataset,
+        "smoke_transformer_training": smoke_transformer_training,
+        "compare_validation_models": compare_validation_models,
+        "calibrate_transformer": calibrate_transformer,
+        "select_operational_model": select_operational_model,
+        "analyze_abstention_thresholds": analyze_abstention_thresholds,
+    }
+
+
+def _run_simple(args: argparse.Namespace, spec: CommandSpec) -> int:
+    runner = _command_runners()[spec.runner_name]
+    values = [getattr(args, name) for name in spec.argument_names]
+    try:
+        return _emit(runner(*values))
+    except spec.error_type as error:
+        return _emit(spec.error_renderer(error), 1)
+    except DatabaseSettingsError:
+        if spec.database_failure is None:
+            raise
+        return _emit(spec.database_failure(), 1)
+
+
+def _cleanup(args: argparse.Namespace) -> int:
+    try:
+        report = cleanup_real_data(
+            args.run_manifest, execute=args.execute, confirmation=args.confirmation
+        )
+    except (ExtractionError, OSError, json.JSONDecodeError) as error:
+        controlled = (
+            error
+            if isinstance(error, ExtractionError)
+            else ExtractionError("cleanup_manifest_unreadable")
+        )
+        return _emit(safe_extraction_error(controlled), 1)
+    return _emit(report)
+
+
+def _acquire(args: argparse.Namespace) -> int:
+    try:
+        return _emit(acquire_real_run(confirmation=args.confirmation))
+    except ExtractionError as error:
+        return _emit(safe_live_result(error), 1)
+
+
+def _tfidf(args: argparse.Namespace) -> int:
+    try:
+        runner = smoke_tfidf_logreg if args.smoke else train_tfidf_logreg
+        return _emit(runner(args.split_manifest))
+    except TfidfLogregError as error:
+        return _emit(safe_tfidf_logreg_error(error), 1)
+    except DatabaseSettingsError:
+        error = TfidfLogregError("database_configuration_invalid")
+        return _emit(safe_tfidf_logreg_error(error), 1)
+
+
+def _transformer_progress(event: Mapping[str, Any]) -> None:
+    print(json.dumps(dict(event), sort_keys=True), file=sys.stderr, flush=True)
+
+
+def _fit_transformer(args: argparse.Namespace) -> int:
+    try:
+        return _emit(train_transformer(args.split_manifest, progress=_transformer_progress))
+    except TransformerFitError as error:
+        return _emit(safe_transformer_fit_error(error), 1)
+    except DatabaseSettingsError:
+        error = TransformerFitError("database_configuration_invalid")
+        return _emit(safe_transformer_fit_error(error), 1)
+
+
+SPECIAL_COMMANDS = {
+    "cleanup-real-data": _cleanup,
+    "acquire-real-run": _acquire,
+    "train-tfidf-logreg": _tfidf,
+    "train-transformer": _fit_transformer,
+}
+
+
+def dispatch(args: argparse.Namespace) -> int:
+    """Dispatch a parsed command through one bounded handler."""
+    if spec := SIMPLE_COMMANDS.get(args.command):
+        return _run_simple(args, spec)
+    try:
+        handler = SPECIAL_COMMANDS[args.command]
+    except KeyError as error:
+        raise AssertionError(f"Unhandled command: {args.command}") from error
+    return handler(args)
 
 
 def main(argv: Sequence[str] | None = None) -> int:
-    args = build_parser().parse_args(argv)
-
-    if args.command == "profile-cfpb":
-        try:
-            report = fetch_cfpb_profile()
-        except ProfileError as error:
-            print(json.dumps(safe_error_report(error), indent=2, sort_keys=True))
-            return 1
-
-        print(json.dumps(report, indent=2, sort_keys=True))
-        return 0
-
-    if args.command == "ingest-raw-batch":
-        try:
-            report = ingest_raw_batch(args.manifest)
-        except RawIngestionError as error:
-            print(json.dumps(safe_ingestion_error(error), indent=2, sort_keys=True))
-            return 1
-        except DatabaseSettingsError:
-            print(
-                json.dumps(
-                    {
-                        "status": "error",
-                        "error": {"code": "database_configuration_invalid"},
-                        "privacy": {
-                            "source_values_logged": False,
-                            "raw_payload_logged": False,
-                        },
-                    },
-                    indent=2,
-                    sort_keys=True,
-                )
-            )
-            return 1
-
-        print(json.dumps(report, indent=2, sort_keys=True))
-        return 0
-
-    if args.command == "stage-raw-batch":
-        try:
-            report = stage_raw_batch(args.batch_id)
-        except StagingError as error:
-            print(json.dumps(safe_staging_error(error), indent=2, sort_keys=True))
-            return 1
-        except DatabaseSettingsError:
-            print(
-                json.dumps(
-                    {
-                        "status": "error",
-                        "error": {"code": "database_configuration_invalid"},
-                        "privacy": {
-                            "source_values_logged": False,
-                            "raw_payload_logged": False,
-                        },
-                    },
-                    indent=2,
-                    sort_keys=True,
-                )
-            )
-            return 1
-
-        print(json.dumps(report, indent=2, sort_keys=True))
-        return 0
-
-    if args.command == "profile-taxonomy":
-        try:
-            report = fetch_taxonomy_profile()
-        except TaxonomyProfileError as error:
-            print(json.dumps(safe_taxonomy_error_report(error), indent=2, sort_keys=True))
-            return 1
-
-        print(json.dumps(report, indent=2, sort_keys=True))
-        return 0
-
-    if args.command == "report-population":
-        try:
-            report = report_analytical_population(args.batch_id)
-        except PopulationError as error:
-            print(json.dumps(safe_population_error(error), indent=2, sort_keys=True))
-            return 1
-        except DatabaseSettingsError:
-            print(
-                json.dumps(
-                    {
-                        "status": "error",
-                        "error": {"code": "database_configuration_invalid"},
-                        "privacy": {
-                            "narratives_logged": False,
-                            "narratives_in_report": False,
-                            "narratives_copied_to_analytical": False,
-                        },
-                    },
-                    indent=2,
-                    sort_keys=True,
-                )
-            )
-            return 1
-
-        print(json.dumps(report, indent=2, sort_keys=True))
-        return 0
-
-    if args.command == "cleanup-real-data":
-        try:
-            report = cleanup_real_data(
-                args.run_manifest,
-                execute=args.execute,
-                confirmation=args.confirmation,
-            )
-        except (ExtractionError, OSError, json.JSONDecodeError) as error:
-            controlled = (
-                error
-                if isinstance(error, ExtractionError)
-                else ExtractionError("cleanup_manifest_unreadable")
-            )
-            print(json.dumps(safe_extraction_error(controlled), indent=2, sort_keys=True))
-            return 1
-        print(json.dumps(report, indent=2, sort_keys=True))
-        return 0
-
-    if args.command == "acquire-real-run":
-        try:
-            report = acquire_real_run(confirmation=args.confirmation)
-        except ExtractionError as error:
-            print(json.dumps(safe_live_result(error), indent=2, sort_keys=True))
-            return 1
-        print(json.dumps(report, indent=2, sort_keys=True))
-        return 0
-
-    if args.command == "report-real-run":
-        try:
-            report = report_real_run(args.run_manifest)
-        except RealRunReportError as error:
-            print(json.dumps(safe_real_run_report_error(error), indent=2, sort_keys=True))
-            return 1
-        except DatabaseSettingsError:
-            print(
-                json.dumps(
-                    safe_real_run_report_error(
-                        RealRunReportError("database_configuration_invalid")
-                    ),
-                    indent=2,
-                    sort_keys=True,
-                )
-            )
-            return 1
-        print(json.dumps(report, indent=2, sort_keys=True))
-        return 0
-
-    if args.command == "build-temporal-split":
-        try:
-            report = build_temporal_split(args.run_manifest)
-        except TemporalSplitError as error:
-            print(json.dumps(safe_temporal_split_error(error), indent=2, sort_keys=True))
-            return 1
-        except DatabaseSettingsError:
-            print(
-                json.dumps(
-                    safe_temporal_split_error(TemporalSplitError("database_configuration_invalid")),
-                    indent=2,
-                    sort_keys=True,
-                )
-            )
-            return 1
-        print(json.dumps(report, indent=2, sort_keys=True))
-        return 0
-
-    if args.command == "evaluate-majority-baseline":
-        try:
-            report = evaluate_majority_baseline(args.split_manifest)
-        except MajorityBaselineError as error:
-            print(json.dumps(safe_majority_baseline_error(error), indent=2, sort_keys=True))
-            return 1
-        print(json.dumps(report, indent=2, sort_keys=True))
-        return 0
-
-    if args.command == "train-tfidf-logreg":
-        try:
-            report = (
-                smoke_tfidf_logreg(args.split_manifest)
-                if args.smoke
-                else train_tfidf_logreg(args.split_manifest)
-            )
-        except TfidfLogregError as error:
-            print(json.dumps(safe_tfidf_logreg_error(error), indent=2, sort_keys=True))
-            return 1
-        except DatabaseSettingsError:
-            print(
-                json.dumps(
-                    safe_tfidf_logreg_error(TfidfLogregError("database_configuration_invalid")),
-                    indent=2,
-                    sort_keys=True,
-                )
-            )
-            return 1
-        print(json.dumps(report, indent=2, sort_keys=True))
-        return 0
-
-    if args.command == "analyze-baseline-errors":
-        try:
-            report = analyze_baseline_errors(args.model_report)
-        except BaselineErrorAnalysisError as error:
-            print(json.dumps(safe_baseline_error(error), indent=2, sort_keys=True))
-            return 1
-        except DatabaseSettingsError:
-            print(
-                json.dumps(
-                    safe_baseline_error(
-                        BaselineErrorAnalysisError("database_configuration_invalid")
-                    ),
-                    indent=2,
-                    sort_keys=True,
-                )
-            )
-            return 1
-        print(json.dumps(report, indent=2, sort_keys=True))
-        return 0
-
-    if args.command == "profile-transformer-tokens":
-        try:
-            report = profile_transformer_tokens(args.split_manifest)
-        except TransformerTokenProfileError as error:
-            print(json.dumps(safe_transformer_token_profile_error(error), indent=2, sort_keys=True))
-            return 1
-        except DatabaseSettingsError:
-            print(
-                json.dumps(
-                    safe_transformer_token_profile_error(
-                        TransformerTokenProfileError("database_configuration_invalid")
-                    ),
-                    indent=2,
-                    sort_keys=True,
-                )
-            )
-            return 1
-        print(json.dumps(report, indent=2, sort_keys=True))
-        return 0
-
-    if args.command == "validate-transformer-dataset":
-        try:
-            report = validate_transformer_dataset(args.split_manifest)
-        except TransformerDatasetError as error:
-            print(json.dumps(safe_transformer_dataset_error(error), indent=2, sort_keys=True))
-            return 1
-        except DatabaseSettingsError:
-            print(
-                json.dumps(
-                    safe_transformer_dataset_error(
-                        TransformerDatasetError("database_configuration_invalid")
-                    ),
-                    indent=2,
-                    sort_keys=True,
-                )
-            )
-            return 1
-        print(json.dumps(report, indent=2, sort_keys=True))
-        return 0
-
-    if args.command == "smoke-transformer-training":
-        try:
-            report = smoke_transformer_training(args.split_manifest)
-        except TransformerTrainingError as error:
-            print(json.dumps(safe_transformer_training_error(error), indent=2, sort_keys=True))
-            return 1
-        except DatabaseSettingsError:
-            print(
-                json.dumps(
-                    safe_transformer_training_error(
-                        TransformerTrainingError("database_configuration_invalid")
-                    ),
-                    indent=2,
-                    sort_keys=True,
-                )
-            )
-            return 1
-        print(json.dumps(report, indent=2, sort_keys=True))
-        return 0
-
-    if args.command == "train-transformer":
-
-        def report_progress(event):
-            print(json.dumps(dict(event), sort_keys=True), file=sys.stderr, flush=True)
-
-        try:
-            report = train_transformer(args.split_manifest, progress=report_progress)
-        except TransformerFitError as error:
-            print(json.dumps(safe_transformer_fit_error(error), indent=2, sort_keys=True))
-            return 1
-        except DatabaseSettingsError:
-            print(
-                json.dumps(
-                    safe_transformer_fit_error(
-                        TransformerFitError("database_configuration_invalid")
-                    ),
-                    indent=2,
-                    sort_keys=True,
-                )
-            )
-            return 1
-        print(json.dumps(report, indent=2, sort_keys=True))
-        return 0
-
-    if args.command == "compare-validation-models":
-        try:
-            report = compare_validation_models(
-                args.baseline_report,
-                args.transformer_report,
-            )
-        except ValidationComparisonError as error:
-            print(json.dumps(safe_validation_comparison_error(error), indent=2, sort_keys=True))
-            return 1
-        print(json.dumps(report, indent=2, sort_keys=True))
-        return 0
-
-    if args.command == "calibrate-transformer":
-        try:
-            report = calibrate_transformer(args.transformer_report)
-        except TransformerCalibrationError as error:
-            print(json.dumps(safe_transformer_calibration_error(error), indent=2, sort_keys=True))
-            return 1
-        except DatabaseSettingsError:
-            print(
-                json.dumps(
-                    safe_transformer_calibration_error(
-                        TransformerCalibrationError("database_configuration_invalid")
-                    ),
-                    indent=2,
-                    sort_keys=True,
-                )
-            )
-            return 1
-        print(json.dumps(report, indent=2, sort_keys=True))
-        return 0
-
-    if args.command == "select-operational-model":
-        try:
-            report = select_operational_model(args.calibration_report)
-        except ModelSelectionError as error:
-            print(json.dumps(safe_model_selection_error(error), indent=2, sort_keys=True))
-            return 1
-        except DatabaseSettingsError:
-            print(
-                json.dumps(
-                    safe_model_selection_error(
-                        ModelSelectionError("database_configuration_invalid")
-                    ),
-                    indent=2,
-                    sort_keys=True,
-                )
-            )
-            return 1
-        print(json.dumps(report, indent=2, sort_keys=True))
-        return 0
-
-    if args.command == "analyze-abstention":
-        try:
-            report = analyze_abstention_thresholds(args.model_selection_report)
-        except AbstentionAnalysisError as error:
-            print(json.dumps(safe_abstention_analysis_error(error), indent=2, sort_keys=True))
-            return 1
-        except DatabaseSettingsError:
-            print(
-                json.dumps(
-                    safe_abstention_analysis_error(
-                        AbstentionAnalysisError("database_configuration_invalid")
-                    ),
-                    indent=2,
-                    sort_keys=True,
-                )
-            )
-            return 1
-        print(json.dumps(report, indent=2, sort_keys=True))
-        return 0
-
-    raise AssertionError(f"Unhandled command: {args.command}")
+    return dispatch(build_parser().parse_args(argv))

@@ -153,3 +153,12 @@ proves a non-allowlisted payload is rejected. The baseline joblib exception is
 confined to the documented ignored-local boundary after path, size, hash,
 software, and estimator-contract checks. See
 [`artifact_trust.md`](artifact_trust.md).
+
+## QA-111 orchestration structure
+
+Structural characterization now ensures all 20 public commands have exactly
+one handler and ratchets the bounded sizes of CLI dispatch, parser families,
+transformer fitting phases, and calibration orchestration. Existing behavioral
+tests remain authoritative for JSON output, privacy-safe errors, progress
+events, report schemas, and replay. See
+[`orchestration_structure.md`](orchestration_structure.md).

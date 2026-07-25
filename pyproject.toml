@@ -70,6 +70,7 @@ files = [
   "src/complaint_triage/retention_policy.py",
   "src/complaint_triage/retention_checkpoint.py",
   "src/complaint_triage/artifact_trust.py",
+  "src/complaint_triage/cli_parser.py",
 ]
 
 [tool.ruff]

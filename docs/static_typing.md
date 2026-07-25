@@ -11,7 +11,8 @@ floor. The first protected scope is deliberately small and meaningful:
 - the immutable product taxonomy;
 - the dependency-free retention policy and aggregate-only deadline checkpoint;
   and
-- the fail-closed trusted-artifact path resolver.
+- the fail-closed trusted-artifact path resolver; and
+- the public CLI parser and its complete command/argument contract.
 
 These modules are shared control surfaces with stable interfaces and no ignored
 errors. The scope is listed explicitly in `pyproject.toml`; changing it is a
@@ -34,7 +35,7 @@ the project dependencies, then run:
 .\.venv-type\Scripts\python.exe -m mypy
 ```
 
-Expected output is `Success: no issues found in 7 source files`. The disposable
+Expected output is `Success: no issues found in 8 source files`. The disposable
 `.venv-type` directory is ignored local tooling, not repository evidence.
 
 GitHub Actions run
