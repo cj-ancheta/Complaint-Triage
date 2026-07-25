@@ -9,5 +9,5 @@ fsspec>=0.8.5
 jinja2
 networkx>=2.5.1
 setuptools>=77.0.3
-sympy>=1.13.3
+sympy>=1.14.0
 typing-extensions>=4.10.0
