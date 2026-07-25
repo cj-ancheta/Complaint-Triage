@@ -8,7 +8,8 @@ floor. The first protected scope is deliberately small and meaningful:
 - database environment parsing and URL construction;
 - security/SBOM completion and its fail-closed identity boundary;
 - authoritative SQLAlchemy database metadata; and
-- the immutable product taxonomy.
+- the immutable product taxonomy; and
+- the dependency-free retention policy and aggregate-only deadline checkpoint.
 
 These modules are shared control surfaces with stable interfaces and no ignored
 errors. The scope is listed explicitly in `pyproject.toml`; changing it is a
@@ -31,7 +32,7 @@ the project dependencies, then run:
 .\.venv-type\Scripts\python.exe -m mypy
 ```
 
-Expected output is `Success: no issues found in 4 source files`. The disposable
+Expected output is `Success: no issues found in 6 source files`. The disposable
 `.venv-type` directory is ignored local tooling, not repository evidence.
 
 GitHub Actions run

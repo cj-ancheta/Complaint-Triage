@@ -1,0 +1,21 @@
+name: Retention checkpoint
+
+on:
+  schedule:
+    - cron: "0 1 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  retention-checkpoint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Check governed deadline without local data
+        run: PYTHONPATH=src python -m complaint_triage.retention_checkpoint --fail-on due_soon
+
