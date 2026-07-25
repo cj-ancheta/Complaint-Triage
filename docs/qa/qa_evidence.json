@@ -136,6 +136,20 @@
       "finding_ids": ["QA-DB-001"]
     },
     {
+      "check_id": "CHECK-TYPES-001",
+      "category": "static_quality",
+      "result": "pass",
+      "summary": "QA-108 establishes a strict, hash-locked incremental Mypy gate.",
+      "details": [
+        "Mypy 2.3.0 reports no issues in database configuration, supply-chain SBOM, authoritative schema, and taxonomy modules",
+        "the four-file scope is explicit, strict, and contains no error-code or missing-import suppressions",
+        "Python 3.12 and 3.13 Linux type-tool locks are hash-enforced and pinned by repository digest contracts",
+        "both runtime profiles run the same configuration",
+        "GitHub Actions run 30164122886 passes standard, transformer-cpu, and security on commit 6356d2db604e7580fcb39453233743ec48668394"
+      ],
+      "finding_ids": ["QA-TYPE-001"]
+    },
+    {
       "check_id": "CHECK-TESTS-002",
       "category": "tests",
       "result": "pass",

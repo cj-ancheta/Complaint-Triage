@@ -1606,3 +1606,29 @@ new upgrade operations. Run 30163564539 passes both profiles on commit
 Why migration history and authoritative metadata are separate, why schema names
 must be included, why empty-database upgrades catch ordering defects, and why
 PostgreSQL functions/triggers still need behavioral tests outside autogenerate.
+
+---
+
+## QA-108: strict incremental static typing
+
+**Date:** 2026-07-25
+
+**Status:** Accepted; GitHub Actions run 30164122886 passed.
+
+**What the AI generated**
+
+Mypy 2.3.0 now checks four stable control modules in strict mode with no
+suppressions. Separate Python 3.12 and 3.13 hash locks protect the checker in
+both runtime jobs; the explicit scope can only expand through reviewed changes.
+
+**How to verify it**
+
+Run `python -m mypy` from the disposable typed environment. It must report no
+issues in four files. Run 30164122886 passes both type steps on commit
+`6356d2db604e7580fcb39453233743ec48668394`.
+
+**What Charles should be able to explain in an interview**
+
+Why incremental strict typing is more credible than globally ignoring missing
+imports, why tool dependencies need locks, and how an explicit protected scope
+creates a ratchet without pretending the entire ML codebase is already typed.

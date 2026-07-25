@@ -1,6 +1,6 @@
 # Incremental static type checking
 
-Status: QA-108 implementation complete; remote acceptance pending
+Status: QA-108 accepted; GitHub Actions run 30164122886 passed
 
 Mypy 2.3.0 runs in strict mode under the repository's Python 3.12 compatibility
 floor. The first protected scope is deliberately small and meaningful:
@@ -34,3 +34,7 @@ the project dependencies, then run:
 Expected output is `Success: no issues found in 4 source files`. The disposable
 `.venv-type` directory is ignored local tooling, not repository evidence.
 
+GitHub Actions run
+[`30164122886`](https://github.com/cj-ancheta/Complaint-Triage/actions/runs/30164122886)
+passes both strict Mypy steps plus `security` on commit
+`6356d2db604e7580fcb39453233743ec48668394`.

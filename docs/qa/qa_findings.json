@@ -154,15 +154,16 @@
       "confidence": "high",
       "category": "typing",
       "title": "No static type-checking gate exists",
-      "status": "open",
+      "status": "resolved",
       "evidence": [
-        "no mypy, Pyright, or equivalent configuration is tracked",
-        "CI runs linting and tests but no type checker",
-        "production modules expose annotated protocols and typed boundaries that are not statically verified"
+        "Mypy 2.3.0 runs in strict mode over four explicit stable control modules without suppressions",
+        "separate hash-locked Python 3.12 and 3.13 type-tool profiles protect the checker itself",
+        "both runtime jobs execute the same protected scope",
+        "GitHub Actions run 30164122886 passes standard, transformer-cpu, and security"
       ],
       "impact": "Interface and nullable/dynamic errors remain dependent on runtime path coverage.",
       "remediation": "Adopt one checker incrementally, establish a clean scoped baseline, and ratchet the protected module set.",
-      "verification": "The configured checker passes locally and in required CI for its declared scope.",
+      "verification": "Strict Mypy passes locally and in GitHub Actions run 30164122886.",
       "paper_gate": false
     },
     {

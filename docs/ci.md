@@ -128,3 +128,8 @@ profile and run the same strict configuration. The initial protected scope is
 database configuration, SBOM security, authoritative schema metadata, and the
 taxonomy. See [`static_typing.md`](static_typing.md) for expansion and
 suppression rules.
+
+GitHub Actions run
+[`30164122886`](https://github.com/cj-ancheta/Complaint-Triage/actions/runs/30164122886)
+passes both strict type steps plus `security` on commit
+`6356d2db604e7580fcb39453233743ec48668394`.
