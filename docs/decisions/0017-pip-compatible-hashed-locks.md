@@ -43,7 +43,10 @@ Keep `pyproject.toml` as the human-edited direct-dependency policy and standard
   PyTorch index; and
 - `torch-cpu-py312-linux-x86_64.lock.txt` fixes exactly one CPU wheel from the
   PyTorch index; and
-- `lock-tool.lock.txt` fixes the lock-regeneration tool and its dependencies.
+- `lock-tool.lock.txt` fixes the lock-regeneration tool and its dependencies;
+  and
+- `audit-tool-py{312,313}-linux-x86_64.lock.txt` fixes the QA-105 audit/SBOM
+  tool for each Linux runtime profile.
 
 Every third-party installation uses `--require-hashes`. Install the local
 project afterward with `--no-deps --no-build-isolation -e .`; this prevents the
@@ -160,6 +163,15 @@ GitHub Actions `transformer-cpu` job succeeds remotely.
 Charles accepted the platform-specific, hash-enforced lock design and QA-102
 evidence on 2026-07-25. This acceptance does not waive the separate remote-CI,
 security-gate, or dependency-update review requirements.
+
+## QA-105 audit-tool extension
+
+QA-105 adds two target-Python Linux audit-tool locks generated from
+`requirements/audit-tool.in`. They install `pip-audit==2.10.1` and its
+CycloneDX dependencies with hashes after the runtime graph. Keeping the tooling
+separate makes the runtime dependency intent reviewable while ensuring the
+security gate itself is reproducible. The repository contract pins the exact
+digest of all ten lock artifacts.
 
 ## Rejected alternatives
 

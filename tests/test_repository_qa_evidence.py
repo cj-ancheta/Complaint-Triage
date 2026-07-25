@@ -17,6 +17,12 @@ PLAN_PATH = PROJECT_ROOT / "docs/qa/repository_qa_plan.md"
 BACKLOG_PATH = PROJECT_ROOT / "docs/qa/remediation_backlog.md"
 AUDITED_COMMIT = "1b6130793d7b305605115dea255de15e89d2b94f"
 LOCK_DIGESTS = {
+    "audit-tool-py312-linux-x86_64.lock.txt": (
+        "5ae084ee14392bf862a5e37cd8a208ec9f52fb55a52bfe7a707be008b66e5c09"
+    ),
+    "audit-tool-py313-linux-x86_64.lock.txt": (
+        "8d4f9edd15651b7996514c82358af7714843cf1b13fcd8b7a720b5ab7d638bac"
+    ),
     "bootstrap.lock.txt": "09c1fcb87431022971a755cbfc5d05886178d437b58e6918bf3aebd7ef4277a8",
     "lock-tool.lock.txt": "b0ff12ec9d12d217d0c6ff3a223cca4bf96785c08e1f66dc134b13c7e9ce1517",
     "standard-py313-linux-x86_64.lock.txt": (
@@ -136,6 +142,8 @@ def test_qa_102_lock_artifacts_preserve_reviewed_digests_and_source_boundaries()
     for requirement in ("pip==26.1.2", "setuptools==83.0.0", "wheel==0.47.0"):
         assert requirement in bootstrap
     assert "pip-tools==7.6.0" in contents["lock-tool.lock.txt"]
+    assert "pip-audit==2.10.1" in contents["audit-tool-py312-linux-x86_64.lock.txt"]
+    assert "pip-audit==2.10.1" in contents["audit-tool-py313-linux-x86_64.lock.txt"]
 
 
 def test_qa_102_install_documentation_enforces_hashes_and_no_dependency_resolution() -> None:

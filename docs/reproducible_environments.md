@@ -1,7 +1,7 @@
 # Reproducible local environments
 
-Status: QA-102 Windows profiles accepted; QA-103 Linux profiles locally
-verified with remote-CI acceptance pending  
+Status: QA-102 Windows and QA-103 Linux profiles accepted; QA-105 adds isolated
+Linux audit-tool locks
 Decision: [ADR 0017](decisions/0017-pip-compatible-hashed-locks.md)
 
 ## Trust model
@@ -75,6 +75,11 @@ The standard job substitutes
 `requirements/locks/standard-py313-linux-x86_64.lock.txt` and does not install
 Torch. See [the CI profile guide](ci.md) for offline and GPU boundaries.
 
+QA-105 adds `audit-tool-py313-linux-x86_64.lock.txt` and
+`audit-tool-py312-linux-x86_64.lock.txt`. Each is installed after its matching
+runtime profile so `pip-audit` and CycloneDX generation are themselves
+hash-locked without changing the project's runtime dependency intent.
+
 ## Run the evidence checks
 
 Start the disposable/local PostgreSQL service, then run both suites:
@@ -133,8 +138,8 @@ legitimately require different transitive packages. The CPU Torch lock is
 reviewed manually against the official PyTorch CPU index, just like the CUDA
 lock.
 
-Regenerate the bootstrap and lock-tool locks only when intentionally changing
-their `.in` files. The CUDA lock is reviewed manually against PyTorch's official
+Regenerate the bootstrap, lock-tool, and target-Python audit-tool locks only when
+intentionally changing their `.in` files. The CUDA lock is reviewed manually against PyTorch's official
 index; never let the CUDA index resolve the PyPI dependency graph.
 
 After regeneration, review the diff, run the QA lock-contract test, audit both

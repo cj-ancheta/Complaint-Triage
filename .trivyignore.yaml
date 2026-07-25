@@ -1,0 +1,65 @@
+vulnerabilities:
+  # The pinned upstream gosu binary is used only for local UID/GID switching by
+  # the PostgreSQL entrypoint. It does not exercise TLS, HTTP, URL, mail, or
+  # filesystem-root APIs implicated by these Go stdlib findings. Recheck for an
+  # upstream gosu/PostgreSQL rebuild before this short exception expires.
+  - id: CVE-2025-61726
+    paths: ["usr/local/bin/gosu"]
+    expired_at: 2026-08-15
+    statement: Unreachable net/url parsing in the fixed local entrypoint scope.
+  - id: CVE-2025-61729
+    paths: ["usr/local/bin/gosu"]
+    expired_at: 2026-08-15
+    statement: Unreachable crypto/x509 parsing in the fixed local entrypoint scope.
+  - id: CVE-2025-68121
+    paths: ["usr/local/bin/gosu"]
+    expired_at: 2026-08-15
+    statement: Unreachable TLS session logic in the fixed local entrypoint scope.
+  - id: CVE-2026-25679
+    paths: ["usr/local/bin/gosu"]
+    expired_at: 2026-08-15
+    statement: Unreachable net/url parsing in the fixed local entrypoint scope.
+  - id: CVE-2026-27145
+    paths: ["usr/local/bin/gosu"]
+    expired_at: 2026-08-15
+    statement: Unreachable archive/zip parsing in the fixed local entrypoint scope.
+  - id: CVE-2026-32280
+    paths: ["usr/local/bin/gosu"]
+    expired_at: 2026-08-15
+    statement: Unreachable certificate-chain logic in the fixed local entrypoint scope.
+  - id: CVE-2026-32281
+    paths: ["usr/local/bin/gosu"]
+    expired_at: 2026-08-15
+    statement: Unreachable certificate-chain logic in the fixed local entrypoint scope.
+  - id: CVE-2026-32283
+    paths: ["usr/local/bin/gosu"]
+    expired_at: 2026-08-15
+    statement: Unreachable TLS key-share logic in the fixed local entrypoint scope.
+  - id: CVE-2026-33811
+    paths: ["usr/local/bin/gosu"]
+    expired_at: 2026-08-15
+    statement: Unreachable DNS client logic in the fixed local entrypoint scope.
+  - id: CVE-2026-33814
+    paths: ["usr/local/bin/gosu"]
+    expired_at: 2026-08-15
+    statement: Unreachable HTTP/2 logic in the fixed local entrypoint scope.
+  - id: CVE-2026-39820
+    paths: ["usr/local/bin/gosu"]
+    expired_at: 2026-08-15
+    statement: Unreachable net/mail parsing in the fixed local entrypoint scope.
+  - id: CVE-2026-39822
+    paths: ["usr/local/bin/gosu"]
+    expired_at: 2026-08-15
+    statement: Unreachable os.Root API in the fixed local entrypoint scope.
+  - id: CVE-2026-39836
+    paths: ["usr/local/bin/gosu"]
+    expired_at: 2026-08-15
+    statement: Unreachable Go network package logic in the fixed local entrypoint scope.
+  - id: CVE-2026-42499
+    paths: ["usr/local/bin/gosu"]
+    expired_at: 2026-08-15
+    statement: Unreachable net/mail parsing in the fixed local entrypoint scope.
+  - id: CVE-2026-42504
+    paths: ["usr/local/bin/gosu"]
+    expired_at: 2026-08-15
+    statement: Unreachable MIME parsing in the fixed local entrypoint scope.

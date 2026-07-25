@@ -1,0 +1,16 @@
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Public source-contract commit SHAs are provenance, not credentials"
+regexTarget = "line"
+regexes = [
+  '''api_contract_commit_sha''',
+  '''API_CONTRACT_COMMIT''',
+]
+
+[[rules]]
+id = "complaint-triage-controlled-secret"
+description = "QA-105 controlled secret used only in an ephemeral negative test"
+regex = '''CT_QA_SECRET_[A-Z0-9]{32}'''
+keywords = ["CT_QA_SECRET_"]
