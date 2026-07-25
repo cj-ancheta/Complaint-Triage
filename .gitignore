@@ -1,5 +1,6 @@
 .venv/
 .venv-transformer/
+.venv-type/
 .venv-lock*/
 __pycache__/
 *.py[cod]

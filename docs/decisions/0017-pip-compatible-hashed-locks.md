@@ -46,7 +46,9 @@ Keep `pyproject.toml` as the human-edited direct-dependency policy and standard
 - `lock-tool.lock.txt` fixes the lock-regeneration tool and its dependencies;
   and
 - `audit-tool-py{312,313}-linux-x86_64.lock.txt` fixes the QA-105 audit/SBOM
-  tool for each Linux runtime profile.
+  tool for each Linux runtime profile; and
+- `type-tool-py{312,313}-linux-x86_64.lock.txt` fixes the QA-108 Mypy toolchain
+  for each Linux runtime profile.
 
 Every third-party installation uses `--require-hashes`. Install the local
 project afterward with `--no-deps --no-build-isolation -e .`; this prevents the
@@ -171,7 +173,8 @@ QA-105 adds two target-Python Linux audit-tool locks generated from
 CycloneDX dependencies with hashes after the runtime graph. Keeping the tooling
 separate makes the runtime dependency intent reviewable while ensuring the
 security gate itself is reproducible. The repository contract pins the exact
-digest of all ten lock artifacts.
+digest of all ten QA-105 lock artifacts. QA-108 later extends the repository
+total to twelve with two target-Python type-tool locks.
 
 ## Rejected alternatives
 

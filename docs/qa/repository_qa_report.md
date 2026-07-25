@@ -274,6 +274,9 @@ and [setuptools sdist advisory](https://github.com/advisories/GHSA-h35f-9h28-mq5
   runtime path coverage.
 - Remediation: adopt one checker incrementally, establish a clean scoped
   baseline, and ratchet it across production modules.
+- Resolution evidence: QA-108 runs Mypy 2.3.0 in strict mode over four stable
+  control modules with no suppressions, installed from separate hash-locked
+  Python 3.12/3.13 tool profiles. Run 30164122886 passes both type steps.
 
 #### QA-MAINT-001 — Critical orchestration is concentrated in large functions
 
@@ -352,8 +355,8 @@ means the project correctly refuses to make a claim its protocol cannot support.
 | Data lineage and privacy | Strong | aggregate reconciliation, ignored raw data, manifest/hash checks, zero high-confidence Git secret hits | describe local-retention limitation and complete deletion by 2026-11-19 |
 | Validation metrics | Strong | independent 119/119 aggregate replay; class-aware confusion evidence | eligible for an internal draft only after QA-pack acceptance |
 | Dependency safety | Strong | accepted patched constraints; strict target-platform audits and privacy-bounded CycloneDX SBOMs run in required CI; hardened PostgreSQL passes actionable HIGH/CRITICAL scanning | review weekly updates, regenerate locks on target platforms, and clear or renew no Trivy exception without fresh evidence |
-| Reproducibility | Strong | accepted commit/data/artifact identities plus ten exact-digest locks; clean Windows and Linux standard/transformer replays; isolated hash-enforced CUDA and CPU wheels | dependency changes require target-platform regeneration, audit, and replay |
-| Software quality | Improving | Ruff/format/schema/link checks; independent coverage floors; warning gate; authoritative multi-schema Alembic check; run 30163564539 | QA-108 typing and QA-111 orchestration refactor remain open |
+| Reproducibility | Strong | accepted commit/data/artifact identities plus twelve exact-digest locks; clean Windows and Linux standard/transformer replays; isolated hash-enforced CUDA and CPU wheels | dependency changes require target-platform regeneration, audit, and replay |
+| Software quality | Improving | Ruff/format/schema/link checks; coverage/warning gates; multi-schema Alembic check; strict four-module Mypy gate; run 30164122886 | expand typing incrementally and complete QA-111 orchestration refactor |
 | Frozen-test performance | Bounded—not evaluated | split identity and aggregate test count only; no predictions or metrics | do not report or imply performance; new policy approval is required before access |
 | Operational automation | Bounded—manual only | no validation threshold passed every class-aware gate | present the negative selective-classification result; do not imply routing authorization |
 | Fairness | Bounded—not assessed | fairness limitation and prohibited claim are documented | do not claim demographic fairness; any future study needs approved attributes and governance |

@@ -43,6 +43,12 @@ LOCK_DIGESTS = {
     "transformer-py312-win-amd64.lock.txt": (
         "c56956af4e4ba583a9c1cbe49026734c81591e4606b267321c5ddf842fbff0fb"
     ),
+    "type-tool-py312-linux-x86_64.lock.txt": (
+        "36405bda8ff63ddfed0f5a76e7e47e84ee821a5a324e7d826a0c2bd03e3b0302"
+    ),
+    "type-tool-py313-linux-x86_64.lock.txt": (
+        "a1e0d2079a164843d8f4800d03244a598502147dec0b1199a7cd1a744ad2ddd8"
+    ),
 }
 
 
@@ -144,6 +150,8 @@ def test_qa_102_lock_artifacts_preserve_reviewed_digests_and_source_boundaries()
     assert "pip-tools==7.6.0" in contents["lock-tool.lock.txt"]
     assert "pip-audit==2.10.1" in contents["audit-tool-py312-linux-x86_64.lock.txt"]
     assert "pip-audit==2.10.1" in contents["audit-tool-py313-linux-x86_64.lock.txt"]
+    assert "mypy==2.3.0" in contents["type-tool-py312-linux-x86_64.lock.txt"]
+    assert "mypy==2.3.0" in contents["type-tool-py313-linux-x86_64.lock.txt"]
 
 
 def test_qa_102_install_documentation_enforces_hashes_and_no_dependency_resolution() -> None:
@@ -210,6 +218,24 @@ def test_qa_106_coverage_and_warning_ratchets_are_explicit() -> None:
     assert "NumPy 2\\.5" in warning_policy[1]
 
 
+def test_qa_108_static_type_scope_is_strict_and_hash_locked() -> None:
+    workflow = (PROJECT_ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
+    configuration = tomllib.loads((PROJECT_ROOT / "pyproject.toml").read_text(encoding="utf-8"))
+    mypy = configuration["tool"]["mypy"]
+
+    assert mypy["strict"] is True
+    assert mypy["python_version"] == "3.12"
+    assert mypy["files"] == [
+        "src/complaint_triage/db.py",
+        "src/complaint_triage/supply_chain.py",
+        "src/complaint_triage/database_schema.py",
+        "src/complaint_triage/taxonomy.py",
+    ]
+    assert workflow.count("run: python -m mypy") == 2
+    assert "type-tool-py312-linux-x86_64.lock.txt" in workflow
+    assert "type-tool-py313-linux-x86_64.lock.txt" in workflow
+
+
 def test_check_references_resolve_to_unique_findings() -> None:
     evidence = _load_json(EVIDENCE_PATH)
     findings = _load_json(FINDINGS_PATH)
@@ -228,6 +254,7 @@ def test_check_references_resolve_to_unique_findings() -> None:
     assert statuses["QA-TEST-001"] == "resolved"
     assert statuses["QA-WARN-001"] == "resolved"
     assert statuses["QA-DB-001"] == "resolved"
+    assert statuses["QA-TYPE-001"] == "resolved"
     assert all(
         status == "open"
         for finding_id, status in statuses.items()
@@ -242,6 +269,7 @@ def test_check_references_resolve_to_unique_findings() -> None:
             "QA-TEST-001",
             "QA-WARN-001",
             "QA-DB-001",
+            "QA-TYPE-001",
         }
     )
     assert {item["finding_id"] for item in findings["findings"]} == {

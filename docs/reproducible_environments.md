@@ -80,6 +80,10 @@ QA-105 adds `audit-tool-py313-linux-x86_64.lock.txt` and
 runtime profile so `pip-audit` and CycloneDX generation are themselves
 hash-locked without changing the project's runtime dependency intent.
 
+QA-108 similarly adds target-Python `type-tool` locks for Mypy 2.3.0. The
+checker is installed beside, not inside, the declared runtime dependency intent
+and runs the strict protected scope in both CI profiles.
+
 ## Run the evidence checks
 
 Start the disposable/local PostgreSQL service, then run both suites:

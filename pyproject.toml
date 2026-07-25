@@ -57,6 +57,18 @@ source = ["complaint_triage"]
 show_missing = true
 skip_covered = true
 
+[tool.mypy]
+python_version = "3.12"
+strict = true
+show_error_codes = true
+pretty = true
+files = [
+  "src/complaint_triage/db.py",
+  "src/complaint_triage/supply_chain.py",
+  "src/complaint_triage/database_schema.py",
+  "src/complaint_triage/taxonomy.py",
+]
+
 [tool.ruff]
 target-version = "py312"
 line-length = 100
