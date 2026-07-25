@@ -1123,3 +1123,68 @@ authorize test access, abstention, deployment, or a public impact claim.
   coverage and recall so rare labels are not silently routed entirely to review?
 - What frozen-test procedure and public-claim review should follow the accepted
   threshold without reopening model or policy tuning?
+
+---
+
+## CT-401: validation-only abstention threshold analysis
+
+**Date:** 2026-07-25
+
+**Status:** Accepted by Charles on 2026-07-25 with the governed
+`manual_review_only` outcome.
+
+**What the AI generated**
+
+An October-only calibrated inference command; a closed aggregate report schema;
+the fixed reference and ten-candidate threshold grid; global and class-aware
+accuracy, coverage, false-suggestion, suggestion-count, and precision gates;
+Wilson intervals; deterministic selection and fallback logic; source, artifact,
+lineage, privacy, and replay checks; safe CLI failures; implementation guidance;
+and synthetic tests for eligible and no-eligible-candidate outcomes.
+
+**How I verified it**
+
+The implementation was committed and pushed as
+`6866ee17242534d23a7dd1350092a420662b6c78` before real inference. Repository
+lint and formatting passed; the ordinary suite passed 277 tests with seven
+intentional environment/integration skips, and the transformer-focused suite
+passed 57 tests. The real run reconciled all 41,831 expected October records,
+matched accepted accuracy exactly, and reproduced NLL and multiclass Brier loss
+within `1e-5`. Every source and artifact identity matched, the final report
+validated against its schema, and its SHA-256 is
+`73092c7fba0c069ba0d1a8b419e5203db3ffc8ed6f245000685b87e20e526716`.
+
+The first real command failed safely before reaching PostgreSQL because the
+ignored local `.env` still pointed to port 55432 while the healthy retained-data
+container was published on 54321. Aggregate diagnostics exposed the mismatch
+without logging row values. Correcting only that ignored local setting restored
+connectivity; the unchanged clean implementation then completed GPU inference
+in 55.787 seconds with 240,355,840 peak allocated CUDA bytes.
+
+**What can fail in production**
+
+Changed source reports or artifacts, unsafe paths, dirty lineage, unavailable or
+misconfigured PostgreSQL, CUDA or dependency drift, class-count mismatch,
+non-finite or unnormalized probabilities, failure to reproduce accepted
+calibration evidence, report identity conflict, partial writes, and schema drift
+all fail closed. A global threshold can also satisfy attractive aggregate
+metrics while silently excluding a rare predicted class. That happened at
+`0.80`: the global gates passed, but one class received zero suggestions.
+
+**What Charles should be able to explain in an interview**
+
+Why selective accuracy must be discussed with coverage and false suggestions;
+why actual-class coverage and predicted-class precision answer different
+questions; why a 94.50% selective accuracy at 82.54% coverage was still rejected;
+why the rare-class gates prevented an aggregate metric from hiding exclusion;
+why a `manual_review_only` result is valid evidence rather than a failed project;
+and why the test set stays locked when validation produces no eligible policy.
+
+**Questions still open**
+
+- Should the project close as a governed decision-support demonstration whose
+  current model is not authorized to route complaints automatically?
+- Would a later class-specific threshold design offer enough benefit to justify
+  more parameters, stronger sample-size requirements, and a new policy review?
+- What governance artifacts should CT-403 publish while clearly separating
+  validation evidence from any deployment or public-impact claim?

@@ -292,3 +292,27 @@ validation-only threshold-analysis command. The implementation must still reach
 a reviewed clean commit before it may run on the retained October validation
 population. Any proposed threshold requires a separate explicit approval before
 the frozen test procedure can begin.
+
+## CT-401 evidence outcome
+
+Charles accepted the CT-401 evidence and `manual_review_only` outcome on
+2026-07-25. The analysis ran from clean implementation commit
+`6866ee17242534d23a7dd1350092a420662b6c78` over all 41,831 expected October
+validation records. It reproduced the accepted calibration evidence within the
+fixed tolerance and left September and test untouched.
+
+None of the ten candidate thresholds passed every approved gate. Threshold
+`0.75` narrowly missed the false-suggestion ceiling and produced only four
+suggestions for the least-suggested predicted class. Threshold `0.80` passed all
+three global gates and every actual-class coverage gate, but one predicted class
+received zero suggestions and therefore failed the predicted-class count and
+precision requirements. The higher thresholds retained that class exclusion;
+at `0.95`, global coverage and worst actual-class coverage also fell below their
+floors.
+
+The accepted report SHA-256 is
+`73092c7fba0c069ba0d1a8b419e5203db3ffc8ed6f245000685b87e20e526716`.
+The accepted fallback means no threshold exists for the separate approval gate,
+so the locked final-test procedure is not authorized. Any attempt to introduce
+class-specific thresholds, relax a gate, or evaluate a new grid requires a new
+reviewed policy; it may not be inferred from these results or tuned on test.

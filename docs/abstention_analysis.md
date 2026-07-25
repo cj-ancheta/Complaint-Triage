@@ -88,3 +88,29 @@ validation boundaries but no test or September boundary.
 Synthetic tests inject inference arrays and never connect to PostgreSQL, load
 the model artifact, or touch real row values. The real October analysis remains
 a separate post-commit execution step.
+
+## Accepted CT-401 evidence
+
+Charles accepted the CT-401 report and its `manual_review_only` conclusion on
+2026-07-25. The command ran from clean implementation commit
+`6866ee17242534d23a7dd1350092a420662b6c78` and evaluated all 41,831 expected
+October validation records. It reproduced the accepted accuracy exactly; the
+observed NLL and multiclass Brier loss were within the fixed `1e-5` absolute
+tolerance.
+
+No candidate passed every ADR 0016 gate. Threshold `0.75` reached 85.6279%
+coverage and 93.6402% selective accuracy but exceeded the false-suggestion
+ceiling at 5.4457% and produced only four suggestions for the least-suggested
+class. Threshold `0.80` passed the global accuracy, coverage, and
+false-suggestion gates but made zero suggestions for one predicted class, so it
+failed the class-aware count and precision protections. Higher thresholds did
+not repair that class exclusion; `0.95` also fell below the global coverage and
+actual-class coverage floors.
+
+The accepted report is
+`data/evaluations/cfpb/abstention/cfpb-run-20260722T130728Z-2b7815d4c850-abstention-threshold-analysis-1.0.0.json`
+with SHA-256
+`73092c7fba0c069ba0d1a8b419e5203db3ffc8ed6f245000685b87e20e526716`.
+It contains no row values, and both September and the frozen test partition
+remain untouched by CT-401. No threshold, deployment, or portfolio promotion
+is authorized.

@@ -50,8 +50,8 @@ This backlog converts `SPEC.md` into bounded delivery issues. Status values are 
 
 | ID | Issue | Status | Exit evidence |
 |---|---|---|---|
-| CT-401 | Implement and run validation-only abstention threshold analysis | in progress | Reviewed command and schema, synthetic validation, then accepted aggregate October report with test untouched |
-| CT-402 | Approve one proposed threshold and run the frozen final test once | pending | Separate threshold approval, one aggregate test report, and no threshold retuning |
+| CT-401 | Implement and run validation-only abstention threshold analysis | complete | Accepted schema-valid October report reproduces calibration evidence and selects the governed `manual_review_only` fallback with test untouched |
+| CT-402 | Approve one proposed threshold and run the frozen final test once | blocked | No threshold passed every ADR 0016 gate; a new approved policy would be required before test access |
 | CT-403 | Assemble the model card and governance evidence pack | pending | Reviewed limitations, intended-use boundary, evidence lineage, and release decision |
 
 Later serving and deployment phases remain defined in `SPEC.md` and will be
@@ -59,8 +59,11 @@ expanded only after the Phase 4 evidence gates are accepted.
 
 ## Current next issue
 
-ADR 0016 and the Phase 3 to Phase 4 transition are accepted. CT-401 is the only
-active issue. Its implementation is awaiting synthetic validation and review;
-the real October run must start from the subsequently approved clean commit.
-The frozen test partition remains untouched. CT-402, threshold approval,
-deployment, and public metric promotion remain separate explicit gates.
+CT-401 is complete. Its accepted 41,831-record October validation report
+reproduces the calibrated evidence, finds no eligible global threshold, and
+therefore selects the governed `manual_review_only` fallback. CT-402 is blocked
+under ADR 0016: no proposed threshold exists to approve, and the frozen test
+partition remains untouched. CT-403 may assemble the governance pack around
+this honest non-automation conclusion. Any renewed threshold search requires a
+new reviewed policy before implementation or data access; deployment and public
+metric promotion remain separate explicit gates.
