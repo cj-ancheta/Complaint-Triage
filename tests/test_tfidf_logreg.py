@@ -77,7 +77,7 @@ def test_fixed_vectorizer_and_candidate_grid_match_approved_rule() -> None:
     ]
     estimator = build_estimator(CANDIDATES[0])
     assert estimator.solver == "saga"
-    assert estimator.penalty == "l2"
+    assert estimator.l1_ratio == 0.0
     assert estimator.random_state == 42
     assert estimator.max_iter == 200
     assert estimator.tol == 1e-3

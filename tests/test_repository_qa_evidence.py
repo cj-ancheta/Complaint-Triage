@@ -95,7 +95,7 @@ def test_qa_102_lock_artifacts_preserve_reviewed_digests_and_source_boundaries()
 
     assert {path.name for path in lock_directory.glob("*.lock.txt")} == set(LOCK_DIGESTS)
     for filename, expected_digest in LOCK_DIGESTS.items():
-        content = (lock_directory / filename).read_bytes()
+        content = (lock_directory / filename).read_bytes().replace(b"\r\n", b"\n")
         assert hashlib.sha256(content).hexdigest() == expected_digest
         contents[filename] = content.decode("utf-8")
         assert "--hash=sha256:" in contents[filename]
@@ -196,6 +196,19 @@ def test_qa_104_branch_protection_record_preserves_required_controls() -> None:
         "Zero mandatory approvals is deliberate for this single-owner portfolio",
     ):
         assert required in normalized_policy
+
+
+def test_qa_106_coverage_and_warning_ratchets_are_explicit() -> None:
+    workflow = (PROJECT_ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
+    configuration = tomllib.loads((PROJECT_ROOT / "pyproject.toml").read_text(encoding="utf-8"))
+
+    assert "--cov-fail-under=69" in workflow
+    assert "--cov-fail-under=70" in workflow
+    warning_policy = configuration["tool"]["pytest"]["ini_options"]["filterwarnings"]
+    assert warning_policy[0] == "error"
+    assert len(warning_policy) == 2
+    assert "joblib\\.numpy_pickle" in warning_policy[1]
+    assert "NumPy 2\\.5" in warning_policy[1]
 
 
 def test_check_references_resolve_to_unique_findings() -> None:

@@ -82,3 +82,18 @@ GitHub Actions run
 passed `standard`, `transformer-cpu`, and `security` on commit
 `41daa8b16861b5dad9ef71ff0dd78fe7c6dac2cc`. Protected `main` now requires all
 three exact contexts in strict mode.
+
+## QA-106 coverage and warning ratchet
+
+The standard job fails below 69% combined statement/branch coverage; the
+transformer job has an independent 70% floor. These initial floors sit below
+the demonstrated 69.36% and 70.74% results so harmless platform rounding does
+not create a false gate, while any material regression fails. Raising one floor
+does not lower the other.
+
+Pytest treats every unexpected warning as an error. The only acknowledged
+exception is the exact joblib `numpy_pickle` shape-assignment deprecation
+triggered by NumPy 2.5 during the governed local artifact round trip. The
+scikit-learn LogisticRegression penalty warning was removed by expressing L2
+regularization through `l1_ratio=0.0`. Dependency review should remove the
+joblib exception once the locked stack no longer emits it.
