@@ -1,6 +1,7 @@
 # Initial Implementation Backlog
 
-This backlog converts `SPEC.md` into bounded delivery issues. Status values are `pending`, `in progress`, `review`, `complete`, or `blocked`.
+This backlog converts `SPEC.md` into bounded delivery issues. Status values are
+`pending`, `in progress`, `review`, `complete`, `blocked`, or `not applicable`.
 
 ## Phase 0: repository foundation
 
@@ -51,21 +52,46 @@ This backlog converts `SPEC.md` into bounded delivery issues. Status values are 
 | ID | Issue | Status | Exit evidence |
 |---|---|---|---|
 | CT-401 | Implement and run validation-only abstention threshold analysis | complete | Accepted schema-valid October report reproduces calibration evidence and selects the governed `manual_review_only` fallback with test untouched |
-| CT-402 | Approve one proposed threshold and run the frozen final test once | blocked | No threshold passed every ADR 0016 gate; a new approved policy would be required before test access |
+| CT-402 | Decide threshold and frozen-test authorization after validation | not applicable | The accepted ADR 0016 fallback closes this run as `manual_review_only`; no threshold exists, the frozen test stays sealed, and no final-generalization claim is made |
 | CT-403 | Assemble the model card and governance evidence pack | complete | Accepted model card, data sheet, risk, oversight, change, security, evidence-lineage, and manual-only release decision pack |
 
 Later serving and deployment phases remain defined in `SPEC.md` and will be
 expanded only after the Phase 4 evidence gates are accepted.
 
+## Repository QA and research preparation
+
+| ID | Issue | Status | Exit evidence |
+|---|---|---|---|
+| QA-001 | Execute repository-wide QA and propose the research-paper evidence boundary | review | Owner accepts the schema-valid QA evidence, 13-finding inventory, severity triage, and remediation order |
+| QA-101 | Remediate vulnerable development and build tooling | complete | Accepted source constraints; both installed audits exit zero; 291+1-skip standard and 292-pass transformer suites pass |
+| QA-102 | Lock standard and transformer environments with hashes | complete | Accepted exact-digest lock design; clean deterministic installs, `pip check`, and both complete PostgreSQL-backed suites pass |
+| QA-103 | Add bounded transformer CI coverage | review | Hash-locked Linux jobs pass 293/294-test local replays; required GitHub Actions runs remain pending |
+| QA-104 | Protect the main evidence branch | pending | Remote branch policy requires reviewed CI and blocks destructive updates |
+| QA-105 | Add security and supply-chain gates | pending | Secret, dependency, SBOM, container, and update controls are tested |
+| QA-106 | Ratchet critical-path coverage and warnings | pending | Focused tests pass an explicit non-decreasing coverage and warning policy |
+| QA-107 | Restore Alembic schema-drift detection | pending | `alembic check` and disposable upgrades pass in CI |
+| QA-108 | Establish incremental static type checking | pending | Configured type checker passes its protected scope |
+| QA-109 | Automate the local retention deadline checkpoint | pending | Safe reminder/preflight and deletion evidence flow is tested before 2026-11-19 |
+| QA-110 | Harden the trusted-local artifact boundary | pending | Serialization trust policy and rejection tests are documented and accepted |
+| QA-111 | Refactor concentrated orchestration | pending | Characterization tests prove unchanged outputs after smaller handlers are extracted |
+
 ## Current next issue
+
+QA-001 is in review. Its draft report records no critical findings and preserves
+all thirteen original finding severities. QA-101 and QA-102 have been accepted
+and resolved two high findings; one high, seven medium, and three low findings
+remain open. The frozen-test and manual-review-only boundaries remain unchanged.
+QA-103 now has bounded transformer CI coverage with Linux-specific locks and
+passing local replays. Pushing the workflow and observing both required GitHub
+Actions jobs is the remaining acceptance step; QA-CI-001 stays open until then.
 
 CT-401 is complete. Its accepted 41,831-record October validation report
 reproduces the calibrated evidence, finds no eligible global threshold, and
-therefore selects the governed `manual_review_only` fallback. CT-402 is blocked
-under ADR 0016: no proposed threshold exists to approve, and the frozen test
-partition remains untouched. CT-403 is complete with an accepted, hash-checked
-governance pack around this honest non-automation conclusion. Phase 4 is closed
-with CT-402 intentionally blocked. Any renewed threshold search requires a new
-reviewed policy before implementation or data access. No transition to API,
+therefore selects the governed `manual_review_only` fallback. CT-402 is closed
+as not applicable under ADR 0016: no proposed threshold exists to approve, the
+frozen test partition remains untouched, and no final-generalization result is
+claimed. CT-403 is complete with an accepted, hash-checked governance pack
+around this honest non-automation conclusion. Any renewed threshold search
+requires a new reviewed policy before implementation or data access. No transition to API,
 frontend, monitoring, or deployment work is authorized; public metric promotion
 remains a separate explicit gate.

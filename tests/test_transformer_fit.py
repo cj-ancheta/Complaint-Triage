@@ -159,6 +159,7 @@ def test_checkpoint_pruning_keeps_only_current_verified_generation(tmp_path: Pat
     assert not old_state.exists()
 
 
+@pytest.mark.gpu
 def test_tiny_cuda_fit_evaluation_and_safetensors_round_trip(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:

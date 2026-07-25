@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/contracts/repository-qa-evidence.schema.json",
+  "title": "Repository QA evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "evidence_version",
+    "audit_date",
+    "audited_commit",
+    "status",
+    "conclusion",
+    "scope",
+    "repository",
+    "finding_summary",
+    "checks",
+    "privacy",
+    "release_boundary"
+  ],
+  "properties": {
+    "evidence_version": { "const": "repository-qa-evidence-1.0.0" },
+    "audit_date": { "type": "string", "format": "date" },
+    "audited_commit": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "status": { "enum": ["review", "accepted"] },
+    "conclusion": { "enum": ["pass", "pass_with_findings", "fail"] },
+    "scope": {
+      "type": "string",
+      "const": "repository_wide_privacy_preserving_qa_before_research_drafting"
+    },
+    "repository": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "tracked_files",
+        "commits",
+        "historical_text_blobs_scanned",
+        "raw_shards_hashed",
+        "raw_bytes_hashed",
+        "governed_artifacts_hashed",
+        "database_append_only_triggers"
+      ],
+      "properties": {
+        "tracked_files": { "type": "integer", "minimum": 1 },
+        "commits": { "type": "integer", "minimum": 1 },
+        "historical_text_blobs_scanned": { "type": "integer", "minimum": 1 },
+        "raw_shards_hashed": { "type": "integer", "minimum": 0 },
+        "raw_bytes_hashed": { "type": "integer", "minimum": 0 },
+        "governed_artifacts_hashed": { "type": "integer", "minimum": 0 },
+        "database_append_only_triggers": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "finding_summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["critical", "high", "medium", "low", "total"],
+      "properties": {
+        "critical": { "const": 0 },
+        "high": { "type": "integer", "minimum": 0 },
+        "medium": { "type": "integer", "minimum": 0 },
+        "low": { "type": "integer", "minimum": 0 },
+        "total": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "checks": {
+      "type": "array",
+      "minItems": 15,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["check_id", "category", "result", "summary", "details", "finding_ids"],
+        "properties": {
+          "check_id": { "type": "string", "pattern": "^CHECK-[A-Z]+-[0-9]{3}$" },
+          "category": {
+            "enum": [
+              "repository",
+              "privacy",
+              "static_quality",
+              "tests",
+              "database",
+              "data_artifacts",
+              "ml_evidence",
+              "dependencies",
+              "ci_remote",
+              "governance_docs"
+            ]
+          },
+          "result": { "enum": ["pass", "fail", "limitation"] },
+          "summary": { "type": "string", "minLength": 1 },
+          "details": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "finding_ids": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": { "type": "string", "pattern": "^QA-[A-Z]+-[0-9]{3}$" }
+          }
+        }
+      }
+    },
+    "privacy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contains_narratives",
+        "contains_complaint_ids",
+        "contains_row_values",
+        "raw_data_read_as_bytes_only",
+        "frozen_test_used_for_modeling"
+      ],
+      "properties": {
+        "contains_narratives": { "const": false },
+        "contains_complaint_ids": { "const": false },
+        "contains_row_values": { "const": false },
+        "raw_data_read_as_bytes_only": { "const": true },
+        "frozen_test_used_for_modeling": { "const": false }
+      }
+    },
+    "release_boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "automated_routing_authorized",
+        "frozen_test_access_authorized",
+        "deployment_authorized",
+        "public_metric_promotion_authorized",
+        "paper_drafting_authorized"
+      ],
+      "properties": {
+        "status": { "const": "manual_review_only_research_evidence" },
+        "automated_routing_authorized": { "const": false },
+        "frozen_test_access_authorized": { "const": false },
+        "deployment_authorized": { "const": false },
+        "public_metric_promotion_authorized": { "const": false },
+        "paper_drafting_authorized": { "const": false }
+      }
+    }
+  }
+}

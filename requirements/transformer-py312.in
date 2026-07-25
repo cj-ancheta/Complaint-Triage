@@ -1,0 +1,13 @@
+# QA-102 source inputs for the isolated Python 3.12 transformer lock.
+-r ../requirements-transformer-tokenizer.txt
+
+# PyTorch is installed separately with --no-deps from the isolated CUDA lock.
+# Declare its required Python-side dependencies here so they resolve only from
+# PyPI and are protected by the transformer lock's hashes.
+filelock
+fsspec>=0.8.5
+jinja2
+networkx>=2.5.1
+setuptools>=77.0.3
+sympy>=1.13.3
+typing-extensions>=4.10.0

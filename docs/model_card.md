@@ -164,6 +164,8 @@ not overwrite this evidence or tune on the current frozen test.
 
 **Not authorized for automated routing, frozen-test access, deployment, or
 public metric promotion.** The only accepted operating outcome is
-`manual_review_only`. CT-402 is blocked unless a new threshold policy is proposed
-and approved without using test outcomes. See the
+`manual_review_only`. CT-402 is closed as `not applicable` for this run because
+no threshold qualified; the frozen test remains sealed. Any future attempt
+requires a new threshold policy proposed and approved without using test
+outcomes. See the
 [`governance_pack.md`](governance_pack.md) for the consolidated release decision.

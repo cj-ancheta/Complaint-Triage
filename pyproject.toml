@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=75"]
+requires = ["setuptools>=83,<84"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -27,7 +27,8 @@ complaint-triage = "complaint_triage.cli:main"
 
 [project.optional-dependencies]
 dev = [
-  "pytest>=8.3,<9",
+  "setuptools>=83,<84",
+  "pytest>=9.0.3,<10",
   "pytest-cov>=6,<7",
   "ruff>=0.11,<1",
 ]
@@ -40,6 +41,8 @@ addopts = "--strict-markers --strict-config -ra"
 testpaths = ["tests"]
 markers = [
   "postgres: requires a reachable disposable PostgreSQL service",
+  "cpu_transformer: requires the locked Linux CPU transformer stack",
+  "gpu: requires a CUDA-capable GPU and the locked CUDA transformer stack",
 ]
 
 [tool.coverage.run]

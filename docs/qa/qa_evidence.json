@@ -1,0 +1,285 @@
+{
+  "evidence_version": "repository-qa-evidence-1.0.0",
+  "audit_date": "2026-07-25",
+  "audited_commit": "1b6130793d7b305605115dea255de15e89d2b94f",
+  "status": "review",
+  "conclusion": "pass_with_findings",
+  "scope": "repository_wide_privacy_preserving_qa_before_research_drafting",
+  "repository": {
+    "tracked_files": 176,
+    "commits": 49,
+    "historical_text_blobs_scanned": 398,
+    "raw_shards_hashed": 16,
+    "raw_bytes_hashed": 1680504862,
+    "governed_artifacts_hashed": 3,
+    "database_append_only_triggers": 16
+  },
+  "finding_summary": {
+    "critical": 0,
+    "high": 3,
+    "medium": 7,
+    "low": 3,
+    "total": 13
+  },
+  "checks": [
+    {
+      "check_id": "CHECK-REPO-001",
+      "category": "repository",
+      "result": "pass",
+      "summary": "Git object integrity and initial worktree state passed.",
+      "details": [
+        "git fsck --full --no-progress returned no errors",
+        "audit started clean at 1b6130793d7b305605115dea255de15e89d2b94f",
+        "176 tracked files and 49 commits were inventoried"
+      ],
+      "finding_ids": []
+    },
+    {
+      "check_id": "CHECK-REPO-002",
+      "category": "repository",
+      "result": "limitation",
+      "summary": "Remote CI is green, but main is unprotected.",
+      "details": [
+        "origin/main matched the audited commit",
+        "GitHub Actions run 30157053809 completed successfully",
+        "GitHub branch API reported main_protected=false"
+      ],
+      "finding_ids": ["QA-GIT-001"]
+    },
+    {
+      "check_id": "CHECK-PRIVACY-001",
+      "category": "privacy",
+      "result": "pass",
+      "summary": "No high-confidence credential pattern was found in current or historical Git text.",
+      "details": [
+        "six provider/private-key pattern families scanned",
+        "zero hits in current tracked files",
+        "zero hits in 398 historical text blobs"
+      ],
+      "finding_ids": ["QA-SEC-002"]
+    },
+    {
+      "check_id": "CHECK-PRIVACY-002",
+      "category": "privacy",
+      "result": "pass",
+      "summary": "Sensitive local paths are ignored and absent from tracked files.",
+      "details": [
+        ".env, data/raw, artifacts, data/model_cache, and mlruns are not tracked",
+        "no tracked file is at least 1 MiB",
+        "the committed QA evidence contains no narratives, complaint IDs, or row values"
+      ],
+      "finding_ids": []
+    },
+    {
+      "check_id": "CHECK-STATIC-001",
+      "category": "static_quality",
+      "result": "pass",
+      "summary": "Lint, formatting, syntax, schemas, links, and entry points passed.",
+      "details": [
+        "Ruff check and format check passed",
+        "compileall passed for src and tests",
+        "14 pre-audit schemas passed Draft 2020-12 check_schema",
+        "51 pre-audit Markdown files had no missing local links",
+        "module and installed CLI help exited zero"
+      ],
+      "finding_ids": []
+    },
+    {
+      "check_id": "CHECK-STATIC-002",
+      "category": "static_quality",
+      "result": "limitation",
+      "summary": "Static typing and concentrated orchestration are not controlled.",
+      "details": [
+        "no mypy or Pyright configuration exists",
+        "cli.main is approximately 375 lines",
+        "transformer_fit.py and transformer_calibration.py exceed 1000 lines"
+      ],
+      "finding_ids": ["QA-TYPE-001", "QA-MAINT-001"]
+    },
+    {
+      "check_id": "CHECK-TESTS-001",
+      "category": "tests",
+      "result": "pass",
+      "summary": "The standard environment and PostgreSQL integration suite passed.",
+      "details": [
+        "291 tests passed and one torch-only test skipped",
+        "branch coverage was 69 percent",
+        "six disposable PostgreSQL integration groups were exercised"
+      ],
+      "finding_ids": ["QA-TEST-001", "QA-WARN-001"]
+    },
+    {
+      "check_id": "CHECK-TESTS-002",
+      "category": "tests",
+      "result": "pass",
+      "summary": "The isolated transformer environment and PostgreSQL integration suite passed.",
+      "details": [
+        "292 tests passed with no skips",
+        "branch coverage was 71 percent",
+        "transformer_fit.py branch coverage was 41 percent and transformer_training.py was 35 percent"
+      ],
+      "finding_ids": ["QA-TEST-001", "QA-WARN-001"]
+    },
+    {
+      "check_id": "CHECK-DATABASE-001",
+      "category": "database",
+      "result": "pass",
+      "summary": "Migration state, aggregate lineage, duplicate isolation, and append-only controls reconciled.",
+      "details": [
+        "sole head and current revision are 0004_temporal_split",
+        "979995 raw, staging, and population outcomes reconciled",
+        "561342 included records, zero included fingerprint duplicates, and 16 append-only triggers reconciled"
+      ],
+      "finding_ids": []
+    },
+    {
+      "check_id": "CHECK-DATABASE-002",
+      "category": "database",
+      "result": "limitation",
+      "summary": "Alembic autogenerate drift detection is unavailable.",
+      "details": [
+        "alembic check cannot compare schema because env.py supplies no SQLAlchemy MetaData",
+        "upgrade/current integration checks still pass"
+      ],
+      "finding_ids": ["QA-DB-001"]
+    },
+    {
+      "check_id": "CHECK-ARTIFACTS-001",
+      "category": "data_artifacts",
+      "result": "pass",
+      "summary": "All approved raw and governed local artifacts match recorded identities.",
+      "details": [
+        "16 raw shards totaling 1680504862 bytes matched byte counts and SHA-256",
+        "TF-IDF joblib, MiniLM safetensors, and scalar calibrator matched byte counts and SHA-256",
+        "byte hashing emitted no row content"
+      ],
+      "finding_ids": ["QA-SERIAL-001", "QA-DATA-001"]
+    },
+    {
+      "check_id": "CHECK-MLEVIDENCE-001",
+      "category": "ml_evidence",
+      "result": "pass",
+      "summary": "Independent aggregate validation and abstention evidence replay passed 119 of 119 checks.",
+      "details": [
+        "TF-IDF accuracy 0.8836922165152113 and macro F1 0.6996606746510424 reproduced",
+        "MiniLM accuracy 0.8858529237455551 and macro F1 0.7357461056874564 reproduced",
+        "all 11 threshold count, confusion, gate, and eligibility identities reproduced",
+        "no threshold was eligible"
+      ],
+      "finding_ids": []
+    },
+    {
+      "check_id": "CHECK-DEPS-001",
+      "category": "dependencies",
+      "result": "pass",
+      "summary": "Installed package consistency checks passed in both environments.",
+      "details": [
+        "pip check exited zero in the standard environment",
+        "pip check exited zero in the transformer environment",
+        "the transformer package stack imports successfully"
+      ],
+      "finding_ids": []
+    },
+    {
+      "check_id": "CHECK-DEPS-002",
+      "category": "dependencies",
+      "result": "fail",
+      "summary": "Known development/build vulnerabilities and incomplete lock controls were found.",
+      "details": [
+        "pytest 8.4.2 is affected by PYSEC-2026-1845 in both environments",
+        "setuptools 78.1.0 in the transformer environment is affected by PYSEC-2025-49 and PYSEC-2026-3447",
+        "the pytest less-than-9 source constraint excludes patched 9.0.3",
+        "fresh standard and transformer installations are not fully locked with hashes"
+      ],
+      "finding_ids": ["QA-SEC-001", "QA-REPRO-001"]
+    },
+    {
+      "check_id": "CHECK-DEPS-003",
+      "category": "dependencies",
+      "result": "pass",
+      "summary": "QA-101 removed the audited development and build-tool vulnerabilities.",
+      "details": [
+        "source constraints require pytest>=9.0.3,<10 and setuptools>=83,<84",
+        "both installed environments use pytest 9.1.1 and setuptools 83.0.0",
+        "pip-audit 2.10.1 exits zero in both environments",
+        "the local editable project is not on PyPI and the CUDA torch wheel is outside PyPI, so those two packages remain documented audit skips",
+        "the PostgreSQL-backed standard suite passes 291 tests with one expected torch-only skip and the transformer suite passes 292 tests"
+      ],
+      "finding_ids": ["QA-SEC-001"]
+    },
+    {
+      "check_id": "CHECK-DEPS-004",
+      "category": "dependencies",
+      "result": "pass",
+      "summary": "QA-102 reproduced both supported Windows environments from hash-enforced platform locks.",
+      "details": [
+        "five reviewed lock artifacts pin the bootstrap, compiler tool, Python 3.13 standard, Python 3.12 transformer, and isolated CUDA wheel boundaries",
+        "a clean Python 3.13 standard environment passed pip check and the complete PostgreSQL-backed suite with 293 tests passed and one expected torch-only skip",
+        "a clean Python 3.12 transformer environment passed pip check, imported torch 2.13.0+cu130, transformers 5.14.1, tokenizers 0.22.2, and safetensors 0.8.0, and passed all 294 tests",
+        "the local project was installed from reviewed Git source with dependency resolution and build isolation disabled",
+        "the separate CUDA lock permits exactly one no-dependency wheel from the official PyTorch index and enforces SHA-256 2efab1e83604ca628c6d85b9e188c153690980498d1297081a9dad704919303c",
+        "pip-audit 2.10.1 reports no known vulnerabilities in either exact PyPI lock manifest; the non-PyPI CUDA wheel remains a documented audit boundary",
+        "repository tests pin every lock-file digest and detect truncation or package-source boundary drift"
+      ],
+      "finding_ids": ["QA-REPRO-001"]
+    },
+    {
+      "check_id": "CHECK-CI-001",
+      "category": "ci_remote",
+      "result": "limitation",
+      "summary": "CI covers the standard stack but not the selected transformer stack or security gates.",
+      "details": [
+        "CI runs only Python 3.13 with the dev extra",
+        "no Python 3.12 transformer job or coverage floor exists",
+        "no secret, dependency, SBOM, container, or type-checking gate exists",
+        "third-party Actions use major tags rather than immutable SHAs"
+      ],
+      "finding_ids": ["QA-CI-001", "QA-SEC-002", "QA-TEST-001", "QA-TYPE-001"]
+    },
+    {
+      "check_id": "CHECK-CI-002",
+      "category": "ci_remote",
+      "result": "limitation",
+      "summary": "QA-103 implements and locally replays a bounded Linux CPU transformer job; required remote execution is pending.",
+      "details": [
+        "the workflow defines independent Python 3.13 standard and Python 3.12 transformer-cpu jobs with platform-specific hash-enforced locks and separate coverage outputs",
+        "the CPU transformer job sets HF_HUB_OFFLINE and TRANSFORMERS_OFFLINE, uses only synthetic tensor evidence, and excludes the explicitly marked GPU acceptance test",
+        "a fresh Linux standard simulation passed pip check and 293 tests with four expected platform or stack skips",
+        "a fresh Linux CPU transformer simulation passed pip check and 294 tests with two expected platform skips and one GPU test deselected",
+        "post-change Windows regressions pass 295 standard tests with two expected stack skips and 296 CUDA-transformer tests with one CPU-CI-only skip",
+        "both simulations used disposable PostgreSQL while raw data, model artifacts, and model cache paths were unavailable through empty read-only overlays",
+        "both exact Linux PyPI lock manifests report no known vulnerabilities under target-platform pip-audit 2.10.1",
+        "QA-CI-001 stays open until the workflow is pushed and both GitHub Actions jobs pass remotely"
+      ],
+      "finding_ids": ["QA-CI-001"]
+    },
+    {
+      "check_id": "CHECK-GOVERNANCE-001",
+      "category": "governance_docs",
+      "result": "pass",
+      "summary": "Release, privacy, retention, and paper-claim boundaries are internally consistent.",
+      "details": [
+        "manual_review_only research status remains closed to automation and deployment",
+        "frozen test access and public metric promotion remain unauthorized",
+        "local raw-data deletion remains due by 2026-11-19",
+        "no contradictory active-model claim was found"
+      ],
+      "finding_ids": ["QA-DATA-001", "QA-GOV-001"]
+    }
+  ],
+  "privacy": {
+    "contains_narratives": false,
+    "contains_complaint_ids": false,
+    "contains_row_values": false,
+    "raw_data_read_as_bytes_only": true,
+    "frozen_test_used_for_modeling": false
+  },
+  "release_boundary": {
+    "status": "manual_review_only_research_evidence",
+    "automated_routing_authorized": false,
+    "frozen_test_access_authorized": false,
+    "deployment_authorized": false,
+    "public_metric_promotion_authorized": false,
+    "paper_drafting_authorized": false
+  }
+}

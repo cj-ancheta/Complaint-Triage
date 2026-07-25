@@ -1,5 +1,6 @@
 .venv/
 .venv-transformer/
+.venv-lock*/
 __pycache__/
 *.py[cod]
 *.egg-info/
@@ -8,6 +9,7 @@ __pycache__/
 .mypy_cache/
 .coverage
 coverage.xml
+coverage-*.xml
 htmlcov/
 dist/
 build/

@@ -1,0 +1,2 @@
+# QA-102 lock regeneration tool only; not an application or runtime dependency.
+pip-tools==7.6.0

@@ -1,0 +1,247 @@
+{
+  "findings_version": "repository-qa-findings-1.0.0",
+  "audit_date": "2026-07-25",
+  "audited_commit": "1b6130793d7b305605115dea255de15e89d2b94f",
+  "status": "review",
+  "summary": {
+    "critical": 0,
+    "high": 3,
+    "medium": 7,
+    "low": 3,
+    "total": 13
+  },
+  "findings": [
+    {
+      "finding_id": "QA-SEC-001",
+      "severity": "high",
+      "confidence": "high",
+      "category": "security",
+      "title": "Known vulnerabilities in required development and build tooling",
+      "status": "resolved",
+      "evidence": [
+        "pip-audit reports pytest 8.4.2 affected by PYSEC-2026-1845 in both environments",
+        "pyproject.toml requires pytest>=8.3,<9, excluding patched pytest 9.0.3",
+        "pip-audit reports transformer setuptools 78.1.0 affected by PYSEC-2025-49 and PYSEC-2026-3447",
+        "QA-101 source constraints require pytest>=9.0.3,<10 and setuptools>=83,<84",
+        "both environments now use pytest 9.1.1 and setuptools 83.0.0 and pip-audit exits zero",
+        "the PostgreSQL-backed standard suite passes 291 tests with one expected skip and the transformer suite passes 292 tests"
+      ],
+      "impact": "Fresh CI installs necessarily select a vulnerable pytest range, and transformer package operations use vulnerable build tooling.",
+      "remediation": "Validate pytest 9.0.3 compatibility, update source constraints, require setuptools>=83.0.0, rebuild both environments, and add dependency audit to CI.",
+      "verification": "Verified: both environment audits exit zero and both complete PostgreSQL-backed test suites pass.",
+      "paper_gate": true
+    },
+    {
+      "finding_id": "QA-CI-001",
+      "severity": "high",
+      "confidence": "high",
+      "category": "ci",
+      "title": "CI does not exercise the selected transformer path",
+      "status": "open",
+      "evidence": [
+        "CI installs only the Python 3.13 dev extra",
+        "the Python 3.12 transformer requirements are absent from CI",
+        "only the local transformer environment executes all 291 tests",
+        "QA-103 defines independent hash-locked standard and CPU-transformer Linux jobs with separate coverage outputs",
+        "the transformer job enforces offline Hugging Face operation, installs one isolated CPU Torch wheel, and explicitly deselects GPU acceptance",
+        "fresh Linux simulations pass 293 standard tests and 294 CPU-transformer tests using disposable PostgreSQL while governed data and artifacts are unavailable",
+        "remote GitHub Actions execution remains pending"
+      ],
+      "impact": "The selected model path can regress while required remote CI remains green.",
+      "remediation": "Add a bounded Python 3.12 CPU transformer CI job and explicitly separate GPU-only acceptance tests.",
+      "verification": "Pending remote verification: both required GitHub Actions jobs run successfully and the transformer job publishes its own coverage report.",
+      "paper_gate": true
+    },
+    {
+      "finding_id": "QA-REPRO-001",
+      "severity": "high",
+      "confidence": "high",
+      "category": "reproducibility",
+      "title": "Fresh-environment dependencies are not fully locked",
+      "status": "resolved",
+      "evidence": [
+        "standard dependencies are version ranges without a lock file or hashes",
+        "tokenizer requirements use exact versions without hashes",
+        "the CUDA torch hash is a comment rather than an enforced require-hashes install",
+        "QA-102 adds five reviewed platform-specific lock artifacts with enforced SHA-256 hashes",
+        "clean Python 3.13 standard and Python 3.12 transformer environments installed only the reviewed third-party locks plus no-dependency editable Git source",
+        "both clean environments passed pip check and their complete PostgreSQL-backed suites",
+        "the CUDA index is isolated to one no-dependency torch 2.13.0+cu130 wheel with its official SHA-256 digest enforced"
+      ],
+      "impact": "Future environments may resolve different transitive packages than the accepted validation environment.",
+      "remediation": "Generate reviewed standard and transformer lock files with hashes and deterministic rebuild/update instructions.",
+      "verification": "Verified: clean hashed standard and transformer installs pass pip check and both complete PostgreSQL-backed suites; exact lock digests and package-source boundaries are repository-tested.",
+      "paper_gate": true
+    },
+    {
+      "finding_id": "QA-TEST-001",
+      "severity": "medium",
+      "confidence": "high",
+      "category": "testing",
+      "title": "Coverage gaps are measured but not enforced",
+      "status": "open",
+      "evidence": [
+        "full transformer branch coverage is 71 percent",
+        "model_selection.py is 49 percent, transformer_fit.py 41 percent, transformer_training.py 35 percent, and abstention_analysis.py 63 percent",
+        "CI defines no coverage fail-under threshold"
+      ],
+      "impact": "Critical orchestration and error branches can lose coverage without failing CI.",
+      "remediation": "Add focused failure-path tests and a non-decreasing branch-coverage ratchet for both environments.",
+      "verification": "Both CI jobs meet explicit coverage floors and protected modules increase from the audited baseline.",
+      "paper_gate": false
+    },
+    {
+      "finding_id": "QA-DB-001",
+      "severity": "medium",
+      "confidence": "high",
+      "category": "database",
+      "title": "Alembic cannot detect model-to-migration drift",
+      "status": "open",
+      "evidence": [
+        "alembic check reports that env.py supplies no SQLAlchemy MetaData",
+        "the sole head and database current revision both remain 0004_temporal_split",
+        "disposable migration integration tests pass"
+      ],
+      "impact": "A future schema-model change can omit a migration without an automated drift warning.",
+      "remediation": "Define authoritative SQLAlchemy metadata in the migration environment and add alembic check to CI.",
+      "verification": "alembic check and disposable upgrade tests pass from a clean checkout.",
+      "paper_gate": false
+    },
+    {
+      "finding_id": "QA-GIT-001",
+      "severity": "medium",
+      "confidence": "high",
+      "category": "repository",
+      "title": "The public repository main branch is unprotected",
+      "status": "open",
+      "evidence": [
+        "GitHub branch API reports main_protected=false",
+        "origin/main matches the audited commit",
+        "the latest CI run for the audited commit succeeded"
+      ],
+      "impact": "Evidence and governance controls can be changed through direct or destructive pushes without a review gate.",
+      "remediation": "Protect main, require CI, and block force pushes and branch deletion.",
+      "verification": "The GitHub branch API reports protection and required checks for main.",
+      "paper_gate": false
+    },
+    {
+      "finding_id": "QA-SEC-002",
+      "severity": "medium",
+      "confidence": "high",
+      "category": "security",
+      "title": "Security checks are manual and not merge gates",
+      "status": "open",
+      "evidence": [
+        "manual current and historical high-confidence secret scans found zero matches",
+        "CI has no secret, dependency, SBOM, or container scan",
+        "no automated dependency update configuration exists",
+        "GitHub Actions are referenced by major tags rather than immutable commits"
+      ],
+      "impact": "Credential, dependency, image, or workflow supply-chain regressions may merge undetected.",
+      "remediation": "Add redacted secret scanning, pip-audit, SBOM and image gates, automated dependency updates, and immutable Action pins.",
+      "verification": "Clean scans pass and controlled secret/vulnerability fixtures fail without exposing matched values.",
+      "paper_gate": false
+    },
+    {
+      "finding_id": "QA-TYPE-001",
+      "severity": "medium",
+      "confidence": "high",
+      "category": "typing",
+      "title": "No static type-checking gate exists",
+      "status": "open",
+      "evidence": [
+        "no mypy, Pyright, or equivalent configuration is tracked",
+        "CI runs linting and tests but no type checker",
+        "production modules expose annotated protocols and typed boundaries that are not statically verified"
+      ],
+      "impact": "Interface and nullable/dynamic errors remain dependent on runtime path coverage.",
+      "remediation": "Adopt one checker incrementally, establish a clean scoped baseline, and ratchet the protected module set.",
+      "verification": "The configured checker passes locally and in required CI for its declared scope.",
+      "paper_gate": false
+    },
+    {
+      "finding_id": "QA-MAINT-001",
+      "severity": "medium",
+      "confidence": "medium",
+      "category": "maintainability",
+      "title": "Critical orchestration is concentrated in large functions",
+      "status": "open",
+      "evidence": [
+        "cli.py is 598 lines and main is approximately 375 lines",
+        "transformer_fit.py is 1103 lines and contains a function of approximately 209 lines",
+        "transformer_calibration.py is 1013 lines and contains a function of approximately 205 lines"
+      ],
+      "impact": "Review, isolated testing, and safe changes to orchestration and error paths are unnecessarily difficult.",
+      "remediation": "After adding characterization tests, extract command handlers and pure validation and report-building functions.",
+      "verification": "Public interfaces and generated reports remain unchanged while complexity and function sizes decrease.",
+      "paper_gate": false
+    },
+    {
+      "finding_id": "QA-DATA-001",
+      "severity": "medium",
+      "confidence": "high",
+      "category": "data_governance",
+      "title": "Retention deletion is governed but operationally manual",
+      "status": "open",
+      "evidence": [
+        "ADR 0009 requires local deletion by 2026-11-19 end of day Asia/Singapore",
+        "the tested cleanup command and deletion evidence format exist",
+        "no scheduled reminder or automated deadline preflight is tracked"
+      ],
+      "impact": "Maintainer omission could retain sensitive source narratives beyond the approved local period.",
+      "remediation": "Add a local-only deadline guard and runbook checkpoint without uploading or backing up the data.",
+      "verification": "Time-bound tests prove reminders and expiry rejection, and cleanup emits aggregate-only deletion evidence.",
+      "paper_gate": false
+    },
+    {
+      "finding_id": "QA-SERIAL-001",
+      "severity": "low",
+      "confidence": "medium",
+      "category": "serialization",
+      "title": "Trusted-local artifacts use executable serialization",
+      "status": "open",
+      "evidence": [
+        "the baseline path uses joblib.load after path, size, and SHA-256 verification",
+        "transformer resume uses torch.load with weights_only=false after path, size, identity, and SHA-256 verification",
+        "the artifacts are ignored, local-only, and not accepted from a service or upload"
+      ],
+      "impact": "Integrity hashes do not authenticate an artifact if a local attacker can replace both the artifact and its manifest.",
+      "remediation": "Document the trusted-local-only boundary and prefer non-executable or restricted serialization where practical.",
+      "verification": "Untrusted or out-of-bound artifact paths are rejected and the accepted serialization policy is tested.",
+      "paper_gate": false
+    },
+    {
+      "finding_id": "QA-WARN-001",
+      "severity": "low",
+      "confidence": "high",
+      "category": "warnings",
+      "title": "Test runs emit dependency deprecation warnings",
+      "status": "open",
+      "evidence": [
+        "the standard full suite emitted five joblib and NumPy deprecation warnings",
+        "the transformer full suite emitted the same five warnings"
+      ],
+      "impact": "Warning noise can hide future actionable warnings and foreshadow dependency incompatibility.",
+      "remediation": "Identify and resolve the originating dependency path, then establish a warning budget.",
+      "verification": "Both full suites run without unexpected warnings.",
+      "paper_gate": false
+    },
+    {
+      "finding_id": "QA-GOV-001",
+      "severity": "low",
+      "confidence": "high",
+      "category": "governance_metadata",
+      "title": "Standard public-repository security metadata is incomplete",
+      "status": "open",
+      "evidence": [
+        "no SECURITY.md is tracked",
+        "no standalone LICENSE or CODEOWNERS file is tracked",
+        "pyproject.toml explicitly states All rights reserved"
+      ],
+      "impact": "External vulnerability reporting, ownership, paper-artifact reuse, and permissions are less clear to reviewers.",
+      "remediation": "Add a security policy and ownership metadata and make an explicit licensing decision for code and paper artifacts.",
+      "verification": "Repository metadata links correctly and states reporting, ownership, and reuse terms unambiguously.",
+      "paper_gate": false
+    }
+  ]
+}

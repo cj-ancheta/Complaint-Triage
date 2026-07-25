@@ -1,0 +1,8 @@
+# QA-102 platform-specific CUDA wheel boundary.
+# Install only after transformer-py312-win-amd64.lock.txt and always use --no-deps:
+# python -m pip install --require-hashes --no-deps -r <this-file>
+--index-url https://download.pytorch.org/whl/cu130
+--only-binary :all:
+
+torch==2.13.0+cu130 \
+    --hash=sha256:2efab1e83604ca628c6d85b9e188c153690980498d1297081a9dad704919303c

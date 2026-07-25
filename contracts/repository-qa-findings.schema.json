@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/contracts/repository-qa-findings.schema.json",
+  "title": "Repository QA findings",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "findings_version",
+    "audit_date",
+    "audited_commit",
+    "status",
+    "summary",
+    "findings"
+  ],
+  "properties": {
+    "findings_version": { "const": "repository-qa-findings-1.0.0" },
+    "audit_date": { "type": "string", "format": "date" },
+    "audited_commit": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "status": { "enum": ["review", "accepted"] },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["critical", "high", "medium", "low", "total"],
+      "properties": {
+        "critical": { "const": 0 },
+        "high": { "type": "integer", "minimum": 0 },
+        "medium": { "type": "integer", "minimum": 0 },
+        "low": { "type": "integer", "minimum": 0 },
+        "total": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "minItems": 13,
+      "maxItems": 13,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "finding_id",
+          "severity",
+          "confidence",
+          "category",
+          "title",
+          "status",
+          "evidence",
+          "impact",
+          "remediation",
+          "verification",
+          "paper_gate"
+        ],
+        "properties": {
+          "finding_id": { "type": "string", "pattern": "^QA-[A-Z]+-[0-9]{3}$" },
+          "severity": { "enum": ["critical", "high", "medium", "low"] },
+          "confidence": { "enum": ["high", "medium", "low"] },
+          "category": {
+            "enum": [
+              "security",
+              "ci",
+              "reproducibility",
+              "testing",
+              "database",
+              "repository",
+              "typing",
+              "maintainability",
+              "data_governance",
+              "serialization",
+              "warnings",
+              "governance_metadata"
+            ]
+          },
+          "title": { "type": "string", "minLength": 1 },
+          "status": { "enum": ["open", "accepted_risk", "resolved", "not_applicable"] },
+          "evidence": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "impact": { "type": "string", "minLength": 1 },
+          "remediation": { "type": "string", "minLength": 1 },
+          "verification": { "type": "string", "minLength": 1 },
+          "paper_gate": { "type": "boolean" }
+        }
+      }
+    }
+  }
+}

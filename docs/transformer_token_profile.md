@@ -26,11 +26,20 @@ PyTorch itself is not installed until the later training issue.
 ```powershell
 winget install --id Python.Python.3.12 --exact --scope user
 py -3.12 -m venv .venv-transformer
-.\.venv-transformer\Scripts\python.exe -m pip install --upgrade pip
-.\.venv-transformer\Scripts\python.exe -m pip install -e ".[dev]"
+.\.venv-transformer\Scripts\python.exe -m pip install --require-hashes `
+  -r requirements/locks/bootstrap.lock.txt
+.\.venv-transformer\Scripts\python.exe -m pip install --require-hashes `
+  -r requirements/locks/transformer-py312-win-amd64.lock.txt
 .\.venv-transformer\Scripts\python.exe -m pip install `
-  -r requirements-transformer-tokenizer.txt
+  --require-hashes --no-deps `
+  -r requirements/locks/torch-cu130-py312-win-amd64.lock.txt
+.\.venv-transformer\Scripts\python.exe -m pip install `
+  --no-deps --no-build-isolation -e .
 ```
+
+The complete rationale, regeneration workflow, and clean-install evidence are
+in [ADR 0017](decisions/0017-pip-compatible-hashed-locks.md) and the
+[reproducible-environment guide](reproducible_environments.md).
 
 Both `.venv-transformer/` and `data/model_cache/` are ignored. The cache contains
 the public upstream tokenizer vocabulary, not complaint narratives, but it is

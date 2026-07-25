@@ -316,3 +316,17 @@ The accepted fallback means no threshold exists for the separate approval gate,
 so the locked final-test procedure is not authorized. Any attempt to introduce
 class-specific thresholds, relax a gate, or evaluate a new grid requires a new
 reviewed policy; it may not be inferred from these results or tuned on test.
+
+## CT-402 final disposition
+
+On 2026-07-25, Charles directed that the remaining Phase 4 blocked item be
+resolved. CT-402 is therefore closed as `not applicable` for this research run,
+not represented as a completed frozen-test evaluation. The precondition for the
+test procedure—an eligible threshold accepted through the separate approval
+gate—did not occur. The frozen test remains sealed, no final-generalization
+metric exists, and the accepted release remains `manual_review_only`.
+
+This is an administrative closure of the already approved fallback. It does not
+relax any gate, authorize a new threshold search, change the abstention policy,
+or permit test access. A future attempt requires a new proposed ADR and explicit
+approval before implementation or data access.

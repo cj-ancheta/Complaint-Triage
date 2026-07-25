@@ -81,6 +81,7 @@ This project will not:
 - [Accepted temporal split ADR](docs/decisions/0010-temporal-split-duplicate-isolation.md)
 - [Accepted TF-IDF selection ADR](docs/decisions/0011-tfidf-logreg-validation-selection.md)
 - [Architecture](docs/architecture.md)
+- [Required CI profiles](docs/ci.md)
 - [Learning log](docs/learning_log.md)
 
 Cleanup inventory is dry-run-only unless the exact run ID is supplied with
@@ -101,12 +102,19 @@ Future coding agents must also read [AGENTS.md](AGENTS.md) before making changes
 
 ## Local setup
 
-The repository currently supports Python 3.12 and 3.13. The local machine has Python 3.13 available.
+The repository uses a locked Python 3.13 standard environment and a separate
+locked Python 3.12 transformer environment. See the
+[reproducible-environment guide](docs/reproducible_environments.md) and
+[ADR 0017](docs/decisions/0017-pip-compatible-hashed-locks.md).
 
 ```powershell
 py -3.13 -m venv .venv
-.\.venv\Scripts\python.exe -m pip install --upgrade pip
-.\.venv\Scripts\python.exe -m pip install -e ".[dev]"
+.\.venv\Scripts\python.exe -m pip install --require-hashes `
+  -r requirements/locks/bootstrap.lock.txt
+.\.venv\Scripts\python.exe -m pip install --require-hashes `
+  -r requirements/locks/standard-py313-win-amd64.lock.txt
+.\.venv\Scripts\python.exe -m pip install `
+  --no-deps --no-build-isolation -e .
 ```
 
 Run validation:

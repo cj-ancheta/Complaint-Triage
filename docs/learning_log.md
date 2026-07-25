@@ -1255,3 +1255,197 @@ frontend, monitoring system, or deployment exists.
   for complaint triage?
 - When should the governed local CFPB data be deleted ahead of the absolute
   2026-11-19 deadline, and what commit-safe deletion evidence should be kept?
+
+---
+
+## QA-101: remediate vulnerable development and build tooling
+
+**Date:** 2026-07-25
+
+**Status:** Accepted by Charles on 2026-07-25.
+
+**What the AI generated**
+
+The build and development constraints now exclude the vulnerable versions found
+by the repository audit. The project requires pytest 9.0.3 or newer within major
+version 9 and setuptools 83 within its current major range. A QA contract test
+prevents either constraint from silently reverting to the audited vulnerable
+boundary. The evidence-readiness matrix now separates strong evidence,
+improvable engineering controls, and deliberately bounded claims.
+
+**How to verify it**
+
+Install the development extra in both supported environments, inspect the
+pytest and setuptools versions, run `pip-audit --local`, and run the complete
+PostgreSQL-backed suites. The verified local result uses pytest 9.1.1 and
+setuptools 83.0.0 in Python 3.13 and Python 3.12. Both audits return no known
+vulnerabilities. The standard suite passes 291 tests with one expected
+torch-only skip; the transformer suite passes all 292 tests.
+
+**What can fail in production or CI**
+
+The editable local project cannot be checked against PyPI, and the CUDA Torch
+wheel is outside PyPI, so `pip-audit` reports those as skips. QA-102 now locks
+both local environments, but a future dependency release can still introduce a
+new advisory after this point-in-time scan, and CI does not yet run the audit
+automatically.
+
+**What Charles should be able to explain in an interview**
+
+Why passing tests does not make a known vulnerable dependency acceptable; why
+the fix belongs in source constraints rather than only a local virtual
+environment; why the same change was verified on Python 3.12 and 3.13; why a
+clean vulnerability audit is time-bounded rather than permanent; and why
+dependency safety, reproducible locking, and CI enforcement are separate
+readiness controls.
+
+**Questions still open**
+
+- Should QA-105 make the same dependency audit a required merge gate?
+
+---
+
+## QA-102: hash-locked reproducible environments
+
+**Date:** 2026-07-25
+
+**Status:** Accepted by Charles on 2026-07-25.
+
+**What the AI generated**
+
+Five reviewed lock artifacts now cover the shared installer bootstrap, pinned
+lock compiler, Windows Python 3.13 standard stack, Windows Python 3.12
+transformer stack, and the single CUDA Torch wheel. Every third-party install
+uses enforced SHA-256 hashes. The project itself is installed afterward from
+reviewed Git source with dependency resolution and build isolation disabled.
+ADR 0017 records the source and integrity boundaries, and a repository contract
+pins every lock digest and prevents Torch from leaking into the PyPI graph.
+
+**How to verify it**
+
+Follow `docs/reproducible_environments.md` from two empty virtual environments.
+Both must accept only the hash-enforced locks, pass `pip check`, install the
+editable project with `--no-deps --no-build-isolation`, and pass the complete
+PostgreSQL-backed suite. The verified transformer import is Torch
+`2.13.0+cu130`, Transformers `5.14.1`, Tokenizers `0.22.2`, and Safetensors
+`0.8.0`. The CUDA lock must contain exactly the official wheel digest and be
+installed with `--no-deps`. Both exact PyPI lock manifests also return no known
+vulnerabilities under `pip-audit 2.10.1`.
+
+**What can fail in production or CI**
+
+These five QA-102 locks are intentionally Windows- and Python-version-specific;
+QA-103 later adds separate Linux evidence rather than treating them as portable.
+A dependency update requires regenerating and
+reviewing many hashes, rerunning vulnerability audits, and repeating both clean
+replays. The 1.92 GB CUDA artifact makes the transformer rebuild expensive.
+An interrupted compiler process already demonstrated that a lock can be
+truncated; the clean replay failed when Torch was absent, and the new digest
+contract now makes that failure immediate. Git protections remain necessary
+because hashes authenticate third-party files, not unreviewed local source.
+
+**What Charles should be able to explain in an interview**
+
+Why a version range is policy rather than a reproducible environment; why lock
+filenames include Python and platform; why the CUDA index is authorized for one
+wheel only; why `--require-hashes` and `--no-deps` enforce different boundaries;
+why the editable project is authenticated by Git instead of pretending it is a
+hashed PyPI distribution; and why a fresh replay is stronger evidence than a
+lockfile existing in the repository.
+
+**Questions still open**
+
+- What review cadence should trigger lock regeneration when no direct
+  dependency change is otherwise planned?
+
+---
+
+## CT-402: close the inapplicable frozen-test procedure
+
+**Date:** 2026-07-25
+
+**Status:** Accepted by Charles on 2026-07-25.
+
+**What the AI generated**
+
+The Phase 4 backlog now closes CT-402 as `not applicable` for this research run.
+ADR 0016, the model card, and the governance pack distinguish that disposition
+from a completed final evaluation. The accepted model and release decision are
+unchanged: no threshold passed every validation gate, the system remains
+`manual_review_only`, and the frozen test remains sealed.
+
+**How to verify it**
+
+Run `pytest tests/test_governance_pack.py -q`. The regression contract checks
+the not-applicable backlog status, the ADR disposition, the sealed-test wording,
+and the absence of the stale “CT-402 is blocked” statement. It also continues
+to verify the accepted release constants and evidence hashes.
+
+**What can fail in production or governance**
+
+Someone could misread “closed” as evidence that the final test ran, quietly
+reuse the frozen partition during a new threshold search, or publish validation
+metrics as generalization evidence. Closing the workflow item does not remove
+those risks. A future threshold design still requires a new proposed ADR,
+explicit approval, validation-only selection, and a separately authorized test
+procedure.
+
+**What Charles should be able to explain in an interview**
+
+Why a gated experiment can end legitimately without opening its test set; why
+`not applicable` is more accurate than either `blocked` or `complete`; why the
+manual-only fallback is a substantive governance result; and why refusing to
+manufacture a final metric protects the credibility of the portfolio.
+
+---
+
+## Draft QA-103: bounded Linux CPU transformer CI
+
+**Date:** 2026-07-25
+
+**Status:** Locally verified; awaiting Charles's review and required remote run.
+
+**What the AI generated**
+
+The single unbounded-range CI job is replaced by independent hash-locked Python
+3.13 standard and Python 3.12 CPU-transformer jobs. Three new Linux x86-64 locks
+cover the standard stack, transformer PyPI graph, and one official CPU Torch
+wheel. The transformer job forces Hugging Face offline mode, produces its own
+coverage report, and excludes the explicitly marked CUDA acceptance test. A new
+synthetic contract proves exact package identities, CPU tensor computation,
+Transformers collation, and safetensors serialization without a model download.
+
+**How to verify it**
+
+Inspect `.github/workflows/ci.yml` and `docs/ci.md`, then replay both profiles in
+matching Linux containers. QA-103's clean simulations passed `pip check`, 293
+standard tests, and 294 CPU-transformer tests. The CPU run had two expected
+platform skips and one GPU test deselected. Both Linux PyPI lock manifests
+returned no known vulnerabilities when audited inside their target platform.
+The post-change Windows regressions also passed 295 standard and 296 CUDA-stack
+tests. Final acceptance additionally requires both jobs to pass on GitHub
+Actions.
+
+**What can fail in production or CI**
+
+GitHub runner images and network availability can differ from the local
+containers; the CPU wheel and language detector are large enough to threaten a
+tight timeout; a cache can hide a broken cold install; dependency markers can be
+mis-evaluated if a Linux lock is regenerated or audited on Windows; and a future
+test can accidentally contact the model hub unless offline controls remain.
+CUDA behavior is deliberately outside ordinary CI and still needs a compatible
+device for explicit acceptance.
+
+**What Charles should be able to explain in an interview**
+
+Why selected-model code needs its own CI profile; why Linux and Windows require
+separate locks; why CPU CI is valuable even though training used CUDA; how
+offline synthetic computation catches dependency/API regressions without raw
+data or model downloads; why GPU tests need an explicit marker; and why local
+container proof does not count as a passing remote required check.
+
+**Questions still open**
+
+- Do both GitHub Actions jobs pass from a cold remote run within their timeouts?
+- After that evidence is recorded, should QA-104 protect `main` using both job
+  names as required checks?

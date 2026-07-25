@@ -80,3 +80,21 @@ def test_release_boundary_stays_closed() -> None:
         "raw_data_git_tracking_allowed": False,
         "governance_pack_git_tracking_allowed": True,
     }
+
+
+def test_ct_402_is_closed_without_implying_frozen_test_evaluation() -> None:
+    backlog = (PROJECT_ROOT / "BACKLOG.md").read_text(encoding="utf-8")
+    adr = (
+        PROJECT_ROOT / "docs/decisions/0016-proposed-abstention-and-final-evaluation-policy.md"
+    ).read_text(encoding="utf-8")
+    model_card = (PROJECT_ROOT / "docs/model_card.md").read_text(encoding="utf-8")
+    governance_pack = (PROJECT_ROOT / "docs/governance_pack.md").read_text(encoding="utf-8")
+
+    assert "| CT-402 |" in backlog
+    assert "| not applicable |" in backlog
+    assert "frozen test partition remains untouched" in backlog
+    assert "## CT-402 final disposition" in adr
+    for document in (adr, model_card, governance_pack):
+        assert "frozen test remains sealed" in document
+    for document in (backlog, adr, model_card, governance_pack):
+        assert "CT-402 is blocked" not in document

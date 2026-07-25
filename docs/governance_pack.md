@@ -114,10 +114,10 @@ A governance or recruiting reviewer can assess the project in this order:
 6. Run `pytest tests/test_governance_pack.py -q` to verify documents, release
    constants, evidence paths, and hashes.
 
-## Unresolved gates
+## Closed evaluation boundary and unresolved gates
 
-- CT-402 frozen-test evaluation is blocked by the absence of an eligible
-  threshold.
+- CT-402 is closed as `not applicable` under the accepted `manual_review_only`
+  fallback; the frozen test remains sealed because no eligible threshold exists.
 - No final generalization result exists.
 - API authentication, input limits, rate limiting, logging, CORS, HTTPS,
   deployment provider, and cost are unapproved or unimplemented.
@@ -125,5 +125,6 @@ A governance or recruiting reviewer can assess the project in this order:
   monitoring effectiveness evidence exists.
 - No metric is approved for README, portfolio, resume, or UI promotion.
 
-These gaps are release blockers, not backlog details to hide. CT-403 packages
-the evidence honestly; it does not convert research into a production claim.
+The remaining gaps are release blockers, not backlog details to hide. Closing
+CT-402 removes a stale workflow status; it does not convert research into a
+production claim or imply that final evaluation occurred.

@@ -1,4 +1,6 @@
-# CT-303: install in the isolated Python 3.12 environment with --no-cache-dir.
+# CT-303 source record retained for training provenance. For installations, use
+# requirements/locks/torch-cu130-py312-win-amd64.lock.txt with --require-hashes
+# and --no-deps as documented in docs/reproducible_environments.md.
 # Official wheel SHA-256:
 # 2efab1e83604ca628c6d85b9e188c153690980498d1297081a9dad704919303c
 --index-url https://download.pytorch.org/whl/cu130
