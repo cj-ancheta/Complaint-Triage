@@ -8,8 +8,14 @@ from complaint_triage.supply_chain import TORCH_CPU_SHA256, complete_transformer
 
 
 def test_all_workflow_actions_are_immutable_and_security_gates_are_present() -> None:
+    workflows = [
+        path.read_text(encoding="utf-8")
+        for path in sorted((PROJECT_ROOT / ".github/workflows").glob("*.yml"))
+    ]
     workflow = (PROJECT_ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
-    actions = re.findall(r"^\s*uses:\s*([^@\s]+)@([^\s#]+)", workflow, flags=re.MULTILINE)
+    actions = re.findall(
+        r"^\s*uses:\s*([^@\s]+)@([^\s#]+)", "\n".join(workflows), flags=re.MULTILINE
+    )
 
     assert actions
     assert all(re.fullmatch(r"[0-9a-f]{40}", revision) for _, revision in actions)

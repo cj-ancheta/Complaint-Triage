@@ -133,3 +133,13 @@ GitHub Actions run
 [`30164122886`](https://github.com/cj-ancheta/Complaint-Triage/actions/runs/30164122886)
 passes both strict type steps plus `security` on commit
 `6356d2db604e7580fcb39453233743ec48668394`.
+
+## QA-109 retention checkpoint
+
+An aggregate-only scheduled workflow checks the accepted local CFPB-data
+deadline every Monday and on manual dispatch. It performs no checkout-time data
+discovery, database access, raw-data read, or artifact upload. The command exits
+nonzero once 30 days or fewer remain so ordinary workflow notifications prompt
+the maintainer to run the local, manifest-bounded deletion procedure. See
+[`retention_checkpoint.md`](retention_checkpoint.md) for the exact boundary and
+response procedure.

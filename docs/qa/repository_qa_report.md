@@ -291,6 +291,7 @@ and [setuptools sdist advisory](https://github.com/advisories/GHSA-h35f-9h28-mq5
 
 #### QA-DATA-001 — Retention deletion is governed but operationally manual
 
+- Status: resolved and accepted under QA-109
 - Confidence: high
 - Observed: raw data is correctly ignored and the cleanup command is tested,
   but cleanup remains a maintainer responsibility due by 2026-11-19 with no
@@ -300,6 +301,12 @@ and [setuptools sdist advisory](https://github.com/advisories/GHSA-h35f-9h28-mq5
 - Remediation: add a local preflight/deadline check and calendar/runbook
   checkpoint without uploading or backing up the data; preserve deletion
   evidence after cleanup.
+- Resolution evidence: QA-109 adds a dependency-free aggregate-only checkpoint
+  with deterministic 30-day, deadline, and overdue tests. Its weekly workflow
+  fails from `due_soon` without discovering files, reading raw data, accessing
+  PostgreSQL, or uploading artifacts. Run 30164562588 passes all required jobs.
+  Actual local deletion remains due by 2026-11-19 and must emit the existing
+  aggregate deletion manifest.
 
 ### Low
 
@@ -352,11 +359,11 @@ means the project correctly refuses to make a claim its protocol cannot support.
 
 | Evidence area | Current readiness | Evidence now available | Remaining upgrade or paper treatment |
 |---|---|---|---|
-| Data lineage and privacy | Strong | aggregate reconciliation, ignored raw data, manifest/hash checks, zero high-confidence Git secret hits | describe local-retention limitation and complete deletion by 2026-11-19 |
+| Data lineage and privacy | Strong | aggregate reconciliation, ignored raw data, manifest/hash checks, zero high-confidence Git secret hits, automated aggregate-only retention checkpoint | complete manifest-bounded local deletion by 2026-11-19 |
 | Validation metrics | Strong | independent 119/119 aggregate replay; class-aware confusion evidence | eligible for an internal draft only after QA-pack acceptance |
 | Dependency safety | Strong | accepted patched constraints; strict target-platform audits and privacy-bounded CycloneDX SBOMs run in required CI; hardened PostgreSQL passes actionable HIGH/CRITICAL scanning | review weekly updates, regenerate locks on target platforms, and clear or renew no Trivy exception without fresh evidence |
 | Reproducibility | Strong | accepted commit/data/artifact identities plus twelve exact-digest locks; clean Windows and Linux standard/transformer replays; isolated hash-enforced CUDA and CPU wheels | dependency changes require target-platform regeneration, audit, and replay |
-| Software quality | Improving | Ruff/format/schema/link checks; coverage/warning gates; multi-schema Alembic check; strict four-module Mypy gate; run 30164122886 | expand typing incrementally and complete QA-111 orchestration refactor |
+| Software quality | Improving | Ruff/format/schema/link checks; coverage/warning gates; multi-schema Alembic check; strict six-module Mypy gate | expand typing incrementally and complete QA-111 orchestration refactor |
 | Frozen-test performance | Bounded—not evaluated | split identity and aggregate test count only; no predictions or metrics | do not report or imply performance; new policy approval is required before access |
 | Operational automation | Bounded—manual only | no validation threshold passed every class-aware gate | present the negative selective-classification result; do not imply routing authorization |
 | Fairness | Bounded—not assessed | fairness limitation and prohibited claim are documented | do not claim demographic fairness; any future study needs approved attributes and governance |
@@ -365,10 +372,10 @@ means the project correctly refuses to make a claim its protocol cannot support.
 ## Recommended disposition
 
 QA-SEC-001 and QA-REPRO-001 are accepted and resolved by QA-101 and QA-102.
-QA-103 through QA-106 now protect the selected-model path, evidence branch,
-software supply chain, and coverage/warning baseline. Restore Alembic drift
-detection under QA-107 next. Lower-priority refactoring should wait until those
-behaviors are protected.
+QA-103 through QA-109 now protect the selected-model path, evidence branch,
+software supply chain, coverage/warning baseline, schema drift, incremental
+typing, and retention reminder. QA-110 and QA-111 can now harden the local
+artifact boundary and split concentrated orchestration.
 
 The audit report should be marked accepted only after the owner confirms the
 finding inventory and remediation order. Paper literature research and drafting

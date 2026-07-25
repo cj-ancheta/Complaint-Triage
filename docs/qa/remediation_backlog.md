@@ -20,7 +20,7 @@ threshold changes, or metric promotion.
 | 6 | QA-106 ratchet coverage — accepted | QA-TEST-001, QA-WARN-001 | focused subprocess error tests, unexpected-warning errors, independent 69% floors | run 30163081497 passes both profiles and security | resolved |
 | 7 | QA-107 restore schema drift checks — accepted | QA-DB-001 | authoritative eight-table metadata and multi-schema Alembic gate | run 30163564539 passes empty upgrades and `alembic check` twice | resolved |
 | 8 | QA-108 establish static typing — accepted | QA-TYPE-001 | strict four-module Mypy baseline and target-Python locked CI gate | run 30164122886 passes both profiles | resolved |
-| 9 | QA-109 automate retention checkpoint | QA-DATA-001 | local-only deadline guard/reminder and deletion runbook | safe time-bound tests; no raw values or uploads | blocking by 2026-11-19 |
+| 9 | QA-109 automate retention checkpoint — accepted | QA-DATA-001 | aggregate-only deadline guard/reminder and deletion runbook | boundary tests and run 30164562588; no raw values or uploads | resolved; deletion remains due by 2026-11-19 |
 | 10 | QA-110 harden artifact trust boundary | QA-SERIAL-001 | documented trusted-local boundary and safer resume serialization decision | malicious/untrusted path tests remain rejected | non-blocking |
 | 11 | QA-111 split orchestration modules | QA-MAINT-001 | smaller handlers/pure functions with unchanged interfaces and reports | characterization tests and full suites pass | non-blocking |
 
@@ -99,6 +99,16 @@ outside ordinary CI. Focused tests raise `model_selection.py` from 49% to 53%
 and cover offline execution, timeout, non-zero exit, and malformed output.
 Unexpected warnings fail; the exact upstream joblib/NumPy warning is the sole
 reviewed exception. Run 30163081497 passes all three jobs.
+
+## QA-109 acceptance notes
+
+The dependency-free checkpoint has deterministic `scheduled`, `due_soon`, and
+`overdue` states. Its weekly workflow starts failing 30 days before the
+accepted deadline so repository notifications prompt the manifest-bounded
+local cleanup. It neither discovers nor reads the governed files, connects to
+PostgreSQL, nor uploads evidence. Run 30164562588 passes all three required
+checks. Resolution closes the missing operational reminder; it does not claim
+the future deletion has already occurred.
 
 ## Research-paper handoff checklist
 

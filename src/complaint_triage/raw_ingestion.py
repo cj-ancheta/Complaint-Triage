@@ -14,6 +14,10 @@ from jsonschema import Draft202012Validator, FormatChecker
 from psycopg.types.json import Jsonb
 
 from complaint_triage.db import DatabaseSettings
+from complaint_triage.retention_policy import (
+    REAL_RETENTION_DEADLINE_UTC,
+    REAL_RETENTION_POLICY_ID,
+)
 from complaint_triage.taxonomy import (
     MODELLING_WINDOW_END_EXCLUSIVE,
     MODELLING_WINDOW_START,
@@ -22,8 +26,6 @@ from complaint_triage.taxonomy import (
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 MANIFEST_SCHEMA_PATH = PROJECT_ROOT / "contracts" / "cfpb-raw-batch-manifest.schema.json"
 SYNTHETIC_RETENTION_POLICY_ID = "not-applicable-synthetic-fixture"
-REAL_RETENTION_POLICY_ID = "cfpb-local-120d-v1"
-REAL_RETENTION_DEADLINE_UTC = datetime(2026, 11, 19, 15, 59, 59, tzinfo=UTC)
 
 
 class RawIngestionError(Exception):

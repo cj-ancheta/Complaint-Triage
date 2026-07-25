@@ -67,6 +67,8 @@ files = [
   "src/complaint_triage/supply_chain.py",
   "src/complaint_triage/database_schema.py",
   "src/complaint_triage/taxonomy.py",
+  "src/complaint_triage/retention_policy.py",
+  "src/complaint_triage/retention_checkpoint.py",
 ]
 
 [tool.ruff]

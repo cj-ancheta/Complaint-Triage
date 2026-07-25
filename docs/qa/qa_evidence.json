@@ -327,6 +327,19 @@
       "finding_ids": ["QA-TEST-001", "QA-WARN-001"]
     },
     {
+      "check_id": "CHECK-RETENTION-001",
+      "category": "privacy",
+      "result": "pass",
+      "summary": "QA-109 automates the accepted local retention deadline without processing governed data.",
+      "details": [
+        "the dependency-free checkpoint reports scheduled, due-soon, and overdue states",
+        "tests cover the exact 30-day warning boundary, deadline, and first overdue second",
+        "the weekly workflow performs no filesystem scan, database access, raw-data read, or artifact upload",
+        "GitHub Actions run 30164562588 passes standard, transformer-cpu, and security"
+      ],
+      "finding_ids": ["QA-DATA-001"]
+    },
+    {
       "check_id": "CHECK-GOVERNANCE-001",
       "category": "governance_docs",
       "result": "pass",
