@@ -115,3 +115,8 @@ represented by the model—blocks the profile. PostgreSQL functions and triggers
 remain protected by their behavioral integration tests because they are outside
 Alembic's ordinary table autogeneration scope. See
 [`database_schema_drift.md`](database_schema_drift.md).
+
+GitHub Actions run
+[`30163564539`](https://github.com/cj-ancheta/Complaint-Triage/actions/runs/30163564539)
+passes both database upgrade/check sequences plus `security` on commit
+`6c885caa9eb33618778d81c4e60929cc0eee0c4a`.

@@ -1,6 +1,6 @@
 # Database schema drift control
 
-Status: QA-107 implementation complete; remote acceptance pending
+Status: QA-107 accepted; GitHub Actions run 30163564539 passed
 
 `complaint_triage.database_schema.metadata` is the authoritative SQLAlchemy
 model for the eight governed tables in the `raw`, `staging`, and `analytical`
@@ -33,3 +33,8 @@ Expected output includes revision `0004_temporal_split (head)` and `No new
 upgrade operations detected.` Never use autogenerate output as an unattended
 migration: review names, schemas, constraints, defaults, indexes, functions,
 triggers, downgrade behavior, and data-transition implications first.
+
+GitHub Actions run
+[`30163564539`](https://github.com/cj-ancheta/Complaint-Triage/actions/runs/30163564539)
+passed both empty-database upgrade/check sequences plus `security` on commit
+`6c885caa9eb33618778d81c4e60929cc0eee0c4a`.
