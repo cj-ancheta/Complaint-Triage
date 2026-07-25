@@ -146,6 +146,7 @@ jobs:
           python -m pip install --require-hashes --no-deps -r requirements/locks/torch-cpu-py312-linux-x86_64.lock.txt
           python -m pip check
           python -m pip_audit --local --format cyclonedx-json --output sbom-transformer.cdx.json
+          PYTHONPATH=src python -m complaint_triage.supply_chain sbom-transformer.cdx.json
           python -c "import json,pathlib; f=pathlib.Path('sbom-transformer.cdx.json'); raw=f.read_text(); p=json.loads(raw); names={c.get('name') for c in p['components']}; assert p['bomFormat']=='CycloneDX' and 'torch' in names; assert '/home/runner' not in raw and 'POSTGRES_PASSWORD' not in raw"
 
       - name: Install reviewed project source

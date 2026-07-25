@@ -32,8 +32,10 @@ editable project; this makes strict mode fail on every skipped or unresolved
 PyPI distribution instead of treating the intentional editable source as an
 audit error. The non-PyPI CPU Torch wheel is installed afterward from its
 isolated hash lock: OSV cannot resolve its `+cpu` identity, so it is included in
-the SBOM but remains the explicit advisory-database boundary recorded by ADR
-0017. The project source is protected by Git review, Ruff, and tests.
+the SBOM by a tested completion helper with its reviewed SHA-256, version, and
+explicit audit-boundary property. It remains the advisory-database boundary
+recorded by ADR 0017. The project source is protected by Git review, Ruff, and
+tests.
 
 Each job also generates a CycloneDX JSON SBOM from that third-party environment.
 The workflow validates that the document contains dependency components and

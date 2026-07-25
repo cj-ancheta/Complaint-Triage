@@ -1,7 +1,10 @@
 import hashlib
 import re
 
+import pytest
+
 from complaint_triage.real_extraction import PROJECT_ROOT
+from complaint_triage.supply_chain import TORCH_CPU_SHA256, complete_transformer_sbom
 
 
 def test_all_workflow_actions_are_immutable_and_security_gates_are_present() -> None:
@@ -82,3 +85,20 @@ def test_audit_tool_locks_and_security_policy_are_closed() -> None:
     assert "No permission is granted" in license_text
     assert "2026-08-15" in supply_chain
     assert "standard`, `transformer-cpu`, and `security`" in supply_chain
+
+
+def test_non_pypi_torch_is_completed_in_the_transformer_sbom() -> None:
+    payload = {"bomFormat": "CycloneDX", "components": []}
+
+    completed = complete_transformer_sbom(payload, "2.13.0+cpu")
+
+    torch_component = completed["components"][0]
+    assert torch_component["name"] == "torch"
+    assert torch_component["version"] == "2.13.0+cpu"
+    assert torch_component["hashes"] == [{"alg": "SHA-256", "content": TORCH_CPU_SHA256}]
+    assert "non-PyPI" in torch_component["properties"][0]["value"]
+
+
+def test_transformer_sbom_rejects_an_unreviewed_torch_identity() -> None:
+    with pytest.raises(ValueError, match="does not match the reviewed lock"):
+        complete_transformer_sbom({"bomFormat": "CycloneDX", "components": []}, "2.13.1+cpu")
