@@ -8,6 +8,11 @@ import sys
 from collections.abc import Sequence
 from pathlib import Path
 
+from complaint_triage.abstention_analysis import (
+    AbstentionAnalysisError,
+    analyze_abstention_thresholds,
+    safe_abstention_analysis_error,
+)
 from complaint_triage.analytical_population import (
     PopulationError,
     report_analytical_population,
@@ -208,6 +213,11 @@ def build_parser() -> argparse.ArgumentParser:
         help="Run the approved CT-306 CPU benchmark and operational model decision.",
     )
     selection_parser.add_argument("--calibration-report", type=Path, required=True)
+    abstention_parser = subcommands.add_parser(
+        "analyze-abstention",
+        help="Evaluate the approved validation-only abstention threshold grid.",
+    )
+    abstention_parser.add_argument("--model-selection-report", type=Path, required=True)
     return parser
 
 
@@ -556,6 +566,26 @@ def main(argv: Sequence[str] | None = None) -> int:
                 json.dumps(
                     safe_model_selection_error(
                         ModelSelectionError("database_configuration_invalid")
+                    ),
+                    indent=2,
+                    sort_keys=True,
+                )
+            )
+            return 1
+        print(json.dumps(report, indent=2, sort_keys=True))
+        return 0
+
+    if args.command == "analyze-abstention":
+        try:
+            report = analyze_abstention_thresholds(args.model_selection_report)
+        except AbstentionAnalysisError as error:
+            print(json.dumps(safe_abstention_analysis_error(error), indent=2, sort_keys=True))
+            return 1
+        except DatabaseSettingsError:
+            print(
+                json.dumps(
+                    safe_abstention_analysis_error(
+                        AbstentionAnalysisError("database_configuration_invalid")
                     ),
                     indent=2,
                     sort_keys=True,

@@ -1,0 +1,433 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/contracts/cfpb-abstention-analysis.schema.json",
+  "title": "CFPB validation-only abstention threshold analysis",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "report_version",
+    "run_id",
+    "analyzed_at_utc",
+    "source",
+    "data",
+    "policy",
+    "reproduction",
+    "thresholds",
+    "selection",
+    "runtime",
+    "software",
+    "checks",
+    "limitations",
+    "claims",
+    "privacy"
+  ],
+  "properties": {
+    "report_version": { "const": "abstention-threshold-analysis-1.0.0" },
+    "run_id": { "type": "string", "pattern": "^cfpb-run-[0-9]{8}T[0-9]{6}Z-[0-9a-f]{12}$" },
+    "analyzed_at_utc": { "type": "string", "format": "date-time" },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "model_selection_report_sha256",
+        "calibration_report_sha256",
+        "transformer_report_sha256",
+        "split_manifest_sha256",
+        "model_artifact_sha256",
+        "calibrator_artifact_sha256",
+        "analysis_implementation_commit_sha"
+      ],
+      "properties": {
+        "model_selection_report_sha256": { "$ref": "#/$defs/sha256" },
+        "calibration_report_sha256": { "$ref": "#/$defs/sha256" },
+        "transformer_report_sha256": { "$ref": "#/$defs/sha256" },
+        "split_manifest_sha256": { "$ref": "#/$defs/sha256" },
+        "model_artifact_sha256": { "$ref": "#/$defs/sha256" },
+        "calibrator_artifact_sha256": { "$ref": "#/$defs/sha256" },
+        "analysis_implementation_commit_sha": { "type": "string", "pattern": "^[0-9a-f]{40}$" }
+      }
+    },
+    "data": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evaluation_split",
+        "evaluation_start_inclusive",
+        "evaluation_end_exclusive",
+        "record_count",
+        "labels",
+        "class_counts",
+        "queried_splits",
+        "september_accessed",
+        "test_accessed"
+      ],
+      "properties": {
+        "evaluation_split": { "const": "validation" },
+        "evaluation_start_inclusive": { "const": "2024-10-01" },
+        "evaluation_end_exclusive": { "const": "2024-11-01" },
+        "record_count": { "const": 41831 },
+        "labels": { "$ref": "#/$defs/labels" },
+        "class_counts": { "$ref": "#/$defs/classCounts" },
+        "queried_splits": {
+          "type": "array",
+          "prefixItems": [{ "const": "validation" }],
+          "minItems": 1,
+          "maxItems": 1
+        },
+        "september_accessed": { "const": false },
+        "test_accessed": { "const": false }
+      }
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "adr",
+        "reference_threshold",
+        "candidate_thresholds",
+        "comparison_operator",
+        "requirements",
+        "selection_order",
+        "no_eligible_candidate_fallback"
+      ],
+      "properties": {
+        "adr": { "const": "docs/decisions/0016-proposed-abstention-and-final-evaluation-policy.md" },
+        "reference_threshold": { "const": 0.0 },
+        "candidate_thresholds": {
+          "type": "array",
+          "prefixItems": [
+            { "const": 0.5 },
+            { "const": 0.55 },
+            { "const": 0.6 },
+            { "const": 0.65 },
+            { "const": 0.7 },
+            { "const": 0.75 },
+            { "const": 0.8 },
+            { "const": 0.85 },
+            { "const": 0.9 },
+            { "const": 0.95 }
+          ],
+          "minItems": 10,
+          "maxItems": 10
+        },
+        "comparison_operator": { "const": "confidence_greater_than_or_equal_to_threshold" },
+        "requirements": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "minimum_selective_accuracy",
+            "minimum_coverage",
+            "maximum_false_suggestion_rate",
+            "minimum_actual_class_coverage",
+            "minimum_predicted_class_suggestions",
+            "minimum_predicted_class_precision"
+          ],
+          "properties": {
+            "minimum_selective_accuracy": { "const": 0.93 },
+            "minimum_coverage": { "const": 0.6 },
+            "maximum_false_suggestion_rate": { "const": 0.05 },
+            "minimum_actual_class_coverage": { "const": 0.1 },
+            "minimum_predicted_class_suggestions": { "const": 20 },
+            "minimum_predicted_class_precision": { "const": 0.5 }
+          }
+        },
+        "selection_order": {
+          "type": "array",
+          "prefixItems": [
+            { "const": "highest_global_coverage" },
+            { "const": "highest_global_selective_accuracy" },
+            { "const": "lowest_false_suggestion_rate" },
+            { "const": "lower_threshold" }
+          ],
+          "minItems": 4,
+          "maxItems": 4
+        },
+        "no_eligible_candidate_fallback": { "const": "manual_review_only" }
+      }
+    },
+    "reproduction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["accepted_metrics", "observed_metrics", "absolute_tolerance", "checks"],
+      "properties": {
+        "accepted_metrics": { "$ref": "#/$defs/reproductionMetrics" },
+        "observed_metrics": { "$ref": "#/$defs/reproductionMetrics" },
+        "absolute_tolerance": { "const": 0.00001 },
+        "checks": { "$ref": "#/$defs/booleanMap" }
+      }
+    },
+    "thresholds": {
+      "type": "array",
+      "minItems": 11,
+      "maxItems": 11,
+      "items": { "$ref": "#/$defs/thresholdResult" }
+    },
+    "selection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "proposed_threshold",
+        "eligible_candidate_count",
+        "selected_threshold_owner_approved",
+        "failed_gates_by_threshold",
+        "next_gate"
+      ],
+      "properties": {
+        "status": { "enum": ["threshold_proposed", "manual_review_only"] },
+        "proposed_threshold": {
+          "oneOf": [
+            { "type": "number", "enum": [0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95] },
+            { "type": "null" }
+          ]
+        },
+        "eligible_candidate_count": { "type": "integer", "minimum": 0, "maximum": 10 },
+        "selected_threshold_owner_approved": { "const": false },
+        "failed_gates_by_threshold": {
+          "type": "object",
+          "propertyNames": { "pattern": "^0\\.(50|55|60|65|70|75|80|85|90|95)$" },
+          "additionalProperties": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": { "type": "string", "minLength": 1 }
+          }
+        },
+        "next_gate": {
+          "enum": [
+            "owner_review_and_explicit_threshold_approval",
+            "review_policy_failure_before_any_new_proposal"
+          ]
+        }
+      }
+    },
+    "runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["gpu_inference_seconds", "peak_cuda_bytes"],
+      "properties": {
+        "gpu_inference_seconds": { "type": "number", "exclusiveMinimum": 0 },
+        "peak_cuda_bytes": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "software": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["python", "numpy", "torch", "transformers", "safetensors"],
+      "properties": {
+        "python": { "type": "string", "minLength": 1 },
+        "numpy": { "type": "string", "minLength": 1 },
+        "torch": { "type": "string", "minLength": 1 },
+        "transformers": { "type": "string", "minLength": 1 },
+        "safetensors": { "type": "string", "minLength": 1 }
+      }
+    },
+    "checks": { "$ref": "#/$defs/booleanMap" },
+    "limitations": {
+      "type": "array",
+      "minItems": 7,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "claims": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "threshold_proposed",
+        "threshold_owner_approved",
+        "test_used_for_threshold_selection",
+        "deployment_authorized",
+        "portfolio_promotion_approved",
+        "interpretation"
+      ],
+      "properties": {
+        "threshold_proposed": { "type": "boolean" },
+        "threshold_owner_approved": { "const": false },
+        "test_used_for_threshold_selection": { "const": false },
+        "deployment_authorized": { "const": false },
+        "portfolio_promotion_approved": { "const": false },
+        "interpretation": { "const": "validation_only_abstention_policy_tuning" }
+      }
+    },
+    "privacy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contains_row_values",
+        "contains_narratives",
+        "contains_complaint_ids",
+        "contains_row_logits",
+        "contains_row_probabilities",
+        "contains_row_predictions",
+        "contains_row_threshold_outcomes",
+        "contains_token_ids",
+        "report_git_tracking_allowed"
+      ],
+      "properties": {
+        "contains_row_values": { "const": false },
+        "contains_narratives": { "const": false },
+        "contains_complaint_ids": { "const": false },
+        "contains_row_logits": { "const": false },
+        "contains_row_probabilities": { "const": false },
+        "contains_row_predictions": { "const": false },
+        "contains_row_threshold_outcomes": { "const": false },
+        "contains_token_ids": { "const": false },
+        "report_git_tracking_allowed": { "const": true }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "proportion": { "type": "number", "minimum": 0, "maximum": 1 },
+    "nullableProportion": {
+      "oneOf": [{ "$ref": "#/$defs/proportion" }, { "type": "null" }]
+    },
+    "labels": {
+      "type": "array",
+      "minItems": 11,
+      "maxItems": 11,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "classCounts": {
+      "type": "object",
+      "minProperties": 11,
+      "maxProperties": 11,
+      "additionalProperties": { "type": "integer", "minimum": 1 }
+    },
+    "booleanMap": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": { "type": "boolean" }
+    },
+    "reproductionMetrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["record_count", "accuracy", "negative_log_likelihood", "multiclass_brier_loss"],
+      "properties": {
+        "record_count": { "const": 41831 },
+        "accuracy": { "$ref": "#/$defs/proportion" },
+        "negative_log_likelihood": { "type": "number", "minimum": 0 },
+        "multiclass_brier_loss": { "type": "number", "minimum": 0 }
+      }
+    },
+    "interval": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["lower", "upper"],
+          "properties": {
+            "lower": { "$ref": "#/$defs/proportion" },
+            "upper": { "$ref": "#/$defs/proportion" }
+          }
+        },
+        { "type": "null" }
+      ]
+    },
+    "actualClass": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label", "support", "suggested_count", "coverage", "correct_suggestion_count", "conditional_accuracy"],
+      "properties": {
+        "label": { "type": "string", "minLength": 1 },
+        "support": { "type": "integer", "minimum": 1 },
+        "suggested_count": { "type": "integer", "minimum": 0 },
+        "coverage": { "$ref": "#/$defs/proportion" },
+        "correct_suggestion_count": { "type": "integer", "minimum": 0 },
+        "conditional_accuracy": { "$ref": "#/$defs/nullableProportion" }
+      }
+    },
+    "predictedClass": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label", "suggestion_count", "correct_count", "precision", "precision_wilson_95"],
+      "properties": {
+        "label": { "type": "string", "minLength": 1 },
+        "suggestion_count": { "type": "integer", "minimum": 0 },
+        "correct_count": { "type": "integer", "minimum": 0 },
+        "precision": { "$ref": "#/$defs/nullableProportion" },
+        "precision_wilson_95": { "$ref": "#/$defs/interval" }
+      }
+    },
+    "thresholdResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "threshold",
+        "role",
+        "suggested_count",
+        "review_count",
+        "correct_suggestion_count",
+        "false_suggestion_count",
+        "coverage",
+        "review_rate",
+        "selective_accuracy",
+        "selective_accuracy_wilson_95",
+        "selective_risk",
+        "false_suggestion_rate",
+        "correct_suggestion_rate",
+        "macro_actual_class_coverage",
+        "worst_actual_class_coverage",
+        "minimum_predicted_class_suggestions",
+        "worst_predicted_class_precision",
+        "actual_classes",
+        "predicted_classes",
+        "suggested_confusion_matrix",
+        "checks",
+        "eligible"
+      ],
+      "properties": {
+        "threshold": { "type": "number", "enum": [0.0, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95] },
+        "role": { "enum": ["no_abstention_reference", "candidate"] },
+        "suggested_count": { "type": "integer", "minimum": 0, "maximum": 41831 },
+        "review_count": { "type": "integer", "minimum": 0, "maximum": 41831 },
+        "correct_suggestion_count": { "type": "integer", "minimum": 0, "maximum": 41831 },
+        "false_suggestion_count": { "type": "integer", "minimum": 0, "maximum": 41831 },
+        "coverage": { "$ref": "#/$defs/proportion" },
+        "review_rate": { "$ref": "#/$defs/proportion" },
+        "selective_accuracy": { "$ref": "#/$defs/nullableProportion" },
+        "selective_accuracy_wilson_95": { "$ref": "#/$defs/interval" },
+        "selective_risk": { "$ref": "#/$defs/nullableProportion" },
+        "false_suggestion_rate": { "$ref": "#/$defs/proportion" },
+        "correct_suggestion_rate": { "$ref": "#/$defs/proportion" },
+        "macro_actual_class_coverage": { "$ref": "#/$defs/proportion" },
+        "worst_actual_class_coverage": { "$ref": "#/$defs/proportion" },
+        "minimum_predicted_class_suggestions": { "type": "integer", "minimum": 0 },
+        "worst_predicted_class_precision": { "$ref": "#/$defs/proportion" },
+        "actual_classes": {
+          "type": "array",
+          "minItems": 11,
+          "maxItems": 11,
+          "items": { "$ref": "#/$defs/actualClass" }
+        },
+        "predicted_classes": {
+          "type": "array",
+          "minItems": 11,
+          "maxItems": 11,
+          "items": { "$ref": "#/$defs/predictedClass" }
+        },
+        "suggested_confusion_matrix": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["label_order", "rows"],
+          "properties": {
+            "label_order": { "$ref": "#/$defs/labels" },
+            "rows": {
+              "type": "array",
+              "minItems": 11,
+              "maxItems": 11,
+              "items": {
+                "type": "array",
+                "minItems": 11,
+                "maxItems": 11,
+                "items": { "type": "integer", "minimum": 0 }
+              }
+            }
+          }
+        },
+        "checks": { "$ref": "#/$defs/booleanMap" },
+        "eligible": { "type": "boolean" }
+      }
+    }
+  }
+}

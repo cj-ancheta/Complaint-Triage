@@ -1,6 +1,7 @@
 import json
 
 from complaint_triage import cli
+from complaint_triage.abstention_analysis import AbstentionAnalysisError
 from complaint_triage.analytical_population import PopulationError
 from complaint_triage.baseline_error_analysis import BaselineErrorAnalysisError
 from complaint_triage.cfpb_profile import ProfileError
@@ -697,3 +698,37 @@ def test_model_selection_command_prints_safe_error(monkeypatch, capsys) -> None:
         "candidate": "transformer",
     }
     assert output["privacy"]["per_row_timings_logged"] is False
+
+
+def test_abstention_command_prints_validation_only_result(monkeypatch, capsys) -> None:
+    monkeypatch.setattr(
+        cli,
+        "analyze_abstention_thresholds",
+        lambda path: {
+            "report_version": "abstention-threshold-analysis-1.0.0",
+            "source_path": str(path),
+            "selection": {"status": "threshold_proposed", "proposed_threshold": 0.8},
+            "data": {"evaluation_split": "validation", "test_accessed": False},
+        },
+    )
+
+    exit_code = cli.main(["analyze-abstention", "--model-selection-report", "model-selection.json"])
+    output = json.loads(capsys.readouterr().out)
+
+    assert exit_code == 0
+    assert output["selection"]["proposed_threshold"] == 0.8
+    assert output["data"]["test_accessed"] is False
+
+
+def test_abstention_command_prints_safe_error(monkeypatch, capsys) -> None:
+    def fail(path):
+        raise AbstentionAnalysisError("abstention_analysis_requires_clean_commit")
+
+    monkeypatch.setattr(cli, "analyze_abstention_thresholds", fail)
+
+    exit_code = cli.main(["analyze-abstention", "--model-selection-report", "model-selection.json"])
+    output = json.loads(capsys.readouterr().out)
+
+    assert exit_code == 1
+    assert output["error"] == {"code": "abstention_analysis_requires_clean_commit"}
+    assert output["privacy"]["row_probabilities_logged"] is False

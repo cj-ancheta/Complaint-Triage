@@ -46,43 +46,21 @@ This backlog converts `SPEC.md` into bounded delivery issues. Status values are 
 | CT-305 | Calibrate the selected candidate probabilities | complete | Accepted temperature-scaling report and governed calibrator advance calibrated MiniLM probabilities to CT-306; test remains untouched |
 | CT-306 | Record the baseline-versus-transformer decision | complete | Accepted six-gate report selects calibrated MiniLM within the approved CPU, memory, artifact, explainability, complexity, and cost boundaries |
 
-Later serving, deployment, and governance phases remain defined in `SPEC.md` and
-will be expanded only after the Phase 3 evidence is accepted.
+## Phase 4: abstention and final evaluation
+
+| ID | Issue | Status | Exit evidence |
+|---|---|---|---|
+| CT-401 | Implement and run validation-only abstention threshold analysis | in progress | Reviewed command and schema, synthetic validation, then accepted aggregate October report with test untouched |
+| CT-402 | Approve one proposed threshold and run the frozen final test once | pending | Separate threshold approval, one aggregate test report, and no threshold retuning |
+| CT-403 | Assemble the model card and governance evidence pack | pending | Reviewed limitations, intended-use boundary, evidence lineage, and release decision |
+
+Later serving and deployment phases remain defined in `SPEC.md` and will be
+expanded only after the Phase 4 evidence gates are accepted.
 
 ## Current next issue
 
-Phase 2 is authorized and **CT-202 is complete**. ADR 0008 accepts a versioned
-English-language eligibility funnel over the accepted taxonomy/window. ADR 0009
-authorizes local real-data retention through 2026-11-19. CT-108 is complete with
-fail-closed policy enforcement and an approved monthly export design. CT-109 is
-complete with an accepted network-disabled streamed writer, exact run contract,
-1 GiB shard cap, and dry-run-by-default cleanup rehearsal. CT-110 is complete:
-the accepted retained 16-shard run reconciles 979,995 inputs to 979,194 eligible
-and 801 excluded records, with zero staging quarantines. CT-203 is complete: its
-accepted retained real run exactly reproduces the approved 561,342-row
-deduplicated split, has zero included fingerprint overlap, and publishes
-metadata-only evidence. CT-204 is complete: its accepted training-only majority
-reference is reproducible from the split manifest and its aggregate report
-reconciles all eleven classes. CT-205 is complete: its accepted validation-only
-run selected the converged unweighted `C=1.0` candidate, retained the governed
-pipeline locally, and left test untouched. CT-206 is complete: its accepted
-validation-only per-class, confusion, month,
-narrative-length, and common-versus-rare report leaves test untouched. Charles
-approved the Phase 2 to Phase 3 transition on 2026-07-23. CT-301 is complete:
-its accepted pinned MiniLM boundary and training-only aggregate profile select
-384 tokens without loading model weights or accessing validation or test rows.
-CT-302 is complete: its
-accepted pipeline reconciles all 475,556 train/validation rows, keeps test
-untouched, and reduces measured padding to 3.8157% for train and 3.6064% for
-validation through deterministic bounded length grouping. CT-303 is complete:
-epoch 3 is the accepted MiniLM validation selection, its governed safetensors
-artifact remains local, and test is untouched. CT-304 is complete: its accepted
-aggregate report advances MiniLM to CT-305 calibration but does not select a
-final operational model or access test. CT-305 is complete: its accepted
-temperature-scaling report passes every fixed eligibility gate and advances
-calibrated MiniLM probabilities to CT-306, without selecting a threshold, final
-model, or accessing test. CT-306 is complete: its accepted deterministic
-validation-only CPU benchmark passes every predeclared gate and selects
-calibrated MiniLM as the operational candidate. Test remains untouched; the
-Phase 4 abstention policy, threshold analysis, final test boundary, governance
-pack, deployment, and public metric promotion remain separate gates.
+ADR 0016 and the Phase 3 to Phase 4 transition are accepted. CT-401 is the only
+active issue. Its implementation is awaiting synthetic validation and review;
+the real October run must start from the subsequently approved clean commit.
+The frozen test partition remains untouched. CT-402, threshold approval,
+deployment, and public metric promotion remain separate explicit gates.
