@@ -26,6 +26,11 @@ from complaint_triage.majority_baseline import (
     evaluate_majority_baseline,
     safe_majority_baseline_error,
 )
+from complaint_triage.model_selection import (
+    ModelSelectionError,
+    safe_model_selection_error,
+    select_operational_model,
+)
 from complaint_triage.raw_ingestion import (
     RawIngestionError,
     ingest_raw_batch,
@@ -198,6 +203,11 @@ def build_parser() -> argparse.ArgumentParser:
         help="Fit approved September temperature scaling and assess October validation.",
     )
     calibration_parser.add_argument("--transformer-report", type=Path, required=True)
+    selection_parser = subcommands.add_parser(
+        "select-operational-model",
+        help="Run the approved CT-306 CPU benchmark and operational model decision.",
+    )
+    selection_parser.add_argument("--calibration-report", type=Path, required=True)
     return parser
 
 
@@ -526,6 +536,26 @@ def main(argv: Sequence[str] | None = None) -> int:
                 json.dumps(
                     safe_transformer_calibration_error(
                         TransformerCalibrationError("database_configuration_invalid")
+                    ),
+                    indent=2,
+                    sort_keys=True,
+                )
+            )
+            return 1
+        print(json.dumps(report, indent=2, sort_keys=True))
+        return 0
+
+    if args.command == "select-operational-model":
+        try:
+            report = select_operational_model(args.calibration_report)
+        except ModelSelectionError as error:
+            print(json.dumps(safe_model_selection_error(error), indent=2, sort_keys=True))
+            return 1
+        except DatabaseSettingsError:
+            print(
+                json.dumps(
+                    safe_model_selection_error(
+                        ModelSelectionError("database_configuration_invalid")
                     ),
                     indent=2,
                     sort_keys=True,

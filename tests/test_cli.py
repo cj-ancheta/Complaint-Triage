@@ -5,6 +5,7 @@ from complaint_triage.analytical_population import PopulationError
 from complaint_triage.baseline_error_analysis import BaselineErrorAnalysisError
 from complaint_triage.cfpb_profile import ProfileError
 from complaint_triage.majority_baseline import MajorityBaselineError
+from complaint_triage.model_selection import ModelSelectionError
 from complaint_triage.raw_ingestion import RawIngestionError
 from complaint_triage.real_extraction import ExtractionError
 from complaint_triage.real_run_report import RealRunReportError
@@ -659,3 +660,40 @@ def test_transformer_calibration_command_prints_safe_error(monkeypatch, capsys) 
     assert exit_code == 1
     assert output["error"] == {"code": "transformer_calibration_artifact_hash_mismatch"}
     assert output["privacy"]["row_logits_logged"] is False
+
+
+def test_model_selection_command_prints_aggregate_result(monkeypatch, capsys) -> None:
+    monkeypatch.setattr(
+        cli,
+        "select_operational_model",
+        lambda path: {
+            "report_version": "operational-model-selection-1.0.0",
+            "source_path": str(path),
+            "decision": {"selected_operational_candidate": "calibrated_minilm"},
+            "data": {"evaluation_split": "validation", "test_accessed": False},
+        },
+    )
+
+    exit_code = cli.main(["select-operational-model", "--calibration-report", "calibration.json"])
+    output = json.loads(capsys.readouterr().out)
+
+    assert exit_code == 0
+    assert output["decision"]["selected_operational_candidate"] == "calibrated_minilm"
+    assert output["data"]["test_accessed"] is False
+
+
+def test_model_selection_command_prints_safe_error(monkeypatch, capsys) -> None:
+    def fail(path):
+        raise ModelSelectionError("model_selection_worker_failed", candidate="transformer")
+
+    monkeypatch.setattr(cli, "select_operational_model", fail)
+
+    exit_code = cli.main(["select-operational-model", "--calibration-report", "calibration.json"])
+    output = json.loads(capsys.readouterr().out)
+
+    assert exit_code == 1
+    assert output["error"] == {
+        "code": "model_selection_worker_failed",
+        "candidate": "transformer",
+    }
+    assert output["privacy"]["per_row_timings_logged"] is False

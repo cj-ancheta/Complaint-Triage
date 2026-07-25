@@ -1,0 +1,438 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/contracts/cfpb-model-selection.schema.json",
+  "title": "CFPB operational model-selection report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "report_version",
+    "run_id",
+    "created_at_utc",
+    "source",
+    "data",
+    "utility_rule",
+    "quality",
+    "calibration",
+    "benchmarks",
+    "assessment",
+    "decision",
+    "claims",
+    "privacy"
+  ],
+  "properties": {
+    "report_version": { "const": "operational-model-selection-1.0.0" },
+    "run_id": { "type": "string", "pattern": "^cfpb-run-[0-9]{8}T[0-9]{6}Z-[0-9a-f]{12}$" },
+    "created_at_utc": { "type": "string", "format": "date-time" },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "baseline_report_sha256",
+        "transformer_report_sha256",
+        "comparison_report_sha256",
+        "calibration_report_sha256",
+        "split_manifest_sha256",
+        "selection_implementation_commit_sha"
+      ],
+      "properties": {
+        "baseline_report_sha256": { "$ref": "#/$defs/sha256" },
+        "transformer_report_sha256": { "$ref": "#/$defs/sha256" },
+        "comparison_report_sha256": { "$ref": "#/$defs/sha256" },
+        "calibration_report_sha256": { "$ref": "#/$defs/sha256" },
+        "split_manifest_sha256": { "$ref": "#/$defs/sha256" },
+        "selection_implementation_commit_sha": { "type": "string", "pattern": "^[0-9a-f]{40}$" }
+      }
+    },
+    "data": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "feature_input",
+        "evaluation_split",
+        "benchmark_start_inclusive",
+        "benchmark_end_exclusive",
+        "selection_method",
+        "sample_count",
+        "warmup_count",
+        "measured_passes",
+        "measured_predictions_per_candidate",
+        "labels",
+        "test_accessed"
+      ],
+      "properties": {
+        "feature_input": { "const": "consumer_complaint_narrative_only" },
+        "evaluation_split": { "const": "validation" },
+        "benchmark_start_inclusive": { "const": "2024-10-01" },
+        "benchmark_end_exclusive": { "const": "2024-11-01" },
+        "selection_method": { "const": "lowest_normalized_narrative_fingerprint" },
+        "sample_count": { "const": 512 },
+        "warmup_count": { "const": 16 },
+        "measured_passes": { "const": 3 },
+        "measured_predictions_per_candidate": { "const": 1536 },
+        "labels": {
+          "type": "array",
+          "minItems": 11,
+          "maxItems": 11,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "test_accessed": { "const": false }
+      }
+    },
+    "utility_rule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["adr", "method", "quality_floors", "cpu_ceilings"],
+      "properties": {
+        "adr": { "const": "docs/decisions/0015-proposed-operational-model-selection.md" },
+        "method": { "const": "all_gates_required_with_tfidf_fallback" },
+        "quality_floors": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "macro_f1_delta",
+            "worst_class_recall_delta",
+            "accuracy_may_decrease",
+            "weighted_f1_may_decrease",
+            "maximum_classes_with_lower_f1"
+          ],
+          "properties": {
+            "macro_f1_delta": { "const": 0.02 },
+            "worst_class_recall_delta": { "const": 0.05 },
+            "accuracy_may_decrease": { "const": false },
+            "weighted_f1_may_decrease": { "const": false },
+            "maximum_classes_with_lower_f1": { "const": 1 }
+          }
+        },
+        "cpu_ceilings": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "p95_latency_ms",
+            "maximum_latency_ms",
+            "load_seconds",
+            "peak_working_set_bytes",
+            "artifact_bytes"
+          ],
+          "properties": {
+            "p95_latency_ms": { "const": 750.0 },
+            "maximum_latency_ms": { "const": 1500.0 },
+            "load_seconds": { "const": 30.0 },
+            "peak_working_set_bytes": { "const": 2147483648 },
+            "artifact_bytes": { "const": 268435456 }
+          }
+        }
+      }
+    },
+    "quality": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["metrics", "class_f1_wins", "checks", "gate_passed"],
+      "properties": {
+        "metrics": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["accuracy", "macro_f1", "weighted_f1", "worst_class_recall"],
+          "properties": {
+            "accuracy": { "$ref": "#/$defs/modelMetric" },
+            "macro_f1": { "$ref": "#/$defs/modelMetric" },
+            "weighted_f1": { "$ref": "#/$defs/modelMetric" },
+            "worst_class_recall": { "$ref": "#/$defs/modelMetric" }
+          }
+        },
+        "class_f1_wins": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["baseline", "transformer", "tie"],
+          "properties": {
+            "baseline": { "type": "integer", "minimum": 0 },
+            "transformer": { "type": "integer", "minimum": 0 },
+            "tie": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "checks": { "$ref": "#/$defs/booleanMap" },
+        "gate_passed": { "type": "boolean" }
+      }
+    },
+    "calibration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "method",
+        "temperature",
+        "eligibility_checks",
+        "class_specific_calibration_limitation",
+        "gate_passed"
+      ],
+      "properties": {
+        "method": { "const": "scalar_temperature_scaling" },
+        "temperature": { "type": "number", "exclusiveMinimum": 0 },
+        "eligibility_checks": { "$ref": "#/$defs/booleanMap" },
+        "class_specific_calibration_limitation": { "const": true },
+        "gate_passed": { "type": "boolean" }
+      }
+    },
+    "benchmarks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["baseline", "transformer", "relative_ratios"],
+      "properties": {
+        "baseline": { "$ref": "#/$defs/candidateBenchmark" },
+        "transformer": { "$ref": "#/$defs/candidateBenchmark" },
+        "relative_ratios": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "transformer_to_baseline_load_time",
+            "transformer_to_baseline_p50_latency",
+            "transformer_to_baseline_p95_latency",
+            "transformer_to_baseline_peak_working_set",
+            "transformer_to_baseline_artifact_bytes"
+          ],
+          "properties": {
+            "transformer_to_baseline_load_time": { "$ref": "#/$defs/positiveNumber" },
+            "transformer_to_baseline_p50_latency": { "$ref": "#/$defs/positiveNumber" },
+            "transformer_to_baseline_p95_latency": { "$ref": "#/$defs/positiveNumber" },
+            "transformer_to_baseline_peak_working_set": { "$ref": "#/$defs/positiveNumber" },
+            "transformer_to_baseline_artifact_bytes": { "$ref": "#/$defs/positiveNumber" }
+          }
+        }
+      }
+    },
+    "assessment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["explainability", "complexity_and_cost", "selective_accuracy_after_abstention"],
+      "properties": {
+        "explainability": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "gate_passed",
+            "baseline",
+            "transformer",
+            "local_transformer_reason_codes",
+            "class_specific_calibration_limitation_carried_forward"
+          ],
+          "properties": {
+            "gate_passed": { "const": true },
+            "baseline": { "type": "string" },
+            "transformer": { "type": "string" },
+            "local_transformer_reason_codes": { "const": "not_authorized" },
+            "class_specific_calibration_limitation_carried_forward": { "const": true }
+          }
+        },
+        "complexity_and_cost": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "gate_passed",
+            "gpu_required",
+            "external_model_request_required",
+            "paid_inference_required",
+            "distributed_orchestration_required",
+            "provider_price_assessed",
+            "transformer_has_larger_dependency_and_maintenance_surface"
+          ],
+          "properties": {
+            "gate_passed": { "const": true },
+            "gpu_required": { "const": false },
+            "external_model_request_required": { "const": false },
+            "paid_inference_required": { "const": false },
+            "distributed_orchestration_required": { "const": false },
+            "provider_price_assessed": { "const": false },
+            "transformer_has_larger_dependency_and_maintenance_surface": { "const": true }
+          }
+        },
+        "selective_accuracy_after_abstention": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "operational_threshold_selected", "reason"],
+          "properties": {
+            "status": { "const": "deferred_to_phase_4_under_separate_approved_policy" },
+            "operational_threshold_selected": { "const": false },
+            "reason": { "const": "ct306_selects_the_candidate_before_threshold_analysis" }
+          }
+        }
+      }
+    },
+    "decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "gate_results",
+        "all_gates_passed",
+        "selected_operational_candidate",
+        "fallback_applied",
+        "failed_gates",
+        "next_gate"
+      ],
+      "properties": {
+        "gate_results": { "$ref": "#/$defs/booleanMap" },
+        "all_gates_passed": { "type": "boolean" },
+        "selected_operational_candidate": {
+          "enum": ["calibrated_minilm", "tfidf_logistic_regression"]
+        },
+        "fallback_applied": { "type": "boolean" },
+        "failed_gates": { "type": "array", "uniqueItems": true, "items": { "type": "string" } },
+        "next_gate": { "const": "phase_4_abstention_and_governance_evaluation" }
+      }
+    },
+    "claims": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "operational_candidate_selected",
+        "final_test_access_authorized",
+        "operational_threshold_selected",
+        "deployment_authorized",
+        "portfolio_promotion_approved",
+        "production_performance_claimed"
+      ],
+      "properties": {
+        "operational_candidate_selected": { "const": true },
+        "final_test_access_authorized": { "const": false },
+        "operational_threshold_selected": { "const": false },
+        "deployment_authorized": { "const": false },
+        "portfolio_promotion_approved": { "const": false },
+        "production_performance_claimed": { "const": false }
+      }
+    },
+    "privacy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contains_narratives",
+        "contains_complaint_ids",
+        "contains_fingerprints",
+        "contains_predictions",
+        "contains_per_row_timings",
+        "git_tracking_allowed"
+      ],
+      "properties": {
+        "contains_narratives": { "const": false },
+        "contains_complaint_ids": { "const": false },
+        "contains_fingerprints": { "const": false },
+        "contains_predictions": { "const": false },
+        "contains_per_row_timings": { "const": false },
+        "git_tracking_allowed": { "const": true }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "positiveNumber": { "type": "number", "exclusiveMinimum": 0 },
+    "booleanMap": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": { "type": "boolean" }
+    },
+    "modelMetric": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["baseline", "transformer", "delta_transformer_minus_baseline"],
+      "properties": {
+        "baseline": { "type": "number" },
+        "transformer": { "type": "number" },
+        "delta_transformer_minus_baseline": { "type": "number" }
+      }
+    },
+    "latency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["unit", "quantile_method", "measurement_count", "mean", "p50", "p95", "maximum"],
+      "properties": {
+        "unit": { "const": "milliseconds" },
+        "quantile_method": { "const": "nearest_rank" },
+        "measurement_count": { "const": 1536 },
+        "mean": { "$ref": "#/$defs/positiveNumber" },
+        "p50": { "$ref": "#/$defs/positiveNumber" },
+        "p95": { "$ref": "#/$defs/positiveNumber" },
+        "maximum": { "$ref": "#/$defs/positiveNumber" }
+      }
+    },
+    "characterLength": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["unit", "minimum", "mean", "p50", "p95", "maximum"],
+      "properties": {
+        "unit": { "const": "unicode_code_points" },
+        "minimum": { "type": "integer", "minimum": 1 },
+        "mean": { "$ref": "#/$defs/positiveNumber" },
+        "p50": { "type": "integer", "minimum": 1 },
+        "p95": { "type": "integer", "minimum": 1 },
+        "maximum": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "workload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sample_count", "warmup_count", "measured_passes", "measured_prediction_count", "character_length"],
+      "properties": {
+        "sample_count": { "const": 512 },
+        "warmup_count": { "const": 16 },
+        "measured_passes": { "const": 3 },
+        "measured_prediction_count": { "const": 1536 },
+        "character_length": { "$ref": "#/$defs/characterLength" }
+      }
+    },
+    "environment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "cpu",
+        "logical_processors",
+        "total_physical_memory_bytes",
+        "operating_system",
+        "operating_system_release",
+        "architecture",
+        "python",
+        "gpu_used",
+        "network_model_loading_enabled",
+        "pytorch_intraop_threads",
+        "pytorch_interop_threads",
+        "software"
+      ],
+      "properties": {
+        "cpu": { "type": "string", "minLength": 1 },
+        "logical_processors": { "type": "integer", "minimum": 1 },
+        "total_physical_memory_bytes": { "type": "integer", "minimum": 1 },
+        "operating_system": { "const": "Windows" },
+        "operating_system_release": { "type": "string", "minLength": 1 },
+        "architecture": { "type": "string", "minLength": 1 },
+        "python": { "type": "string", "minLength": 1 },
+        "gpu_used": { "const": false },
+        "network_model_loading_enabled": { "const": false },
+        "pytorch_intraop_threads": { "type": ["integer", "null"], "minimum": 1 },
+        "pytorch_interop_threads": { "type": ["integer", "null"], "minimum": 1 },
+        "software": {
+          "type": "object",
+          "minProperties": 2,
+          "additionalProperties": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "candidateBenchmark": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "candidate",
+        "load_seconds",
+        "latency",
+        "peak_working_set_bytes",
+        "artifact_bytes",
+        "workload",
+        "environment"
+      ],
+      "properties": {
+        "candidate": { "enum": ["baseline", "transformer"] },
+        "load_seconds": { "$ref": "#/$defs/positiveNumber" },
+        "latency": { "$ref": "#/$defs/latency" },
+        "peak_working_set_bytes": { "type": "integer", "minimum": 1 },
+        "artifact_bytes": { "type": "integer", "minimum": 1 },
+        "workload": { "$ref": "#/$defs/workload" },
+        "environment": { "$ref": "#/$defs/environment" }
+      }
+    }
+  }
+}
