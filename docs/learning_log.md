@@ -1448,3 +1448,41 @@ container proof does not count as a passing remote required check.
 
 - How should QA-104 preserve an emergency recovery path without allowing
   routine bypass of either required job?
+
+---
+
+## QA-104: protect the main evidence branch
+
+**Date:** 2026-07-25
+
+**Status:** Accepted by Charles and remotely verified.
+
+**What the AI generated**
+
+GitHub `main` protection now requires strict `standard` and `transformer-cpu`
+checks, pull-request delivery, administrator enforcement, linear history, and
+resolved conversations. Force pushes and deletion are disabled. A repository
+guide records the single-owner review boundary and a narrowly governed recovery
+procedure.
+
+**How to verify it**
+
+Query GitHub's branch-protection API for `main`. The response must contain both
+exact check contexts and every enabled/disabled control above. The QA-104 branch
+itself must also reach `main` through a pull request whose two jobs pass, proving
+the configured path rather than only inspecting settings.
+
+**What can fail in production or governance**
+
+Job names can drift and strand merges, an administrator can weaken the policy,
+or zero mandatory approvals can provide insufficient separation when more
+contributors join. The documented recovery path must not become a routine
+bypass. Remote settings also live outside Git history, so periodic API
+verification remains necessary.
+
+**What Charles should be able to explain in an interview**
+
+Why required checks and branch protection protect evidence integrity; why admin
+enforcement matters; why force-push/deletion controls differ from ordinary
+review; why a single-owner project should not fabricate peer approval; and how
+to recover from a broken required workflow without rewriting evidence history.
