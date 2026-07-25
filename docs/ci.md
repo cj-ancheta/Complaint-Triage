@@ -104,3 +104,14 @@ GitHub Actions run
 [`30163081497`](https://github.com/cj-ancheta/Complaint-Triage/actions/runs/30163081497)
 passes both independent floors plus `security` on commit
 `8250f5ce12b6198f979272edae6bb5ab508d9716`.
+
+## QA-107 schema-drift profile
+
+Each runtime job upgrades an empty disposable PostgreSQL database through all
+four revisions and runs `alembic check` against the authoritative eight-table
+SQLAlchemy metadata with all governed schemas included. This gate executes
+before the test suite, so a model change without a migration—or a migration not
+represented by the model—blocks the profile. PostgreSQL functions and triggers
+remain protected by their behavioral integration tests because they are outside
+Alembic's ordinary table autogeneration scope. See
+[`database_schema_drift.md`](database_schema_drift.md).
