@@ -5,7 +5,7 @@
 # Declare its required Python-side dependencies here so they resolve only from
 # PyPI and are protected by the transformer lock's hashes.
 filelock
-fsspec>=0.8.5
+fsspec>=2026.4.0
 jinja2
 networkx>=2.5.1
 setuptools>=77.0.3
