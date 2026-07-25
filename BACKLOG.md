@@ -67,7 +67,7 @@ expanded only after the Phase 4 evidence gates are accepted.
 | QA-102 | Lock standard and transformer environments with hashes | complete | Accepted exact-digest lock design; clean deterministic installs, `pip check`, and both complete PostgreSQL-backed suites pass |
 | QA-103 | Add bounded transformer CI coverage | complete | Accepted GitHub Actions run 30161131645 passes required `standard` and `transformer-cpu` jobs after matching local replays |
 | QA-104 | Protect the main evidence branch | complete | GitHub API verifies strict required `standard`/`transformer-cpu` checks, PR delivery, admin enforcement, linear history, and no force-push/deletion |
-| QA-105 | Add security and supply-chain gates | pending | Secret, dependency, SBOM, container, and update controls are tested |
+| QA-105 | Add security and supply-chain gates | complete | Run 30162536790 passes redacted secret, strict dependency, SBOM, and container gates; `security` is required on protected `main` |
 | QA-106 | Ratchet critical-path coverage and warnings | pending | Focused tests pass an explicit non-decreasing coverage and warning policy |
 | QA-107 | Restore Alembic schema-drift detection | pending | `alembic check` and disposable upgrades pass in CI |
 | QA-108 | Establish incremental static type checking | pending | Configured type checker passes its protected scope |
@@ -78,12 +78,12 @@ expanded only after the Phase 4 evidence gates are accepted.
 ## Current next issue
 
 QA-001 is in review. Its draft report records no critical findings and preserves
-all thirteen original finding severities. QA-101 and QA-102 have been accepted
-and resolved two high findings. QA-103 is also accepted and resolves the
-remaining high finding. QA-104 resolves one medium repository finding; six
-medium and three low findings remain open. The frozen-test and
-manual-review-only boundaries remain unchanged. QA-105, adding security and
-supply-chain gates, is next.
+all thirteen original finding severities. QA-101 through QA-105 are accepted.
+QA-105 resolves QA-SEC-002 and QA-GOV-001 through required redacted secret,
+dependency, SBOM, and container gates plus explicit security, ownership,
+licensing, and dependency-update metadata. Five medium and two low findings
+remain open. The frozen-test and manual-review-only boundaries remain unchanged.
+QA-106, ratcheting critical-path coverage and warnings, is next.
 
 CT-401 is complete. Its accepted 41,831-record October validation report
 reproduces the calibrated evidence, finds no eligible global threshold, and

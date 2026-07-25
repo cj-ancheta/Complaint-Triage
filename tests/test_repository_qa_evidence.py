@@ -186,7 +186,7 @@ def test_qa_104_branch_protection_record_preserves_required_controls() -> None:
     normalized_policy = " ".join(policy.split())
 
     for required in (
-        "`standard` and `transformer-cpu`",
+        "`standard`, `transformer-cpu`, and `security`",
         "administrator enforcement enabled",
         "pull requests required",
         "linear history enabled",
@@ -211,10 +211,20 @@ def test_check_references_resolve_to_unique_findings() -> None:
     assert statuses["QA-CI-001"] == "resolved"
     assert statuses["QA-GIT-001"] == "resolved"
     assert statuses["QA-REPRO-001"] == "resolved"
+    assert statuses["QA-SEC-002"] == "resolved"
+    assert statuses["QA-GOV-001"] == "resolved"
     assert all(
         status == "open"
         for finding_id, status in statuses.items()
-        if finding_id not in {"QA-SEC-001", "QA-CI-001", "QA-REPRO-001", "QA-GIT-001"}
+        if finding_id
+        not in {
+            "QA-SEC-001",
+            "QA-SEC-002",
+            "QA-CI-001",
+            "QA-REPRO-001",
+            "QA-GIT-001",
+            "QA-GOV-001",
+        }
     )
     assert {item["finding_id"] for item in findings["findings"]} == {
         finding_id for check in evidence["checks"] for finding_id in check["finding_ids"]

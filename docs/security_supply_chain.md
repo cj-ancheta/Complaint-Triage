@@ -1,6 +1,6 @@
 # Security and software-supply-chain gates
 
-Status: QA-105 implementation complete; remote required-check evidence pending
+Status: QA-105 accepted; required remote run 30162536790 passed
 
 This guide defines the merge controls for secrets, Python dependencies,
 software bills of materials (SBOMs), the PostgreSQL image, workflow actions,
@@ -93,6 +93,8 @@ docker build --tag complaint-triage-postgres:qa105 docker/postgres
 ```
 
 Run the Trivy command encoded in `.github/workflows/ci.yml` against that exact
-image. Local success is implementation evidence only. QA-105 closes after a
-pull request passes `standard`, `transformer-cpu`, and `security`, and branch
-protection requires all three exact contexts.
+image. GitHub Actions run
+[`30162536790`](https://github.com/cj-ancheta/Complaint-Triage/actions/runs/30162536790)
+passed `standard`, `transformer-cpu`, and `security` on commit
+`41daa8b16861b5dad9ef71ff0dd78fe7c6dac2cc`. The branch-protection API then
+verified that all three exact contexts are strict required checks.

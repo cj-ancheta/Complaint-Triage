@@ -267,6 +267,22 @@
       "finding_ids": ["QA-CI-001"]
     },
     {
+      "check_id": "CHECK-SECURITY-001",
+      "category": "dependencies",
+      "result": "pass",
+      "summary": "QA-105 enforces redacted secret, dependency, SBOM, container, update, and immutable-workflow controls.",
+      "details": [
+        "the clean Gitleaks scan covers all 55 candidate-branch commits and the ephemeral controlled fixture is rejected without logging its value",
+        "standard and transformer-cpu strictly audit their hash-locked PyPI environments with pip-audit 2.10.1 and validate privacy-bounded CycloneDX SBOMs",
+        "the non-PyPI CPU Torch wheel remains hash-locked and is added to the transformer SBOM with its version, SHA-256, and explicit advisory-database boundary",
+        "the upgraded digest-pinned PostgreSQL image has zero actionable HIGH or CRITICAL Trivy findings after 15 path-scoped gosu exceptions with statements and 2026-08-15 expiry",
+        "SECURITY.md, CODEOWNERS, an explicit all-rights-reserved LICENSE, and weekly pip, Actions, and Docker Dependabot configuration are tracked",
+        "GitHub Actions run 30162536790 passes standard, transformer-cpu, and security on commit 41daa8b16861b5dad9ef71ff0dd78fe7c6dac2cc",
+        "the GitHub branch-protection API reports strict required standard, transformer-cpu, and security contexts with the QA-104 controls unchanged"
+      ],
+      "finding_ids": ["QA-SEC-002", "QA-GOV-001"]
+    },
+    {
       "check_id": "CHECK-GOVERNANCE-001",
       "category": "governance_docs",
       "result": "pass",

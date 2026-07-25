@@ -1,6 +1,6 @@
 # Required continuous-integration profiles
 
-Status: QA-103 accepted; QA-105 security gates awaiting remote acceptance
+Status: QA-103 and QA-105 accepted; runtime and security gates remotely passed
 
 The CI workflow has two independent Linux x86-64 runtime jobs. Both install only
 hash-enforced third-party locks, install reviewed Git source with dependency
@@ -76,3 +76,9 @@ CycloneDX JSON. The security job builds the digest-pinned, upgraded PostgreSQL
 wrapper and fails Trivy on actionable HIGH or CRITICAL findings. See
 [`security_supply_chain.md`](security_supply_chain.md) for exception expiry,
 update, and local-replay rules.
+
+GitHub Actions run
+[`30162536790`](https://github.com/cj-ancheta/Complaint-Triage/actions/runs/30162536790)
+passed `standard`, `transformer-cpu`, and `security` on commit
+`41daa8b16861b5dad9ef71ff0dd78fe7c6dac2cc`. Protected `main` now requires all
+three exact contexts in strict mode.

@@ -133,16 +133,17 @@
       "confidence": "high",
       "category": "security",
       "title": "Security checks are manual and not merge gates",
-      "status": "open",
+      "status": "resolved",
       "evidence": [
-        "manual current and historical high-confidence secret scans found zero matches",
-        "CI has no secret, dependency, SBOM, or container scan",
-        "no automated dependency update configuration exists",
-        "GitHub Actions are referenced by major tags rather than immutable commits"
+        "Gitleaks 8.28.0 scans complete Git history with redaction and rejects an ephemeral controlled secret fixture",
+        "both runtime jobs strictly audit hash-locked PyPI environments and validate privacy-bounded CycloneDX SBOMs",
+        "the digest-pinned upgraded PostgreSQL image passes the Trivy HIGH and CRITICAL actionable-vulnerability gate with individually justified expiring gosu exceptions",
+        "Dependabot checks pip, GitHub Actions, and Docker weekly, and every third-party Action uses an immutable commit",
+        "GitHub Actions run 30162536790 passes standard, transformer-cpu, and security; all three contexts are strict required main checks"
       ],
       "impact": "Credential, dependency, image, or workflow supply-chain regressions may merge undetected.",
       "remediation": "Add redacted secret scanning, pip-audit, SBOM and image gates, automated dependency updates, and immutable Action pins.",
-      "verification": "Clean scans pass and controlled secret/vulnerability fixtures fail without exposing matched values.",
+      "verification": "Verified in GitHub Actions run 30162536790 and the main branch-protection API on 2026-07-25.",
       "paper_gate": false
     },
     {
@@ -235,15 +236,16 @@
       "confidence": "high",
       "category": "governance_metadata",
       "title": "Standard public-repository security metadata is incomplete",
-      "status": "open",
+      "status": "resolved",
       "evidence": [
-        "no SECURITY.md is tracked",
-        "no standalone LICENSE or CODEOWNERS file is tracked",
-        "pyproject.toml explicitly states All rights reserved"
+        "SECURITY.md defines private reporting, response, disclosure, evidence, ownership, and reuse boundaries",
+        ".github/CODEOWNERS assigns repository-wide review ownership to cj-ancheta",
+        "the standalone LICENSE explicitly preserves all rights while permitting portfolio inspection",
+        "Dependabot defines weekly pip, GitHub Actions, and Docker update review"
       ],
       "impact": "External vulnerability reporting, ownership, paper-artifact reuse, and permissions are less clear to reviewers.",
       "remediation": "Add a security policy and ownership metadata and make an explicit licensing decision for code and paper artifacts.",
-      "verification": "Repository metadata links correctly and states reporting, ownership, and reuse terms unambiguously.",
+      "verification": "Repository contract tests pass and GitHub Actions run 30162536790 verifies the tracked metadata and update configuration.",
       "paper_gate": false
     }
   ]
