@@ -341,6 +341,21 @@
       "finding_ids": ["QA-TEST-001", "QA-WARN-001"]
     },
     {
+      "check_id": "CHECK-MAINTAINABILITY-001",
+      "category": "static_quality",
+      "result": "pass",
+      "summary": "QA-111 splits concentrated CLI, training, and calibration orchestration into bounded phases.",
+      "details": [
+        "cli.main fell from approximately 375 lines to two and cli.py fell from 598 to 351 lines",
+        "all 20 public commands have exactly one declarative or special handler",
+        "train_transformer fell from 209 to 50 lines across prepare, epoch-run, and publish phases",
+        "calibrate_transformer fell from 205 to 135 lines with a no-I/O aggregate report builder",
+        "local standard passed 326 tests at 69.65 percent and the CUDA-transformer profile passed 328 at 69.76 percent",
+        "GitHub Actions run 30165661423 passes standard, transformer-cpu, and security"
+      ],
+      "finding_ids": ["QA-MAINT-001"]
+    },
+    {
       "check_id": "CHECK-RETENTION-001",
       "category": "privacy",
       "result": "pass",

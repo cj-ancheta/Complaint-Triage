@@ -1,6 +1,6 @@
 # Incremental static type checking
 
-Status: QA-108 accepted; scope expanded through QA-110
+Status: QA-108 accepted; scope expanded through QA-111
 
 Mypy 2.3.0 runs in strict mode under the repository's Python 3.12 compatibility
 floor. The first protected scope is deliberately small and meaningful:
