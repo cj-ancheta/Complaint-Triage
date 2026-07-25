@@ -113,15 +113,18 @@
       "confidence": "high",
       "category": "repository",
       "title": "The public repository main branch is unprotected",
-      "status": "open",
+      "status": "resolved",
       "evidence": [
         "GitHub branch API reports main_protected=false",
         "origin/main matches the audited commit",
-        "the latest CI run for the audited commit succeeded"
+        "the latest CI run for the audited commit succeeded",
+        "QA-104 GitHub API verification reports strict required standard and transformer-cpu contexts",
+        "pull-request delivery, administrator enforcement, linear history, and conversation resolution are enabled",
+        "force pushes and branch deletion are disabled"
       ],
       "impact": "Evidence and governance controls can be changed through direct or destructive pushes without a review gate.",
       "remediation": "Protect main, require CI, and block force pushes and branch deletion.",
-      "verification": "The GitHub branch API reports protection and required checks for main.",
+      "verification": "Verified: the GitHub branch API reports the accepted protection controls and both required job contexts for main.",
       "paper_gate": false
     },
     {

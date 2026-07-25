@@ -47,6 +47,19 @@
       "finding_ids": ["QA-GIT-001"]
     },
     {
+      "check_id": "CHECK-REPO-003",
+      "category": "repository",
+      "result": "pass",
+      "summary": "QA-104 protects main with required CI and destructive-update controls.",
+      "details": [
+        "GitHub branch protection requires strict standard and transformer-cpu status contexts",
+        "pull-request delivery, administrator enforcement, linear history, and conversation resolution are enabled",
+        "force pushes and branch deletion are disabled",
+        "zero external approvals reflects the documented single-owner portfolio boundary rather than a fabricated reviewer"
+      ],
+      "finding_ids": ["QA-GIT-001"]
+    },
+    {
       "check_id": "CHECK-PRIVACY-001",
       "category": "privacy",
       "result": "pass",

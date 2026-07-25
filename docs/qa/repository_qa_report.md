@@ -19,11 +19,11 @@ explicit remediation decision. The audit opened three high findings affecting
 supply-chain safety, selected-model CI coverage, and fresh-environment
 reproducibility. QA-101 has now technically resolved the supply-chain finding;
 QA-102 resolved fresh-environment reproducibility, and QA-103 resolved the
-selected-model CI gap. No high findings remain open; seven medium and three low
-findings remain. They concern coverage enforcement, schema-drift detection,
-branch protection, automated security controls, static typing, maintainability,
-retention operations, trusted local serialization, warnings, and repository
-governance metadata. All three resolved high findings are owner-accepted.
+selected-model CI gap. No high findings remain open. QA-104 also resolves branch
+protection, leaving six medium and three low findings concerning coverage
+enforcement, schema-drift detection, automated security controls, static typing,
+maintainability, retention operations, trusted local serialization, warnings,
+and repository governance metadata. All resolved findings are owner-accepted.
 
 Finding totals:
 
@@ -32,7 +32,7 @@ Finding totals:
 | 0 | 3 | 7 | 3 | 13 |
 
 These are severity totals for the original audit inventory. Current disposition
-is 3 resolved and 10 open; resolving a finding preserves its original severity
+is 4 resolved and 9 open; resolving a finding preserves its original severity
 and evidence rather than deleting it.
 
 The frozen test partition remains untouched for modeling or threshold
@@ -222,6 +222,7 @@ and [setuptools sdist advisory](https://github.com/advisories/GHSA-h35f-9h28-mq5
 
 #### QA-GIT-001 — The public repository's main branch is unprotected
 
+- Status: resolved and accepted under QA-104
 - Confidence: high
 - Observed: the GitHub branch API reported `main_protected=false` at the audited
   commit. The latest CI run for the commit succeeded, but direct pushes can
@@ -230,6 +231,11 @@ and [setuptools sdist advisory](https://github.com/advisories/GHSA-h35f-9h28-mq5
   checkpoint.
 - Remediation: protect `main`, require the CI checks, block force pushes and
   deletions, and require conversation resolution where supported.
+- Resolution evidence: the GitHub API reports strict required `standard` and
+  `transformer-cpu` contexts, pull-request delivery, administrator enforcement,
+  linear history, and conversation resolution enabled. Force pushes and branch
+  deletion are disabled. The zero-approval single-owner boundary is documented
+  without inventing an independent reviewer.
 
 #### QA-SEC-002 — Security checks are manual and not merge gates
 
@@ -322,7 +328,7 @@ means the project correctly refuses to make a claim its protocol cannot support.
 | Validation metrics | Strong | independent 119/119 aggregate replay; class-aware confusion evidence | eligible for an internal draft only after QA-pack acceptance |
 | Dependency safety | Strong | accepted patched source constraints; pytest 9.1.1 and setuptools 83.0.0; both installed audits and exact PyPI lock audits clean; final clean replays pass 293+1-skip/294 tests | add the same audit as a merge gate under QA-105 |
 | Reproducibility | Strong | accepted commit/data/artifact identities plus eight exact-digest locks; clean Windows and Linux standard/transformer replays; isolated hash-enforced CUDA and CPU wheels | dependency changes require target-platform regeneration, audit, and replay |
-| Software quality | Improving | Ruff/format/schema/link checks; Windows suites; separate hash-locked Linux standard/CPU-transformer jobs; local replays and remote run 30161131645 pass | QA-104 must require both jobs; QA-106 coverage ratchet, QA-107 schema drift, and QA-108 typing remain open |
+| Software quality | Improving | Ruff/format/schema/link checks; Windows suites; separate hash-locked Linux jobs; remote run 30161131645; protected PR delivery requiring both checks | QA-106 coverage ratchet, QA-107 schema drift, and QA-108 typing remain open |
 | Frozen-test performance | Bounded—not evaluated | split identity and aggregate test count only; no predictions or metrics | do not report or imply performance; new policy approval is required before access |
 | Operational automation | Bounded—manual only | no validation threshold passed every class-aware gate | present the negative selective-classification result; do not imply routing authorization |
 | Fairness | Bounded—not assessed | fairness limitation and prohibited claim are documented | do not claim demographic fairness; any future study needs approved attributes and governance |
@@ -331,9 +337,9 @@ means the project correctly refuses to make a claim its protocol cannot support.
 ## Recommended disposition
 
 QA-SEC-001 and QA-REPRO-001 are accepted and resolved by QA-101 and QA-102.
-QA-103 now resolves QA-CI-001 with successful local and remote evidence. Protect
-`main` with both job names under QA-104, then establish
-security gates, add a coverage ratchet, and restore Alembic drift detection.
+QA-103 and QA-104 now protect the selected-model path and evidence branch.
+Establish security gates under QA-105, then add a coverage ratchet and restore
+Alembic drift detection.
 Lower-priority refactoring should wait until those behaviors are protected.
 
 The audit report should be marked accepted only after the owner confirms the

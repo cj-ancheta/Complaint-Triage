@@ -82,6 +82,7 @@ This project will not:
 - [Accepted TF-IDF selection ADR](docs/decisions/0011-tfidf-logreg-validation-selection.md)
 - [Architecture](docs/architecture.md)
 - [Required CI profiles](docs/ci.md)
+- [Main branch protection](docs/branch_protection.md)
 - [Learning log](docs/learning_log.md)
 
 Cleanup inventory is dry-run-only unless the exact run ID is supplied with

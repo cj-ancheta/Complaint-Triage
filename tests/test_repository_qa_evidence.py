@@ -173,6 +173,22 @@ def test_qa_103_ci_requires_offline_hash_locked_cpu_transformer_evidence() -> No
     assert "save_file" in transformer_test
 
 
+def test_qa_104_branch_protection_record_preserves_required_controls() -> None:
+    policy = (PROJECT_ROOT / "docs/branch_protection.md").read_text(encoding="utf-8")
+
+    for required in (
+        "`standard` and `transformer-cpu`",
+        "administrator enforcement enabled",
+        "pull requests required",
+        "linear history enabled",
+        "conversation resolution enabled",
+        "force pushes disabled",
+        "deletion disabled",
+        "Zero mandatory approvals is deliberate for this single-owner portfolio",
+    ):
+        assert required in policy
+
+
 def test_check_references_resolve_to_unique_findings() -> None:
     evidence = _load_json(EVIDENCE_PATH)
     findings = _load_json(FINDINGS_PATH)
@@ -184,11 +200,12 @@ def test_check_references_resolve_to_unique_findings() -> None:
     statuses = {item["finding_id"]: item["status"] for item in findings["findings"]}
     assert statuses["QA-SEC-001"] == "resolved"
     assert statuses["QA-CI-001"] == "resolved"
+    assert statuses["QA-GIT-001"] == "resolved"
     assert statuses["QA-REPRO-001"] == "resolved"
     assert all(
         status == "open"
         for finding_id, status in statuses.items()
-        if finding_id not in {"QA-SEC-001", "QA-CI-001", "QA-REPRO-001"}
+        if finding_id not in {"QA-SEC-001", "QA-CI-001", "QA-REPRO-001", "QA-GIT-001"}
     )
     assert {item["finding_id"] for item in findings["findings"]} == {
         finding_id for check in evidence["checks"] for finding_id in check["finding_ids"]

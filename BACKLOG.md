@@ -66,7 +66,7 @@ expanded only after the Phase 4 evidence gates are accepted.
 | QA-101 | Remediate vulnerable development and build tooling | complete | Accepted source constraints; both installed audits exit zero; 291+1-skip standard and 292-pass transformer suites pass |
 | QA-102 | Lock standard and transformer environments with hashes | complete | Accepted exact-digest lock design; clean deterministic installs, `pip check`, and both complete PostgreSQL-backed suites pass |
 | QA-103 | Add bounded transformer CI coverage | complete | Accepted GitHub Actions run 30161131645 passes required `standard` and `transformer-cpu` jobs after matching local replays |
-| QA-104 | Protect the main evidence branch | pending | Remote branch policy requires reviewed CI and blocks destructive updates |
+| QA-104 | Protect the main evidence branch | complete | GitHub API verifies strict required `standard`/`transformer-cpu` checks, PR delivery, admin enforcement, linear history, and no force-push/deletion |
 | QA-105 | Add security and supply-chain gates | pending | Secret, dependency, SBOM, container, and update controls are tested |
 | QA-106 | Ratchet critical-path coverage and warnings | pending | Focused tests pass an explicit non-decreasing coverage and warning policy |
 | QA-107 | Restore Alembic schema-drift detection | pending | `alembic check` and disposable upgrades pass in CI |
@@ -80,10 +80,10 @@ expanded only after the Phase 4 evidence gates are accepted.
 QA-001 is in review. Its draft report records no critical findings and preserves
 all thirteen original finding severities. QA-101 and QA-102 have been accepted
 and resolved two high findings. QA-103 is also accepted and resolves the
-remaining high finding; seven medium and three low findings remain open. The
-frozen-test and manual-review-only boundaries remain unchanged. QA-104,
-protecting `main` with both successful CI job names and blocking destructive
-updates, is next.
+remaining high finding. QA-104 resolves one medium repository finding; six
+medium and three low findings remain open. The frozen-test and
+manual-review-only boundaries remain unchanged. QA-105, adding security and
+supply-chain gates, is next.
 
 CT-401 is complete. Its accepted 41,831-record October validation report
 reproduces the calibrated evidence, finds no eligible global threshold, and
