@@ -1,4 +1,5 @@
 import json
+import os
 import shutil
 import subprocess
 from pathlib import Path
@@ -40,6 +41,10 @@ def test_docker_compose_renders_expected_service_contract() -> None:
     if shutil.which("docker") is None:
         pytest.skip("Docker CLI is not installed in this environment")
 
+    environment = os.environ.copy()
+    for name in tuple(environment):
+        if name.startswith("POSTGRES_"):
+            environment.pop(name)
     completed = subprocess.run(
         [
             "docker",
@@ -53,6 +58,7 @@ def test_docker_compose_renders_expected_service_contract() -> None:
             "json",
         ],
         cwd=REPOSITORY_ROOT,
+        env=environment,
         check=True,
         capture_output=True,
         text=True,

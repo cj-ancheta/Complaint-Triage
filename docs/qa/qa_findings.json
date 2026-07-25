@@ -97,15 +97,16 @@
       "confidence": "high",
       "category": "database",
       "title": "Alembic cannot detect model-to-migration drift",
-      "status": "open",
+      "status": "resolved",
       "evidence": [
-        "alembic check reports that env.py supplies no SQLAlchemy MetaData",
-        "the sole head and database current revision both remain 0004_temporal_split",
-        "disposable migration integration tests pass"
+        "authoritative SQLAlchemy metadata models all 95 columns across the eight governed raw, staging, and analytical tables",
+        "Alembic compares all schemas and reports no new upgrade operations at 0004_temporal_split",
+        "both runtime jobs upgrade empty disposable PostgreSQL through every revision before running alembic check",
+        "GitHub Actions run 30163564539 passes standard, transformer-cpu, and security"
       ],
       "impact": "A future schema-model change can omit a migration without an automated drift warning.",
       "remediation": "Define authoritative SQLAlchemy metadata in the migration environment and add alembic check to CI.",
-      "verification": "alembic check and disposable upgrade tests pass from a clean checkout.",
+      "verification": "Verified locally and in GitHub Actions run 30163564539.",
       "paper_gate": false
     },
     {

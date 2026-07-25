@@ -18,7 +18,7 @@ threshold changes, or metric promotion.
 | 4 | QA-104 protect evidence workflow — accepted | QA-GIT-001 | protected `main` with strict required CI, PR delivery, admin enforcement, linear history, and no force-push/deletion | GitHub branch API reports every accepted control | resolved |
 | 5 | QA-105 add security supply-chain gates — accepted | QA-SEC-002, QA-GOV-001 | redacted secret scan, strict dependency audit/update automation, privacy-bounded SBOM, container scan, Action SHA pins, security/ownership/reuse policy | run 30162536790 passes all three jobs; protected `main` requires them | resolved |
 | 6 | QA-106 ratchet coverage — accepted | QA-TEST-001, QA-WARN-001 | focused subprocess error tests, unexpected-warning errors, independent 69% floors | run 30163081497 passes both profiles and security | resolved |
-| 7 | QA-107 restore schema drift checks | QA-DB-001 | authoritative SQLAlchemy metadata and passing Alembic drift gate | `alembic check` plus disposable upgrade tests pass | recommended |
+| 7 | QA-107 restore schema drift checks — accepted | QA-DB-001 | authoritative eight-table metadata and multi-schema Alembic gate | run 30163564539 passes empty upgrades and `alembic check` twice | resolved |
 | 8 | QA-108 establish static typing | QA-TYPE-001 | scoped checker baseline and CI gate | configured checker passes protected scope | non-blocking |
 | 9 | QA-109 automate retention checkpoint | QA-DATA-001 | local-only deadline guard/reminder and deletion runbook | safe time-bound tests; no raw values or uploads | blocking by 2026-11-19 |
 | 10 | QA-110 harden artifact trust boundary | QA-SERIAL-001 | documented trusted-local boundary and safer resume serialization decision | malicious/untrusted path tests remain rejected | non-blocking |

@@ -225,6 +225,10 @@ and [setuptools sdist advisory](https://github.com/advisories/GHSA-h35f-9h28-mq5
   automated warning.
 - Remediation: define/import authoritative metadata into `alembic/env.py`, add
   naming conventions if needed, and gate `alembic check` in CI.
+- Resolution evidence: QA-107 defines separate SQLAlchemy metadata for eight
+  tables and 95 columns, includes every governed schema, and makes both runtime
+  jobs upgrade an empty database then run `alembic check`. Local comparison and
+  GitHub Actions run 30163564539 report no new upgrade operations.
 
 #### QA-GIT-001 — The public repository's main branch is unprotected
 
@@ -349,7 +353,7 @@ means the project correctly refuses to make a claim its protocol cannot support.
 | Validation metrics | Strong | independent 119/119 aggregate replay; class-aware confusion evidence | eligible for an internal draft only after QA-pack acceptance |
 | Dependency safety | Strong | accepted patched constraints; strict target-platform audits and privacy-bounded CycloneDX SBOMs run in required CI; hardened PostgreSQL passes actionable HIGH/CRITICAL scanning | review weekly updates, regenerate locks on target platforms, and clear or renew no Trivy exception without fresh evidence |
 | Reproducibility | Strong | accepted commit/data/artifact identities plus ten exact-digest locks; clean Windows and Linux standard/transformer replays; isolated hash-enforced CUDA and CPU wheels | dependency changes require target-platform regeneration, audit, and replay |
-| Software quality | Improving | Ruff/format/schema/link checks; independent 69% coverage floors; focused subprocess failure paths; zero-unexpected-warning policy; run 30163081497 | QA-107 schema drift, QA-108 typing, and QA-111 orchestration refactor remain open |
+| Software quality | Improving | Ruff/format/schema/link checks; independent coverage floors; warning gate; authoritative multi-schema Alembic check; run 30163564539 | QA-108 typing and QA-111 orchestration refactor remain open |
 | Frozen-test performance | Bounded—not evaluated | split identity and aggregate test count only; no predictions or metrics | do not report or imply performance; new policy approval is required before access |
 | Operational automation | Bounded—manual only | no validation threshold passed every class-aware gate | present the negative selective-classification result; do not imply routing authorization |
 | Fairness | Bounded—not assessed | fairness limitation and prohibited claim are documented | do not claim demographic fairness; any future study needs approved attributes and governance |

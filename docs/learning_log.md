@@ -1578,3 +1578,31 @@ just below demonstrated platform evidence; why subprocess timeout and malformed
 output tests matter more than cosmetic lines; why warning-as-error prevents new
 noise; and why a narrowly scoped upstream warning exception is technical debt,
 not a silent pass.
+
+---
+
+## QA-107: authoritative database schema drift detection
+
+**Date:** 2026-07-25
+
+**Status:** Accepted; GitHub Actions run 30163564539 passed.
+
+**What the AI generated**
+
+An independent SQLAlchemy metadata model now covers all eight governed tables
+and 95 columns across `raw`, `staging`, and `analytical`. Alembic includes those
+schemas during comparison. Both runtime jobs upgrade an empty PostgreSQL
+database through revision 0004 and run `alembic check` before tests.
+
+**How to verify it**
+
+Run `alembic upgrade head`, `alembic current`, and `alembic check` against a
+disposable database. The expected result is `0004_temporal_split (head)` and no
+new upgrade operations. Run 30163564539 passes both profiles on commit
+`6c885caa9eb33618778d81c4e60929cc0eee0c4a`.
+
+**What Charles should be able to explain in an interview**
+
+Why migration history and authoritative metadata are separate, why schema names
+must be included, why empty-database upgrades catch ordering defects, and why
+PostgreSQL functions/triggers still need behavioral tests outside autogenerate.

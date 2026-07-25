@@ -122,6 +122,20 @@
       "finding_ids": ["QA-TEST-001", "QA-WARN-001"]
     },
     {
+      "check_id": "CHECK-DATABASE-003",
+      "category": "database",
+      "result": "pass",
+      "summary": "QA-107 restores authoritative multi-schema Alembic drift detection.",
+      "details": [
+        "separate SQLAlchemy metadata models all eight governed tables and 95 columns across raw, staging, and analytical schemas",
+        "local alembic current reports 0004_temporal_split head and alembic check reports no new upgrade operations",
+        "both CI runtime profiles upgrade an empty disposable database through every revision and run alembic check before tests",
+        "functions and append-only triggers remain migration-managed and behavior-tested outside ordinary table autogeneration",
+        "GitHub Actions run 30163564539 passes standard, transformer-cpu, and security on commit 6c885caa9eb33618778d81c4e60929cc0eee0c4a"
+      ],
+      "finding_ids": ["QA-DB-001"]
+    },
+    {
       "check_id": "CHECK-TESTS-002",
       "category": "tests",
       "result": "pass",
