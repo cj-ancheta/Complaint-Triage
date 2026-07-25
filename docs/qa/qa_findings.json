@@ -208,15 +208,18 @@
       "confidence": "medium",
       "category": "serialization",
       "title": "Trusted-local artifacts use executable serialization",
-      "status": "open",
+      "status": "resolved",
       "evidence": [
         "the baseline path uses joblib.load after path, size, and SHA-256 verification",
-        "transformer resume uses torch.load with weights_only=false after path, size, identity, and SHA-256 verification",
-        "the artifacts are ignored, local-only, and not accepted from a service or upload"
+        "transformer resume uses torch.load with weights_only=true and only the NumPy array and dtype globals needed by the accepted RNG state",
+        "a shared resolver rejects traversal, absolute paths, prefix lookalikes, backslash aliases, and symbolic links before loading",
+        "the accepted epoch-3 local resume loads under the restricted policy while a non-allowlisted class is rejected",
+        "the artifacts are ignored, local-only, and not accepted from a service or upload",
+        "GitHub Actions run 30164993961 passes standard, transformer-cpu, and security"
       ],
       "impact": "Integrity hashes do not authenticate an artifact if a local attacker can replace both the artifact and its manifest.",
       "remediation": "Document the trusted-local-only boundary and prefer non-executable or restricted serialization where practical.",
-      "verification": "Untrusted or out-of-bound artifact paths are rejected and the accepted serialization policy is tested.",
+      "verification": "Verified: untrusted paths and globals fail closed, accepted resume state remains compatible, and the documented joblib exception is exact-directory local-only.",
       "paper_gate": false
     },
     {

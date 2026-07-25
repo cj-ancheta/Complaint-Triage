@@ -1,6 +1,6 @@
 # Trusted-local artifact boundary
 
-Status: QA-110 implementation complete; remote acceptance pending
+Status: QA-110 accepted; GitHub Actions run 30164993961 passed
 
 The repository does not accept model artifacts from uploads, URLs, pull
 requests, CI artifacts, or other users. Governed model files live only under
@@ -50,3 +50,8 @@ downloaded file.
   and deserialization behavior are reviewable and tested.
 - Keep local artifacts ignored and delete them with the governed retention
   workflow. CI uses synthetic fixtures and does not load these files.
+
+GitHub Actions run
+[`30164993961`](https://github.com/cj-ancheta/Complaint-Triage/actions/runs/30164993961)
+passed the standard, CPU-transformer, and security gates with the restricted
+loader and malicious-path contracts enabled.
