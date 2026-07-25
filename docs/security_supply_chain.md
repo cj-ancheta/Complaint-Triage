@@ -23,11 +23,16 @@ separate project rule detects the controlled QA pattern.
 
 Both `standard` and `transformer-cpu` jobs install `pip-audit==2.10.1` from a
 target-Python, Linux x86-64, hash-enforced tool lock. `pip-audit --local
---skip-editable --strict` fails the job for an actionable installed-package
-advisory. The editable project is reviewed Git source rather than a package
-index artifact, so it is intentionally skipped.
+--strict` fails the job for an actionable advisory or an unresolved
+distribution. The editable project is reviewed Git source rather than a
+package-index artifact, so it is installed only after this third-party audit.
 
-Each job also generates a CycloneDX JSON SBOM from the installed environment.
+Each job audits the hash-locked third-party environment before installing the
+reviewed editable project; this makes strict mode fail on every skipped or
+unresolved distribution instead of treating the intentional editable source as
+an audit error. The project source is protected by Git review, Ruff, and tests.
+
+Each job also generates a CycloneDX JSON SBOM from that third-party environment.
 The workflow validates that the document contains dependency components and
 does not contain the runner home path or the database-secret variable name.
 SBOM files are ephemeral CI evidence and ignored locally; they contain package
@@ -86,4 +91,3 @@ Run the Trivy command encoded in `.github/workflows/ci.yml` against that exact
 image. Local success is implementation evidence only. QA-105 closes after a
 pull request passes `standard`, `transformer-cpu`, and `security`, and branch
 protection requires all three exact contexts.
-

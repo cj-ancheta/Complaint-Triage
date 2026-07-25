@@ -19,7 +19,7 @@ def test_all_workflow_actions_are_immutable_and_security_gates_are_present() -> 
         "security:",
         "--redact",
         "scanner_status",
-        "--skip-editable --strict",
+        "pip_audit --local --strict",
         "--format cyclonedx-json",
         "POSTGRES_PASSWORD' not in raw",
         "severity: HIGH,CRITICAL",
