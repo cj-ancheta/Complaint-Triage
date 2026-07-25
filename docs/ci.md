@@ -1,6 +1,6 @@
 # Required continuous-integration profiles
 
-Status: QA-103 locally verified; required remote run pending
+Status: QA-103 accepted; required remote run passed
 
 The CI workflow has two independent Linux x86-64 jobs. Both install only
 hash-enforced third-party locks, install reviewed Git source with dependency
@@ -57,6 +57,9 @@ empty read-only filesystems. Results were:
   deselected, five existing warnings; and
 - `pip check` and target-platform `pip-audit 2.10.1` passed for both profiles.
 
-QA-CI-001 closes only after both jobs pass on GitHub Actions. A local container
-run proves the implementation and lock compatibility but cannot prove the
-remote required-check configuration.
+GitHub Actions run
+[`30161131645`](https://github.com/cj-ancheta/Complaint-Triage/actions/runs/30161131645)
+passed both `standard` and `transformer-cpu` on commit
+`3c37677e08711697de6a89fde5b59231fef377b3`. Together with the local container
+replays, that closes QA-CI-001. QA-104 separately controls whether those job
+names are mandatory before `main` changes.

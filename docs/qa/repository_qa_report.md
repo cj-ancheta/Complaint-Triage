@@ -18,12 +18,12 @@ The repository is not yet a sufficiently controlled paper artifact without an
 explicit remediation decision. The audit opened three high findings affecting
 supply-chain safety, selected-model CI coverage, and fresh-environment
 reproducibility. QA-101 has now technically resolved the supply-chain finding;
-QA-102 has technically resolved fresh-environment reproducibility. One high,
-seven medium, and three low findings remain open. They concern selected-model
-CI plus coverage enforcement, schema-drift detection, branch protection,
-automated security controls, static typing, maintainability, retention
-operations, trusted local serialization, warnings, and repository governance
-metadata. Both resolved findings have been accepted by the owner.
+QA-102 resolved fresh-environment reproducibility, and QA-103 resolved the
+selected-model CI gap. No high findings remain open; seven medium and three low
+findings remain. They concern coverage enforcement, schema-drift detection,
+branch protection, automated security controls, static typing, maintainability,
+retention operations, trusted local serialization, warnings, and repository
+governance metadata. All three resolved high findings are owner-accepted.
 
 Finding totals:
 
@@ -32,7 +32,7 @@ Finding totals:
 | 0 | 3 | 7 | 3 | 13 |
 
 These are severity totals for the original audit inventory. Current disposition
-is 2 resolved and 11 open; resolving a finding preserves its original severity
+is 3 resolved and 10 open; resolving a finding preserves its original severity
 and evidence rather than deleting it.
 
 The frozen test partition remains untouched for modeling or threshold
@@ -143,7 +143,7 @@ and [setuptools sdist advisory](https://github.com/advisories/GHSA-h35f-9h28-mq5
 
 #### QA-CI-001 — CI does not exercise the selected transformer path
 
-- Status: remediation implemented and locally verified by QA-103; remote run pending
+- Status: resolved and accepted under QA-103
 - Confidence: high
 - Observed: CI uses Python 3.13 and installs only `.[dev]`; it does not install
   the isolated Python 3.12 transformer stack. The local transformer suite is the
@@ -164,7 +164,8 @@ and [setuptools sdist advisory](https://github.com/advisories/GHSA-h35f-9h28-mq5
   Fresh target-platform containers passed `pip check`, the 293-test standard
   suite, and the 294-test CPU-transformer suite while governed local paths were
   unavailable. Both Linux PyPI manifests passed target-platform vulnerability
-  audit. The finding remains open until both jobs succeed on GitHub Actions.
+  audit. GitHub Actions run `30161131645` then passed both jobs on commit
+  `3c37677e08711697de6a89fde5b59231fef377b3`.
 
 #### QA-REPRO-001 — Fresh-environment dependencies are not fully locked
 
@@ -320,8 +321,8 @@ means the project correctly refuses to make a claim its protocol cannot support.
 | Data lineage and privacy | Strong | aggregate reconciliation, ignored raw data, manifest/hash checks, zero high-confidence Git secret hits | describe local-retention limitation and complete deletion by 2026-11-19 |
 | Validation metrics | Strong | independent 119/119 aggregate replay; class-aware confusion evidence | eligible for an internal draft only after QA-pack acceptance |
 | Dependency safety | Strong | accepted patched source constraints; pytest 9.1.1 and setuptools 83.0.0; both installed audits and exact PyPI lock audits clean; final clean replays pass 293+1-skip/294 tests | add the same audit as a merge gate under QA-105 |
-| Reproducibility | Strong | accepted commit/data/artifact identities plus eight exact-digest locks; clean Windows and Linux standard/transformer replays; isolated hash-enforced CUDA and CPU wheels | verify the pushed Linux jobs remotely; dependency changes require target-platform regeneration, audit, and replay |
-| Software quality | Improving—remote verification pending | Ruff/format/schema/link checks; Windows suites; separate hash-locked Linux standard/CPU-transformer jobs; fresh local Linux replays pass 293/294 tests | push QA-103 and require both remote jobs; QA-106 coverage ratchet, QA-107 schema drift, and QA-108 typing remain open |
+| Reproducibility | Strong | accepted commit/data/artifact identities plus eight exact-digest locks; clean Windows and Linux standard/transformer replays; isolated hash-enforced CUDA and CPU wheels | dependency changes require target-platform regeneration, audit, and replay |
+| Software quality | Improving | Ruff/format/schema/link checks; Windows suites; separate hash-locked Linux standard/CPU-transformer jobs; local replays and remote run 30161131645 pass | QA-104 must require both jobs; QA-106 coverage ratchet, QA-107 schema drift, and QA-108 typing remain open |
 | Frozen-test performance | Bounded—not evaluated | split identity and aggregate test count only; no predictions or metrics | do not report or imply performance; new policy approval is required before access |
 | Operational automation | Bounded—manual only | no validation threshold passed every class-aware gate | present the negative selective-classification result; do not imply routing authorization |
 | Fairness | Bounded—not assessed | fairness limitation and prohibited claim are documented | do not claim demographic fairness; any future study needs approved attributes and governance |
@@ -330,9 +331,8 @@ means the project correctly refuses to make a claim its protocol cannot support.
 ## Recommended disposition
 
 QA-SEC-001 and QA-REPRO-001 are accepted and resolved by QA-101 and QA-102.
-QA-103 now provides the selected transformer path and
-Linux-specific locks locally; push it and verify both required remote jobs to
-resolve QA-CI-001. Then protect `main`, establish
+QA-103 now resolves QA-CI-001 with successful local and remote evidence. Protect
+`main` with both job names under QA-104, then establish
 security gates, add a coverage ratchet, and restore Alembic drift detection.
 Lower-priority refactoring should wait until those behaviors are protected.
 

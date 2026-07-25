@@ -183,11 +183,12 @@ def test_check_references_resolve_to_unique_findings() -> None:
     assert len(check_ids) == len(set(check_ids))
     statuses = {item["finding_id"]: item["status"] for item in findings["findings"]}
     assert statuses["QA-SEC-001"] == "resolved"
+    assert statuses["QA-CI-001"] == "resolved"
     assert statuses["QA-REPRO-001"] == "resolved"
     assert all(
         status == "open"
         for finding_id, status in statuses.items()
-        if finding_id not in {"QA-SEC-001", "QA-REPRO-001"}
+        if finding_id not in {"QA-SEC-001", "QA-CI-001", "QA-REPRO-001"}
     )
     assert {item["finding_id"] for item in findings["findings"]} == {
         finding_id for check in evidence["checks"] for finding_id in check["finding_ids"]

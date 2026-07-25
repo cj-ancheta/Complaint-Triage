@@ -37,7 +37,7 @@
       "confidence": "high",
       "category": "ci",
       "title": "CI does not exercise the selected transformer path",
-      "status": "open",
+      "status": "resolved",
       "evidence": [
         "CI installs only the Python 3.13 dev extra",
         "the Python 3.12 transformer requirements are absent from CI",
@@ -45,11 +45,11 @@
         "QA-103 defines independent hash-locked standard and CPU-transformer Linux jobs with separate coverage outputs",
         "the transformer job enforces offline Hugging Face operation, installs one isolated CPU Torch wheel, and explicitly deselects GPU acceptance",
         "fresh Linux simulations pass 293 standard tests and 294 CPU-transformer tests using disposable PostgreSQL while governed data and artifacts are unavailable",
-        "remote GitHub Actions execution remains pending"
+        "GitHub Actions run 30161131645 passes both standard and transformer-cpu on commit 3c37677e08711697de6a89fde5b59231fef377b3"
       ],
       "impact": "The selected model path can regress while required remote CI remains green.",
       "remediation": "Add a bounded Python 3.12 CPU transformer CI job and explicitly separate GPU-only acceptance tests.",
-      "verification": "Pending remote verification: both required GitHub Actions jobs run successfully and the transformer job publishes its own coverage report.",
+      "verification": "Verified: GitHub Actions run 30161131645 passes both jobs and the transformer job produces its separate coverage report.",
       "paper_gate": true
     },
     {

@@ -1399,11 +1399,11 @@ manufacture a final metric protects the credibility of the portfolio.
 
 ---
 
-## Draft QA-103: bounded Linux CPU transformer CI
+## QA-103: bounded Linux CPU transformer CI
 
 **Date:** 2026-07-25
 
-**Status:** Locally verified; awaiting Charles's review and required remote run.
+**Status:** Accepted by Charles; required remote run passed on 2026-07-25.
 
 **What the AI generated**
 
@@ -1423,8 +1423,8 @@ standard tests, and 294 CPU-transformer tests. The CPU run had two expected
 platform skips and one GPU test deselected. Both Linux PyPI lock manifests
 returned no known vulnerabilities when audited inside their target platform.
 The post-change Windows regressions also passed 295 standard and 296 CUDA-stack
-tests. Final acceptance additionally requires both jobs to pass on GitHub
-Actions.
+tests. GitHub Actions run `30161131645` passed both jobs on commit
+`3c37677e08711697de6a89fde5b59231fef377b3`.
 
 **What can fail in production or CI**
 
@@ -1446,6 +1446,5 @@ container proof does not count as a passing remote required check.
 
 **Questions still open**
 
-- Do both GitHub Actions jobs pass from a cold remote run within their timeouts?
-- After that evidence is recorded, should QA-104 protect `main` using both job
-  names as required checks?
+- How should QA-104 preserve an emergency recovery path without allowing
+  routine bypass of either required job?

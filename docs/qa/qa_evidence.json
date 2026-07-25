@@ -239,8 +239,8 @@
     {
       "check_id": "CHECK-CI-002",
       "category": "ci_remote",
-      "result": "limitation",
-      "summary": "QA-103 implements and locally replays a bounded Linux CPU transformer job; required remote execution is pending.",
+      "result": "pass",
+      "summary": "QA-103 implements, locally replays, and remotely verifies a bounded Linux CPU transformer job.",
       "details": [
         "the workflow defines independent Python 3.13 standard and Python 3.12 transformer-cpu jobs with platform-specific hash-enforced locks and separate coverage outputs",
         "the CPU transformer job sets HF_HUB_OFFLINE and TRANSFORMERS_OFFLINE, uses only synthetic tensor evidence, and excludes the explicitly marked GPU acceptance test",
@@ -249,7 +249,7 @@
         "post-change Windows regressions pass 295 standard tests with two expected stack skips and 296 CUDA-transformer tests with one CPU-CI-only skip",
         "both simulations used disposable PostgreSQL while raw data, model artifacts, and model cache paths were unavailable through empty read-only overlays",
         "both exact Linux PyPI lock manifests report no known vulnerabilities under target-platform pip-audit 2.10.1",
-        "QA-CI-001 stays open until the workflow is pushed and both GitHub Actions jobs pass remotely"
+        "GitHub Actions run 30161131645 passes standard and transformer-cpu on commit 3c37677e08711697de6a89fde5b59231fef377b3"
       ],
       "finding_ids": ["QA-CI-001"]
     },
