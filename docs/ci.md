@@ -143,3 +143,13 @@ nonzero once 30 days or fewer remain so ordinary workflow notifications prompt
 the maintainer to run the local, manifest-bounded deletion procedure. See
 [`retention_checkpoint.md`](retention_checkpoint.md) for the exact boundary and
 response procedure.
+
+## QA-110 local artifact boundary
+
+The shared path resolver rejects non-canonical, out-of-prefix, and linked model
+artifact paths before a loader runs. Transformer resume state uses restricted
+PyTorch `weights_only=True` loading with a minimal compatibility allowlist; CI
+proves a non-allowlisted payload is rejected. The baseline joblib exception is
+confined to the documented ignored-local boundary after path, size, hash,
+software, and estimator-contract checks. See
+[`artifact_trust.md`](artifact_trust.md).

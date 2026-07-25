@@ -6,6 +6,7 @@ import hashlib
 import json
 import math
 import os
+import pickle
 import platform
 import random
 import re
@@ -21,6 +22,7 @@ from typing import Any
 import numpy as np
 from jsonschema import Draft202012Validator, FormatChecker
 
+from complaint_triage.artifact_trust import TrustedArtifactPathError, resolve_trusted_artifact
 from complaint_triage.db import DatabaseSettings
 from complaint_triage.live_extraction import read_git_lineage
 from complaint_triage.real_extraction import PROJECT_ROOT
@@ -586,10 +588,15 @@ def _initialize_or_resume(
     resume = _load_resume_manifest(
         resume_path, root, split_sha256, commit_sha, configuration, class_weights
     )
-    _load_safetensors_model(model, root / resume["model"]["relative_path"], torch)
-    state_path = root / resume["training_state"]["relative_path"]
     try:
-        state = torch.load(state_path, map_location="cpu", weights_only=False)
+        model_path = resolve_trusted_artifact(
+            root, resume["model"]["relative_path"], "artifacts/cfpb/transformer"
+        )
+        _load_safetensors_model(model, model_path, torch)
+        state_path = resolve_trusted_artifact(
+            root, resume["training_state"]["relative_path"], "artifacts/cfpb/transformer"
+        )
+        state = _load_restricted_training_state(state_path, torch)
     except (OSError, RuntimeError, ValueError) as error:
         raise TransformerFitError("transformer_fit_resume_state_unreadable") from error
     _validate_resume_state(state, resume)
@@ -607,6 +614,21 @@ def _initialize_or_resume(
         int(state["completed_epoch"]) + 1,
         state["monitor_best_macro_f1"],
     )
+
+
+def _load_restricted_training_state(path: Path, torch: Any) -> Any:
+    """Load tensor state without permitting arbitrary pickle globals."""
+    safe_globals = [
+        np._core.multiarray._reconstruct,
+        np.ndarray,
+        np.dtype,
+        type(np.dtype(np.uint32)),
+    ]
+    try:
+        with torch.serialization.safe_globals(safe_globals):
+            return torch.load(path, map_location="cpu", weights_only=True)
+    except (OSError, pickle.UnpicklingError, RuntimeError, ValueError) as error:
+        raise TransformerFitError("transformer_fit_resume_state_unreadable") from error
 
 
 def _save_latest_checkpoint(
@@ -868,12 +890,11 @@ def _verify_artifact_metadata(root: Path, metadata: Any, *, prefix: str) -> None
         or size < 1
     ):
         raise TransformerFitError("transformer_fit_artifact_metadata_invalid")
-    path = (root / relative).resolve()
     try:
-        path.relative_to(root.resolve() / "artifacts" / "cfpb" / "transformer")
+        path = resolve_trusted_artifact(root, relative, prefix.rstrip("/"))
         observed_size = path.stat().st_size
         observed_digest = _sha256_file(path)
-    except (OSError, ValueError) as error:
+    except (OSError, TrustedArtifactPathError) as error:
         raise TransformerFitError("transformer_fit_artifact_unreadable") from error
     if observed_size != size or observed_digest != digest:
         raise TransformerFitError("transformer_fit_artifact_hash_mismatch")

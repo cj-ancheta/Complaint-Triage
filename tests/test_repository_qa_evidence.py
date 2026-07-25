@@ -232,6 +232,7 @@ def test_qa_108_static_type_scope_is_strict_and_hash_locked() -> None:
         "src/complaint_triage/taxonomy.py",
         "src/complaint_triage/retention_policy.py",
         "src/complaint_triage/retention_checkpoint.py",
+        "src/complaint_triage/artifact_trust.py",
     ]
     assert workflow.count("run: python -m mypy") == 2
     assert "type-tool-py312-linux-x86_64.lock.txt" in workflow

@@ -25,6 +25,7 @@ import psycopg
 from jsonschema import Draft202012Validator, FormatChecker
 
 from complaint_triage.analytical_population import POPULATION_VERSION
+from complaint_triage.artifact_trust import TrustedArtifactPathError, resolve_trusted_artifact
 from complaint_triage.db import DatabaseSettings
 from complaint_triage.live_extraction import read_git_lineage
 from complaint_triage.real_extraction import PROJECT_ROOT
@@ -442,7 +443,11 @@ def _load_predictor(
         _verify_artifact(root, metadata, "artifacts/cfpb/tfidf-logreg/")
         started = time.perf_counter()
         try:
-            pipeline = joblib.load(root / metadata["relative_path"])
+            pipeline = joblib.load(
+                resolve_trusted_artifact(
+                    root, metadata["relative_path"], "artifacts/cfpb/tfidf-logreg"
+                )
+            )
         except (OSError, ValueError, TypeError) as error:
             raise ModelSelectionError("model_selection_baseline_load_failed") from error
         load_seconds = time.perf_counter() - started
@@ -480,14 +485,24 @@ def _load_predictor(
     bundle = load_pinned_tokenizer(root)
     model = load_pinned_sequence_classifier(root)
     try:
-        state = load_file(str(root / model_metadata["relative_path"]), device="cpu")
+        state = load_file(
+            str(
+                resolve_trusted_artifact(
+                    root, model_metadata["relative_path"], "artifacts/cfpb/transformer"
+                )
+            ),
+            device="cpu",
+        )
         model.load_state_dict(state, strict=True)
     except (OSError, RuntimeError, ValueError) as error:
         raise ModelSelectionError("model_selection_transformer_load_failed") from error
     model.to("cpu")
     model.eval()
     try:
-        calibrator = json.loads((root / calibration_metadata["relative_path"]).read_text("utf-8"))
+        calibrator_path = resolve_trusted_artifact(
+            root, calibration_metadata["relative_path"], "artifacts/cfpb/transformer"
+        )
+        calibrator = json.loads(calibrator_path.read_text("utf-8"))
         temperature = float(calibrator["temperature"])
     except (OSError, KeyError, TypeError, ValueError, json.JSONDecodeError) as error:
         raise ModelSelectionError("model_selection_calibrator_load_failed") from error
@@ -795,12 +810,11 @@ def _verify_artifact(root: Path, metadata: Mapping[str, Any], required_prefix: s
         or byte_count < 1
     ):
         raise ModelSelectionError("model_selection_artifact_metadata_invalid")
-    path = (root / relative).resolve()
     try:
-        path.relative_to((root / required_prefix).resolve())
+        path = resolve_trusted_artifact(root, relative, required_prefix.rstrip("/"))
         if path.stat().st_size != byte_count or _file_sha256(path) != digest:
             raise ModelSelectionError("model_selection_artifact_hash_mismatch")
-    except (OSError, ValueError) as error:
+    except (OSError, TrustedArtifactPathError) as error:
         raise ModelSelectionError("model_selection_artifact_unreadable") from error
 
 
