@@ -1486,3 +1486,52 @@ Why required checks and branch protection protect evidence integrity; why admin
 enforcement matters; why force-push/deletion controls differ from ordinary
 review; why a single-owner project should not fabricate peer approval; and how
 to recover from a broken required workflow without rewriting evidence history.
+
+---
+
+## QA-105: required security and software-supply-chain gates
+
+**Date:** 2026-07-25
+
+**Status:** Accepted; GitHub Actions run 30162536790 passed and protected
+`main` requires all three jobs.
+
+**What the AI generated**
+
+The CI workflow now performs a redacted full-history Gitleaks scan and proves an
+ephemeral controlled secret is rejected. Both runtime profiles strictly audit
+their hash-locked PyPI environments and validate CycloneDX SBOMs. The isolated
+CPU Torch wheel is added with its reviewed version and SHA-256 because OSV
+cannot resolve the non-PyPI `+cpu` identity. A digest-pinned PostgreSQL wrapper
+applies current Alpine upgrades and Trivy rejects actionable HIGH or CRITICAL
+findings. Actions, scanner images, and the database base are immutable; weekly
+Dependabot, SECURITY.md, CODEOWNERS, and an explicit all-rights-reserved LICENSE
+close the update and reporting boundary.
+
+**How to verify it**
+
+Run `pytest tests/test_security_controls.py -q`, scan complete history with the
+digest-pinned Gitleaks command in `docs/security_supply_chain.md`, build the
+hardened database image, and run the workflow's Trivy policy. The local full
+suites passed 299 tests with two bounded skips in the standard environment and
+300 tests with one bounded skip in the transformer environment. GitHub Actions
+run 30162536790 then passed `standard`, `transformer-cpu`, and `security` on
+commit `41daa8b16861b5dad9ef71ff0dd78fe7c6dac2cc`. The branch API reports the
+same three exact contexts in strict mode with the QA-104 protections unchanged.
+
+**What can fail in production or CI**
+
+An immutable pin can become old, a vulnerability database can change between
+runs, an exception can outlive its justification, or a non-PyPI wheel can remain
+outside advisory coverage. The 15 `gosu` exceptions expire on 2026-08-15 and
+must be removed or freshly reviewed. CycloneDX inventory is not proof of package
+safety, and hash integrity does not replace source or maintainer review.
+
+**What Charles should be able to explain in an interview**
+
+Why history scanning and a negative fixture prove different things; why secrets
+must be redacted even in failure logs; why runtime, audit-tool, and non-PyPI
+locks are separate; why strict audit rejects an editable distribution; why the
+CPU Torch SBOM component needs an explicit advisory boundary; why a base-image
+digest still needs OS upgrades; and why required security checks turn a useful
+scanner into a merge control.

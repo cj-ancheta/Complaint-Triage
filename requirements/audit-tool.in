@@ -1,0 +1,2 @@
+# QA-105 dependency audit and CycloneDX SBOM tool only.
+pip-audit==2.10.1

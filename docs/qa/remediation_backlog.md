@@ -16,7 +16,7 @@ threshold changes, or metric promotion.
 | 2 | QA-102 lock both environments — accepted | QA-REPRO-001 | exact-digest locks plus deterministic update/rebuild instructions and isolated package-source boundaries | clean `--require-hashes` installs, `pip check`, and complete PostgreSQL-backed suites | resolved |
 | 3 | QA-103 add transformer CI — accepted | QA-CI-001 | independent hash-locked Linux standard/CPU-transformer jobs; offline synthetic CPU evidence; GPU acceptance explicitly excluded | local replays and GitHub Actions run 30161131645 pass both jobs | resolved |
 | 4 | QA-104 protect evidence workflow — accepted | QA-GIT-001 | protected `main` with strict required CI, PR delivery, admin enforcement, linear history, and no force-push/deletion | GitHub branch API reports every accepted control | resolved |
-| 5 | QA-105 add security supply-chain gates | QA-SEC-002, QA-GOV-001 | secret scan, dependency audit/update automation, SBOM, container scan, Action SHA pins, security policy | controlled negative fixtures fail; clean repo passes | recommended |
+| 5 | QA-105 add security supply-chain gates — accepted | QA-SEC-002, QA-GOV-001 | redacted secret scan, strict dependency audit/update automation, privacy-bounded SBOM, container scan, Action SHA pins, security/ownership/reuse policy | run 30162536790 passes all three jobs; protected `main` requires them | resolved |
 | 6 | QA-106 ratchet coverage | QA-TEST-001, QA-WARN-001 | focused orchestration/error tests, warning cleanup, non-decreasing coverage floor | both jobs meet explicit floor without unexpected warnings | recommended |
 | 7 | QA-107 restore schema drift checks | QA-DB-001 | authoritative SQLAlchemy metadata and passing Alembic drift gate | `alembic check` plus disposable upgrade tests pass | recommended |
 | 8 | QA-108 establish static typing | QA-TYPE-001 | scoped checker baseline and CI gate | configured checker passes protected scope | non-blocking |
@@ -67,6 +67,15 @@ Linux-specific CI lock and remote replay; it must not reuse the Windows files.
 - SBOM output must contain dependency metadata only, not paths or environment
   values that reveal user information.
 - Pin third-party Actions to immutable commits and document the upstream tag.
+
+QA-105 satisfies these controls with a full-history Gitleaks gate and ephemeral
+negative fixture, target-Python hash-locked audit tooling, strict PyPI audits,
+CycloneDX completion for the isolated non-PyPI CPU wheel, a hardened
+digest-pinned PostgreSQL image, and individually justified Trivy exceptions
+expiring 2026-08-15. GitHub Actions run 30162536790 passes `standard`,
+`transformer-cpu`, and `security`; protected `main` requires all three. The
+repository also tracks SECURITY.md, CODEOWNERS, weekly Dependabot configuration,
+and an explicit all-rights-reserved LICENSE.
 
 ## QA-106 acceptance notes
 

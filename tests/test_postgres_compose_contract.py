@@ -13,7 +13,8 @@ ENV_EXAMPLE_PATH = REPOSITORY_ROOT / ".env.example"
 def test_compose_source_has_local_security_and_readiness_controls() -> None:
     compose_text = COMPOSE_PATH.read_text(encoding="utf-8")
 
-    assert "postgres:18.4-alpine3.23" in compose_text
+    assert "complaint-triage-postgres:local" in compose_text
+    assert "dockerfile: docker/postgres/Dockerfile" in compose_text
     assert "postgres:latest" not in compose_text
     assert "POSTGRES_HOST_AUTH_METHOD" not in compose_text
     assert "127.0.0.1:${POSTGRES_PORT:-55432}:5432" in compose_text
@@ -60,7 +61,8 @@ def test_docker_compose_renders_expected_service_contract() -> None:
     config = json.loads(completed.stdout)
     postgres = config["services"]["postgres"]
 
-    assert postgres["image"] == "postgres:18.4-alpine3.23"
+    assert postgres["image"] == "complaint-triage-postgres:local"
+    assert postgres["build"]["dockerfile"].endswith("docker/postgres/Dockerfile")
     assert postgres["environment"]["PGDATA"] == "/var/lib/postgresql/18/docker"
     assert postgres["ports"] == [
         {

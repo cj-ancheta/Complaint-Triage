@@ -247,6 +247,13 @@ and [setuptools sdist advisory](https://github.com/advisories/GHSA-h35f-9h28-mq5
 - Impact: later dependency or credential regressions may merge undetected.
 - Remediation: add a sanitized secret scan, `pip-audit`, CycloneDX SBOM,
   container scan, automated dependency updates, and immutable Action pins.
+- Resolution evidence: QA-105 adds a redacted full-history Gitleaks gate with
+  an ephemeral negative fixture, strict target-platform PyPI audits,
+  privacy-checked CycloneDX SBOMs, an explicit hash-locked non-PyPI Torch SBOM
+  boundary, Trivy enforcement on the upgraded digest-pinned PostgreSQL image,
+  weekly Dependabot updates, and immutable Action commits. GitHub Actions run
+  30162536790 passes `standard`, `transformer-cpu`, and `security`; the branch
+  API reports all three as strict required `main` contexts.
 
 #### QA-TYPE-001 — No static type-checking gate exists
 
@@ -315,6 +322,10 @@ and [setuptools sdist advisory](https://github.com/advisories/GHSA-h35f-9h28-mq5
 - Remediation: add a security policy and ownership metadata; decide whether the
   code and eventual paper artifacts remain all-rights-reserved or receive
   explicit licenses.
+- Resolution evidence: QA-105 tracks SECURITY.md, repository-wide CODEOWNERS,
+  an explicit all-rights-reserved inspection-only LICENSE, and weekly pip,
+  Actions, and Docker Dependabot configuration. Contract tests and run
+  30162536790 verify the tracked controls.
 
 ## Evidence readiness matrix
 
@@ -326,8 +337,8 @@ means the project correctly refuses to make a claim its protocol cannot support.
 |---|---|---|---|
 | Data lineage and privacy | Strong | aggregate reconciliation, ignored raw data, manifest/hash checks, zero high-confidence Git secret hits | describe local-retention limitation and complete deletion by 2026-11-19 |
 | Validation metrics | Strong | independent 119/119 aggregate replay; class-aware confusion evidence | eligible for an internal draft only after QA-pack acceptance |
-| Dependency safety | Strong | accepted patched source constraints; pytest 9.1.1 and setuptools 83.0.0; both installed audits and exact PyPI lock audits clean; final clean replays pass 293+1-skip/294 tests | add the same audit as a merge gate under QA-105 |
-| Reproducibility | Strong | accepted commit/data/artifact identities plus eight exact-digest locks; clean Windows and Linux standard/transformer replays; isolated hash-enforced CUDA and CPU wheels | dependency changes require target-platform regeneration, audit, and replay |
+| Dependency safety | Strong | accepted patched constraints; strict target-platform audits and privacy-bounded CycloneDX SBOMs run in required CI; hardened PostgreSQL passes actionable HIGH/CRITICAL scanning | review weekly updates, regenerate locks on target platforms, and clear or renew no Trivy exception without fresh evidence |
+| Reproducibility | Strong | accepted commit/data/artifact identities plus ten exact-digest locks; clean Windows and Linux standard/transformer replays; isolated hash-enforced CUDA and CPU wheels | dependency changes require target-platform regeneration, audit, and replay |
 | Software quality | Improving | Ruff/format/schema/link checks; Windows suites; separate hash-locked Linux jobs; remote run 30161131645; protected PR delivery requiring both checks | QA-106 coverage ratchet, QA-107 schema drift, and QA-108 typing remain open |
 | Frozen-test performance | Bounded—not evaluated | split identity and aggregate test count only; no predictions or metrics | do not report or imply performance; new policy approval is required before access |
 | Operational automation | Bounded—manual only | no validation threshold passed every class-aware gate | present the negative selective-classification result; do not imply routing authorization |
@@ -337,10 +348,10 @@ means the project correctly refuses to make a claim its protocol cannot support.
 ## Recommended disposition
 
 QA-SEC-001 and QA-REPRO-001 are accepted and resolved by QA-101 and QA-102.
-QA-103 and QA-104 now protect the selected-model path and evidence branch.
-Establish security gates under QA-105, then add a coverage ratchet and restore
-Alembic drift detection.
-Lower-priority refactoring should wait until those behaviors are protected.
+QA-103 through QA-105 now protect the selected-model path, evidence branch, and
+software supply chain. Add the QA-106 coverage/warning ratchet next, then restore
+Alembic drift detection under QA-107. Lower-priority refactoring should wait
+until those behaviors are protected.
 
 The audit report should be marked accepted only after the owner confirms the
 finding inventory and remediation order. Paper literature research and drafting

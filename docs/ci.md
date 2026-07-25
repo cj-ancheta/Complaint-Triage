@@ -1,11 +1,13 @@
 # Required continuous-integration profiles
 
-Status: QA-103 accepted; required remote run passed
+Status: QA-103 and QA-105 accepted; runtime and security gates remotely passed
 
-The CI workflow has two independent Linux x86-64 jobs. Both install only
+The CI workflow has two independent Linux x86-64 runtime jobs. Both install only
 hash-enforced third-party locks, install reviewed Git source with dependency
 resolution and build isolation disabled, run against a disposable PostgreSQL
-service, and produce separate coverage reports.
+service, audit their installed dependencies, validate separate CycloneDX SBOMs,
+and produce separate coverage reports. A third `security` job scans Git history
+and the hardened database image.
 
 ## Standard job
 
@@ -63,3 +65,20 @@ passed both `standard` and `transformer-cpu` on commit
 `3c37677e08711697de6a89fde5b59231fef377b3`. Together with the local container
 replays, that closes QA-CI-001. QA-104 separately controls whether those job
 names are mandatory before `main` changes.
+
+## QA-105 security profile
+
+All third-party Actions are pinned to immutable commits. Gitleaks scans complete
+history with redaction and proves a controlled ephemeral fixture is rejected.
+Both runtime jobs install a separate hash-locked `pip-audit` tool profile, fail
+on actionable installed-package advisories, and validate privacy-bounded
+CycloneDX JSON. The security job builds the digest-pinned, upgraded PostgreSQL
+wrapper and fails Trivy on actionable HIGH or CRITICAL findings. See
+[`security_supply_chain.md`](security_supply_chain.md) for exception expiry,
+update, and local-replay rules.
+
+GitHub Actions run
+[`30162536790`](https://github.com/cj-ancheta/Complaint-Triage/actions/runs/30162536790)
+passed `standard`, `transformer-cpu`, and `security` on commit
+`41daa8b16861b5dad9ef71ff0dd78fe7c6dac2cc`. Protected `main` now requires all
+three exact contexts in strict mode.

@@ -65,7 +65,9 @@ data. Repository controls do not provide disk encryption or endpoint security.
 | Authentication/authorization | Undecided and not implemented | Explicit approval required before design |
 | Rate limiting and abuse controls | Required | No public service exists |
 | CORS allowlist and HTTPS | Required | No public service exists |
-| Dependency/SBOM/image scanning | Not implemented | Production release process not implemented |
+| Secret scanning | Implemented in QA-105 CI | Full-history redacted Gitleaks scan plus ephemeral controlled rejection fixture |
+| Dependency/SBOM/image scanning | Implemented in QA-105 CI | Strict installed-package audits, privacy-checked CycloneDX SBOMs, and actionable HIGH/CRITICAL Trivy gate |
+| Dependency updates and workflow integrity | Implemented in QA-105 | Weekly Dependabot checks, immutable Action commits, digest-pinned scanner/base images |
 | Security monitoring and incident response rehearsal | Required | No deployed environment exists |
 
 ## Secrets handling
