@@ -120,3 +120,11 @@ GitHub Actions run
 [`30163564539`](https://github.com/cj-ancheta/Complaint-Triage/actions/runs/30163564539)
 passes both database upgrade/check sequences plus `security` on commit
 `6c885caa9eb33618778d81c4e60929cc0eee0c4a`.
+
+## QA-108 static-type profile
+
+Both runtime jobs install Mypy 2.3.0 from their target-Python hash-locked tool
+profile and run the same strict configuration. The initial protected scope is
+database configuration, SBOM security, authoritative schema metadata, and the
+taxonomy. See [`static_typing.md`](static_typing.md) for expansion and
+suppression rules.
