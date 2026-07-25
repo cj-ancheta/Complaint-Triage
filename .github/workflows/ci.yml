@@ -158,7 +158,7 @@ jobs:
         run: python -m pytest tests/test_transformer_cpu_ci.py -q
 
       - name: Test transformer stack without GPU acceptance
-        run: python -m pytest -m "not gpu" --cov=complaint_triage --cov-report=term-missing --cov-report=xml:coverage-transformer.xml --cov-fail-under=70
+        run: python -m pytest -m "not gpu" --cov=complaint_triage --cov-report=term-missing --cov-report=xml:coverage-transformer.xml --cov-fail-under=69
 
   security:
     runs-on: ubuntu-latest

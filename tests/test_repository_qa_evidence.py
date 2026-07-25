@@ -202,8 +202,7 @@ def test_qa_106_coverage_and_warning_ratchets_are_explicit() -> None:
     workflow = (PROJECT_ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
     configuration = tomllib.loads((PROJECT_ROOT / "pyproject.toml").read_text(encoding="utf-8"))
 
-    assert "--cov-fail-under=69" in workflow
-    assert "--cov-fail-under=70" in workflow
+    assert workflow.count("--cov-fail-under=69") == 2
     warning_policy = configuration["tool"]["pytest"]["ini_options"]["filterwarnings"]
     assert warning_policy[0] == "error"
     assert len(warning_policy) == 2

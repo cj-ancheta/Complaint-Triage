@@ -85,11 +85,13 @@ three exact contexts in strict mode.
 
 ## QA-106 coverage and warning ratchet
 
-The standard job fails below 69% combined statement/branch coverage; the
-transformer job has an independent 70% floor. These initial floors sit below
-the demonstrated 69.36% and 70.74% results so harmless platform rounding does
-not create a false gate, while any material regression fails. Raising one floor
-does not lower the other.
+The standard and transformer jobs each fail below 69% combined statement/branch
+coverage, but enforce the floor independently against separate reports. The
+initial floor sits below the demonstrated 69.36% Windows standard and 69.02%
+Linux CPU-transformer results so platform variation does not create a false
+gate, while any material regression fails. The local CUDA-capable transformer
+suite reaches 70.74%; its GPU-only path is intentionally absent from ordinary
+CPU CI. Raising one profile's floor does not lower the other.
 
 Pytest treats every unexpected warning as an error. The only acknowledged
 exception is the exact joblib `numpy_pickle` shape-assignment deprecation
