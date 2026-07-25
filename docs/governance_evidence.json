@@ -1,0 +1,101 @@
+{
+  "pack_version": "governance-evidence-pack-1.0.0",
+  "run_id": "cfpb-run-20260722T130728Z-2b7815d4c850",
+  "created_on": "2026-07-25",
+  "review": {
+    "status": "accepted",
+    "owner": "Charles Jr Ancheta",
+    "accepted_on": "2026-07-25",
+    "scope": "ct403_governance_pack_and_manual_review_only_release_decision"
+  },
+  "release_decision": {
+    "status": "manual_review_only_research_evidence",
+    "reason": "no_candidate_threshold_passed_every_adr_0016_gate",
+    "operational_threshold": null,
+    "automated_routing_authorized": false,
+    "frozen_test_access_authorized": false,
+    "deployment_authorized": false,
+    "public_metric_promotion_authorized": false
+  },
+  "documents": [
+    "docs/problem_statement.md",
+    "docs/data_sheet.md",
+    "docs/model_card.md",
+    "docs/risk_register.md",
+    "docs/human_oversight.md",
+    "docs/change_management.md",
+    "docs/security.md",
+    "docs/governance_pack.md"
+  ],
+  "evidence": [
+    {
+      "name": "population_report",
+      "path": "data/manifests/cfpb/reports/cfpb-run-20260722T130728Z-2b7815d4c850.json",
+      "sha256": "36bae4066aae0cba826b46f24ae2158c9432da231e95bf7eb0a2a70ca25c3b88",
+      "role": "population eligibility, attrition, language, retention, and source reconciliation"
+    },
+    {
+      "name": "split_manifest",
+      "path": "data/manifests/cfpb/splits/cfpb-run-20260722T130728Z-2b7815d4c850-split-1.0.0.json",
+      "sha256": "8685eefd10d764d813dee2891e930323c22592850d537b0571956f390afe554b",
+      "role": "temporal boundaries, duplicate isolation, class support, and untouched test declaration"
+    },
+    {
+      "name": "tfidf_selection",
+      "path": "data/evaluations/cfpb/tfidf-logreg/cfpb-run-20260722T130728Z-2b7815d4c850-tfidf-logreg-selection-1.0.0.json",
+      "sha256": "c2bc40bda7c17168de6a01157fe4a4cdcd555afe5de200d47df50be936c1ae6e",
+      "role": "classical-model selection and validation evidence"
+    },
+    {
+      "name": "baseline_error_analysis",
+      "path": "data/evaluations/cfpb/error-analysis/cfpb-run-20260722T130728Z-2b7815d4c850-baseline-error-analysis-1.0.0.json",
+      "sha256": "4f6718ff9d8f1556c40dfc89f7b2b74e4c4cf5eefaa76a8f0c07cee340827c07",
+      "role": "validation class, confusion, month, length, and rarity diagnostics"
+    },
+    {
+      "name": "transformer_selection",
+      "path": "data/evaluations/cfpb/transformer/cfpb-run-20260722T130728Z-2b7815d4c850-transformer-minilm-selection-1.0.0.json",
+      "sha256": "b55188c31a9d28d0eaa424a1208578a9454368098cc803d3aebb87f8a2bd8cef",
+      "role": "MiniLM training, epoch selection, metrics, runtime, and artifact identity"
+    },
+    {
+      "name": "model_comparison",
+      "path": "data/evaluations/cfpb/model-comparison/cfpb-run-20260722T130728Z-2b7815d4c850-validation-model-comparison-1.0.0.json",
+      "sha256": "9623346c2feb6489b7a8637157142692e6b847bbcc11ea3809ea4b4c5aca04a3",
+      "role": "shared validation comparison and per-class trade-offs"
+    },
+    {
+      "name": "calibration",
+      "path": "data/evaluations/cfpb/calibration/cfpb-run-20260722T130728Z-2b7815d4c850-transformer-temperature-calibration-1.0.0.json",
+      "sha256": "faa1125b99e5dbc9421628102b21e330940700952bbc501bee2cd2bdc46e655e",
+      "role": "September temperature fitting and October calibration assessment"
+    },
+    {
+      "name": "operational_model_selection",
+      "path": "data/evaluations/cfpb/model-selection/cfpb-run-20260722T130728Z-2b7815d4c850-operational-model-selection-1.0.0.json",
+      "sha256": "e4ca24d08a327f2336c006777774142d3b32d120170c50d81ab01dbde54748a7",
+      "role": "quality, calibration, CPU, explainability, complexity, and cost gates"
+    },
+    {
+      "name": "abstention_analysis",
+      "path": "data/evaluations/cfpb/abstention/cfpb-run-20260722T130728Z-2b7815d4c850-abstention-threshold-analysis-1.0.0.json",
+      "sha256": "73092c7fba0c069ba0d1a8b419e5203db3ffc8ed6f245000685b87e20e526716",
+      "role": "fixed-grid threshold gates and accepted manual-review-only fallback"
+    }
+  ],
+  "privacy": {
+    "contains_narratives": false,
+    "contains_complaint_ids": false,
+    "contains_row_values": false,
+    "raw_data_git_tracking_allowed": false,
+    "governance_pack_git_tracking_allowed": true
+  },
+  "limitations": [
+    "frozen_test_remains_untouched",
+    "october_validation_influenced_model_calibration_and_threshold_assessment",
+    "no_candidate_threshold_passed_every_class_aware_gate",
+    "demographic_fairness_was_not_assessed",
+    "reviewer_productivity_and_downstream_harm_were_not_measured",
+    "no_service_deployment_or_monitoring_evidence_exists"
+  ]
+}

@@ -4,41 +4,32 @@ An educational portfolio project exploring how a human-in-the-loop NLP system ca
 
 ## Current status
 
-**Phase 2 is complete; the Phase 3 transition is approved.**
+**Phase 4 governance is complete with a manual-review-only release decision.**
 
-The repository includes privacy-safe CFPB source and taxonomy profilers with
-mocked network and contract tests. On 22 July 2026, the aggregate-only taxonomy
-command successfully measured the current-form transition without requesting,
-logging, or persisting complaint rows or narratives. ADR 0007 accepts the eleven
-August 2023 form labels and a September 2023 through December 2024 window. The
-accepted raw, staging, population, and temporal-split layers have processed the
-locally retained real run. Source narratives remain governed local data; only
-closed aggregate evidence is commit-safe. Any model metric must come from a
-versioned evaluation artifact before it appears here or in the portfolio.
+The accepted local research run now covers bounded acquisition, append-only raw
+and staging layers, an English analytical population, normalized duplicate
+isolation, temporal splits, majority and TF-IDF references, compact MiniLM
+training, model comparison, probability calibration, CPU utility assessment,
+and a fixed abstention-policy analysis.
 
-CT-202 implements an accepted, append-only eligibility report over staged
-rows. It applies the accepted taxonomy/window, identifies English narratives
-offline, records closed exclusion reasons and length metadata, and never copies
-narratives into the analytical schema. Current report evidence is synthetic only.
-ADR 0009 authorizes local retention for the first real extract through 19
-November 2026. CT-108 provides accepted manifest-level retention enforcement;
-CT-109 provides an accepted synthetic-tested monthly writer and cleanup
-workflow. CT-110's first retained real run and aggregate population evidence are
-accepted as pipeline evidence; no model has been trained and no metric is
-approved as a portfolio claim. CT-203's reconciled temporal split and normalized
-duplicate-isolation evidence are accepted as pipeline evidence.
-CT-204's training-only majority reference baseline is accepted as issue
-evidence; no model metric is approved as a portfolio claim.
-ADR 0011 accepts CT-205's fixed train-only TF-IDF representation, four logistic
-candidates, validation-only selection rule, untouched-test boundary, and
-local-only fitted artifact. Real CT-205 training evidence is not yet accepted.
-The accepted validation-only run selected the converged `c1p0-unweighted`
-candidate. Its aggregate issue evidence is accepted; test remains untouched and
-no metric has been approved as a public portfolio claim.
+Calibrated MiniLM is the selected research candidate, but no confidence
+threshold passed every approved global and class-aware gate. The accepted
+system state is therefore `manual_review_only`: automated routing, frozen-test
+access, API/web deployment, and public metric promotion are not authorized.
+This is a governance outcome, not a production-performance claim.
+
+Source narratives and model artifacts remain governed local data. Only closed,
+aggregate, hash-traced evidence is commit-safe. Start with the
+[governance pack](docs/governance_pack.md) for the release decision, model card,
+data sheet, risks, oversight policy, security boundary, and evidence lineage.
 
 ## Intended use
 
-The proposed system is a decision-support demonstration for complaint-routing operations. It will suggest a product category and confidence score, abstain below an approved threshold, and allow a human reviewer to accept, correct, or escalate the suggestion.
+The research goal is a decision-support demonstration for complaint-routing
+operations. A future approved system could show a product suggestion and
+confidence, abstain under an approved policy, and let a human reviewer accept,
+correct, or escalate it. The current model has no approved threshold, so every
+case remains manual and no suggestion interface is authorized.
 
 ## Non-goals
 
@@ -57,6 +48,12 @@ This project will not:
 - [Full project specification](SPEC.md)
 - [Controlled AI-assisted workflow](WORKFLOW.md)
 - [Implementation backlog](BACKLOG.md)
+- [Governance pack and release decision](docs/governance_pack.md)
+- [Model card](docs/model_card.md)
+- [Dataset sheet](docs/data_sheet.md)
+- [Risk register](docs/risk_register.md)
+- [Human oversight policy](docs/human_oversight.md)
+- [Security assessment](docs/security.md)
 - [Phase 0 review and open decisions](docs/phase_0_review.md)
 - [CFPB source inventory](docs/cfpb_source_inventory.md)
 - [CFPB bounded profile contract](docs/cfpb_bounded_profile_plan.md)
@@ -155,11 +152,12 @@ The Lovable React interface will live in a separate `complaint-triage-web` repos
 
 ## Data and privacy
 
-The planned source is the public CFPB Consumer Complaint Database. Raw complaint
+The source is the public CFPB Consumer Complaint Database. Raw complaint
 narratives, generated model artifacts, secrets, and local experiment stores are
-excluded from Git. CT-106 can load only explicit synthetic fixture batches; real
-raw acquisition stays unavailable until CT-109 implements the approved ADR 0009
-streaming and cleanup controls.
+excluded from Git. The retained real run is permitted only on the local machine
+and loopback PostgreSQL volume under ADR 0009, with an absolute deletion deadline
+of 19 November 2026. Aggregate reports and governance evidence contain no
+narratives, complaint IDs, or row-level predictions.
 
 ## License
 

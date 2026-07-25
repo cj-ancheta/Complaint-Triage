@@ -65,6 +65,20 @@ The accepted real CT-206 aggregate report reproduces the accepted validation
 metrics; it does not change the selected model or public claims. Charles
 approved transition into Phase 3 compact-transformer work on 2026-07-23.
 
+CT-301 through CT-306 add the pinned MiniLM tokenizer/dataset path, three-epoch
+fine-tuning, validation comparison, scalar temperature calibration, and a
+predeclared operational-candidate utility decision. Calibrated MiniLM is the
+selected research candidate. CT-401 then evaluates a fixed October-only
+abstention grid under accepted global and class-aware gates. No threshold passes
+every gate, so the accepted system boundary is `manual_review_only` and the
+frozen test remains untouched.
+
+CT-403 consolidates the model card, data sheet, risk register, human-oversight,
+change-management, and security boundaries into a hash-checked governance pack.
+There is still no FastAPI service, frontend integration, monitoring service,
+deployment, or public metric approval. The architecture diagram above remains a
+future path after explicit phase gates; it is not the current release state.
+
 ## Architecture decisions
 
 - [ADR 0001: Separate ML backend and Lovable frontend](decisions/0001-separate-backend-and-frontend.md)

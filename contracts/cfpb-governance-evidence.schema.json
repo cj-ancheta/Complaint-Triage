@@ -1,0 +1,125 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/contracts/cfpb-governance-evidence.schema.json",
+  "title": "CFPB governance evidence pack",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "pack_version",
+    "run_id",
+    "created_on",
+    "review",
+    "release_decision",
+    "documents",
+    "evidence",
+    "privacy",
+    "limitations"
+  ],
+  "properties": {
+    "pack_version": { "const": "governance-evidence-pack-1.0.0" },
+    "run_id": { "const": "cfpb-run-20260722T130728Z-2b7815d4c850" },
+    "created_on": { "const": "2026-07-25" },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "owner", "accepted_on", "scope"],
+      "properties": {
+        "status": { "const": "accepted" },
+        "owner": { "const": "Charles Jr Ancheta" },
+        "accepted_on": { "const": "2026-07-25" },
+        "scope": { "const": "ct403_governance_pack_and_manual_review_only_release_decision" }
+      }
+    },
+    "release_decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "reason",
+        "operational_threshold",
+        "automated_routing_authorized",
+        "frozen_test_access_authorized",
+        "deployment_authorized",
+        "public_metric_promotion_authorized"
+      ],
+      "properties": {
+        "status": { "const": "manual_review_only_research_evidence" },
+        "reason": { "const": "no_candidate_threshold_passed_every_adr_0016_gate" },
+        "operational_threshold": { "type": "null" },
+        "automated_routing_authorized": { "const": false },
+        "frozen_test_access_authorized": { "const": false },
+        "deployment_authorized": { "const": false },
+        "public_metric_promotion_authorized": { "const": false }
+      }
+    },
+    "documents": {
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 8,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/documentPath" }
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 9,
+      "maxItems": 9,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "path", "sha256", "role"],
+        "properties": {
+          "name": {
+            "enum": [
+              "population_report",
+              "split_manifest",
+              "tfidf_selection",
+              "baseline_error_analysis",
+              "transformer_selection",
+              "model_comparison",
+              "calibration",
+              "operational_model_selection",
+              "abstention_analysis"
+            ]
+          },
+          "path": { "$ref": "#/$defs/evidencePath" },
+          "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+          "role": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "privacy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contains_narratives",
+        "contains_complaint_ids",
+        "contains_row_values",
+        "raw_data_git_tracking_allowed",
+        "governance_pack_git_tracking_allowed"
+      ],
+      "properties": {
+        "contains_narratives": { "const": false },
+        "contains_complaint_ids": { "const": false },
+        "contains_row_values": { "const": false },
+        "raw_data_git_tracking_allowed": { "const": false },
+        "governance_pack_git_tracking_allowed": { "const": true }
+      }
+    },
+    "limitations": {
+      "type": "array",
+      "minItems": 5,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    }
+  },
+  "$defs": {
+    "documentPath": {
+      "type": "string",
+      "pattern": "^docs/[a-z0-9_]+\\.md$"
+    },
+    "evidencePath": {
+      "type": "string",
+      "pattern": "^data/(evaluations|manifests)/cfpb/[A-Za-z0-9_./-]+\\.json$"
+    }
+  }
+}

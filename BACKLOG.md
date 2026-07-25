@@ -52,7 +52,7 @@ This backlog converts `SPEC.md` into bounded delivery issues. Status values are 
 |---|---|---|---|
 | CT-401 | Implement and run validation-only abstention threshold analysis | complete | Accepted schema-valid October report reproduces calibration evidence and selects the governed `manual_review_only` fallback with test untouched |
 | CT-402 | Approve one proposed threshold and run the frozen final test once | blocked | No threshold passed every ADR 0016 gate; a new approved policy would be required before test access |
-| CT-403 | Assemble the model card and governance evidence pack | pending | Reviewed limitations, intended-use boundary, evidence lineage, and release decision |
+| CT-403 | Assemble the model card and governance evidence pack | complete | Accepted model card, data sheet, risk, oversight, change, security, evidence-lineage, and manual-only release decision pack |
 
 Later serving and deployment phases remain defined in `SPEC.md` and will be
 expanded only after the Phase 4 evidence gates are accepted.
@@ -63,7 +63,9 @@ CT-401 is complete. Its accepted 41,831-record October validation report
 reproduces the calibrated evidence, finds no eligible global threshold, and
 therefore selects the governed `manual_review_only` fallback. CT-402 is blocked
 under ADR 0016: no proposed threshold exists to approve, and the frozen test
-partition remains untouched. CT-403 may assemble the governance pack around
-this honest non-automation conclusion. Any renewed threshold search requires a
-new reviewed policy before implementation or data access; deployment and public
-metric promotion remain separate explicit gates.
+partition remains untouched. CT-403 is complete with an accepted, hash-checked
+governance pack around this honest non-automation conclusion. Phase 4 is closed
+with CT-402 intentionally blocked. Any renewed threshold search requires a new
+reviewed policy before implementation or data access. No transition to API,
+frontend, monitoring, or deployment work is authorized; public metric promotion
+remains a separate explicit gate.

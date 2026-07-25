@@ -1188,3 +1188,70 @@ and why the test set stays locked when validation produces no eligible policy.
   more parameters, stronger sample-size requirements, and a new policy review?
 - What governance artifacts should CT-403 publish while clearly separating
   validation evidence from any deployment or public-impact claim?
+
+---
+
+## CT-403: model card and governance evidence pack
+
+**Date:** 2026-07-25
+
+**Status:** Accepted by Charles on 2026-07-25.
+
+**What the AI generated**
+
+A consolidated governance index and release decision; a model card; a CFPB data
+sheet; a fourteen-item risk register; human-oversight, change-management, and
+security policies; updated problem, architecture, README, and backlog status; a
+closed machine-readable evidence index; a JSON Schema; and tests that verify all
+required documents, safe paths, accepted release constants, and nine source-
+artifact SHA-256 values.
+
+The pack aligns the project with the specification's AI Verify themes:
+transparency, explainability, reproducibility, safety, security, robustness,
+fairness limitations, data governance, accountability, human agency, and
+societal/environmental considerations. It distinguishes controls that exist in
+the repository from controls that a future service would still require.
+
+**How I verified it**
+
+The evidence index re-hashes the accepted population, split, TF-IDF, error,
+MiniLM, comparison, calibration, operational-selection, and abstention artifacts.
+It fixes the release state to no threshold, no automated routing, no frozen-test
+access, no deployment, and no public metric promotion. Every required document
+and review section exists, every local Markdown link resolves, and the pack
+contains no narratives, complaint IDs, or row-level values.
+
+The focused governance tests passed in both ordinary and transformer
+environments. The full ordinary suite passed 280 tests with seven intentional
+PostgreSQL/Torch environment skips; Ruff formatting and lint and `git diff
+--check` passed.
+
+**What can fail in production**
+
+Documentation can drift away from accepted artifacts; a public page can omit the
+validation-only qualifier; an unimplemented security or monitoring control can
+be described as if it exists; a model version can be paired with the wrong
+calibrator or taxonomy; sensitive text can enter logs or Git; reviewer oversight
+can become a rubber stamp; or a future policy can weaken class protections after
+seeing results. The schema, evidence hashes, release constants, risk register,
+and change checklist reduce those risks but do not replace independent review or
+real operational validation.
+
+**What Charles should be able to explain in an interview**
+
+Why a governance pack is executable evidence rather than generic responsible-AI
+language; how the model card, data sheet, risk register, oversight policy, change
+procedure, and security assessment answer different reviewer questions; why the
+pack labels internal metrics without promoting them publicly; why class-aware
+gates and a manual-only release demonstrate accountable decision-making; how
+hashes make claims traceable; and which controls remain designs because no API,
+frontend, monitoring system, or deployment exists.
+
+**Questions still open**
+
+- Should the next portfolio issue package this manual-only conclusion for a
+  fast recruiter walkthrough without publishing unapproved metrics?
+- Should the separate EY-focused project begin before any Phase 5 API proposal
+  for complaint triage?
+- When should the governed local CFPB data be deleted ahead of the absolute
+  2026-11-19 deadline, and what commit-safe deletion evidence should be kept?
