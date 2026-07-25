@@ -22,7 +22,7 @@ threshold changes, or metric promotion.
 | 8 | QA-108 establish static typing — accepted | QA-TYPE-001 | strict four-module Mypy baseline and target-Python locked CI gate | run 30164122886 passes both profiles | resolved |
 | 9 | QA-109 automate retention checkpoint — accepted | QA-DATA-001 | aggregate-only deadline guard/reminder and deletion runbook | boundary tests and run 30164562588; no raw values or uploads | resolved; deletion remains due by 2026-11-19 |
 | 10 | QA-110 harden artifact trust boundary — accepted | QA-SERIAL-001 | exact trusted-local paths and restricted resume deserialization | malicious paths/globals rejected; run 30164993961 passes | resolved |
-| 11 | QA-111 split orchestration modules | QA-MAINT-001 | smaller handlers/pure functions with unchanged interfaces and reports | characterization tests and full suites pass | non-blocking |
+| 11 | QA-111 split orchestration modules — accepted | QA-MAINT-001 | bounded command, training, and report-building phases with unchanged interfaces | structural ratchets, full suites, and run 30165661423 pass | resolved |
 
 ## QA-101 acceptance notes
 
@@ -119,6 +119,17 @@ by the accepted state; the real epoch-3 local checkpoint remains readable and
 a non-allowlisted payload fails closed. Joblib remains a documented local-only
 exception after path, byte-count, digest, software, pipeline, and named-step
 verification. Run 30164993961 passes all required checks.
+
+## QA-111 acceptance notes
+
+Parser construction is separated by command family and every one of the 20
+public commands maps exactly once. `cli.main` is two lines; transformer fitting
+uses prepare, epoch-run, and publish phases; calibration report construction is
+isolated from I/O. Structural tests ratchet those boundaries while existing CLI
+and aggregate-report tests preserve behavior. Local standard and transformer
+profiles pass 326 and 328 tests at 69.65% and 69.76%; run 30165661423 passes all
+required checks. The refactor changes no command, schema, metric, privacy field,
+selection rule, or evidence-access authorization.
 
 ## Research-paper handoff checklist
 

@@ -233,6 +233,7 @@ def test_qa_108_static_type_scope_is_strict_and_hash_locked() -> None:
         "src/complaint_triage/retention_policy.py",
         "src/complaint_triage/retention_checkpoint.py",
         "src/complaint_triage/artifact_trust.py",
+        "src/complaint_triage/cli_parser.py",
     ]
     assert workflow.count("run: python -m mypy") == 2
     assert "type-tool-py312-linux-x86_64.lock.txt" in workflow
@@ -260,6 +261,7 @@ def test_check_references_resolve_to_unique_findings() -> None:
     assert statuses["QA-TYPE-001"] == "resolved"
     assert statuses["QA-DATA-001"] == "resolved"
     assert statuses["QA-SERIAL-001"] == "resolved"
+    assert statuses["QA-MAINT-001"] == "resolved"
     assert all(
         status == "open"
         for finding_id, status in statuses.items()
@@ -277,6 +279,7 @@ def test_check_references_resolve_to_unique_findings() -> None:
             "QA-TYPE-001",
             "QA-DATA-001",
             "QA-SERIAL-001",
+            "QA-MAINT-001",
         }
     )
     assert {item["finding_id"] for item in findings["findings"]} == {

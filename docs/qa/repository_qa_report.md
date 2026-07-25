@@ -280,6 +280,7 @@ and [setuptools sdist advisory](https://github.com/advisories/GHSA-h35f-9h28-mq5
 
 #### QA-MAINT-001 — Critical orchestration is concentrated in large functions
 
+- Status: resolved and accepted under QA-111
 - Confidence: medium
 - Observed: `cli.py` is 598 lines and its `main` function is approximately 375
   lines. `transformer_fit.py` and `transformer_calibration.py` exceed 1,000
@@ -288,6 +289,12 @@ and [setuptools sdist advisory](https://github.com/advisories/GHSA-h35f-9h28-mq5
   changes are harder than necessary.
 - Remediation: extract command handlers and pure validation/report builders in
   small behavior-preserving changes after higher-priority controls.
+- Resolution evidence: parser construction is split by command family and all
+  20 commands map exactly once; `cli.main` fell from approximately 375 lines to
+  two. `train_transformer` fell from 209 to 50 lines across prepare, epoch-run,
+  and publish phases. `calibrate_transformer` fell from 205 to 135 lines with a
+  no-I/O aggregate report builder. Structural ratchets, existing CLI/report
+  characterizations, both full suites, and run 30165661423 pass.
 
 #### QA-DATA-001 — Retention deletion is governed but operationally manual
 
@@ -371,7 +378,7 @@ means the project correctly refuses to make a claim its protocol cannot support.
 | Validation metrics | Strong | independent 119/119 aggregate replay; class-aware confusion evidence | eligible for an internal draft only after QA-pack acceptance |
 | Dependency safety | Strong | accepted patched constraints; strict target-platform audits and privacy-bounded CycloneDX SBOMs run in required CI; hardened PostgreSQL passes actionable HIGH/CRITICAL scanning | review weekly updates, regenerate locks on target platforms, and clear or renew no Trivy exception without fresh evidence |
 | Reproducibility | Strong | accepted commit/data/artifact identities plus twelve exact-digest locks; clean Windows and Linux standard/transformer replays; isolated hash-enforced CUDA and CPU wheels | dependency changes require target-platform regeneration, audit, and replay |
-| Software quality | Improving | Ruff/format/schema/link checks; coverage/warning gates; multi-schema Alembic check; strict seven-module Mypy gate; restricted artifact path/load controls | expand typing incrementally and complete QA-111 orchestration refactor |
+| Software quality | Strong | Ruff/format/schema/link checks; coverage/warning gates; multi-schema Alembic check; strict eight-module Mypy gate; restricted artifact controls; bounded CLI/training/calibration phases | expand typing and coverage incrementally without lowering ratchets |
 | Frozen-test performance | Bounded—not evaluated | split identity and aggregate test count only; no predictions or metrics | do not report or imply performance; new policy approval is required before access |
 | Operational automation | Bounded—manual only | no validation threshold passed every class-aware gate | present the negative selective-classification result; do not imply routing authorization |
 | Fairness | Bounded—not assessed | fairness limitation and prohibited claim are documented | do not claim demographic fairness; any future study needs approved attributes and governance |
@@ -380,10 +387,9 @@ means the project correctly refuses to make a claim its protocol cannot support.
 ## Recommended disposition
 
 QA-SEC-001 and QA-REPRO-001 are accepted and resolved by QA-101 and QA-102.
-QA-103 through QA-109 now protect the selected-model path, evidence branch,
-software supply chain, coverage/warning baseline, schema drift, incremental
-typing, and retention reminder. QA-110 and QA-111 can now harden the local
-artifact boundary and split concentrated orchestration.
+QA-101 through QA-111 are resolved with local and protected remote evidence.
+The QA pack remains in owner review: acceptance of this engineering snapshot,
+paper drafting, and any future frozen-test access are separate explicit gates.
 
 The audit report should be marked accepted only after the owner confirms the
 finding inventory and remediation order. Paper literature research and drafting

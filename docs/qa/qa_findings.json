@@ -156,7 +156,7 @@
       "title": "No static type-checking gate exists",
       "status": "resolved",
       "evidence": [
-        "Mypy 2.3.0 runs in strict mode over six explicit stable control modules without suppressions",
+        "Mypy 2.3.0 runs in strict mode over eight explicit stable control modules without suppressions",
         "separate hash-locked Python 3.12 and 3.13 type-tool profiles protect the checker itself",
         "both runtime jobs execute the same protected scope",
         "GitHub Actions run 30164122886 passes standard, transformer-cpu, and security"
@@ -172,15 +172,18 @@
       "confidence": "medium",
       "category": "maintainability",
       "title": "Critical orchestration is concentrated in large functions",
-      "status": "open",
+      "status": "resolved",
       "evidence": [
-        "cli.py is 598 lines and main is approximately 375 lines",
-        "transformer_fit.py is 1103 lines and contains a function of approximately 209 lines",
-        "transformer_calibration.py is 1013 lines and contains a function of approximately 205 lines"
+        "cli.py fell from 598 to 351 lines and cli.main fell from approximately 375 lines to two",
+        "all 20 public commands map exactly once through declarative or bounded special handlers",
+        "train_transformer fell from 209 to 50 lines across prepare, epoch-run, and publish phases",
+        "calibrate_transformer fell from 205 to 135 lines and report construction is isolated from I/O",
+        "standard and transformer full suites pass with unchanged public interfaces and report schemas",
+        "GitHub Actions run 30165661423 passes standard, transformer-cpu, and security"
       ],
       "impact": "Review, isolated testing, and safe changes to orchestration and error paths are unnecessarily difficult.",
       "remediation": "After adding characterization tests, extract command handlers and pure validation and report-building functions.",
-      "verification": "Public interfaces and generated reports remain unchanged while complexity and function sizes decrease.",
+      "verification": "Verified: structural ratchets, all 20 command mappings, CLI behavior tests, full aggregate calibration replay, both complete suites, and required remote checks pass.",
       "paper_gate": false
     },
     {

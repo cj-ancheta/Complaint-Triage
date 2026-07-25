@@ -13,6 +13,7 @@ import re
 import time
 import uuid
 from collections.abc import Callable, Mapping, Sequence
+from dataclasses import dataclass
 from datetime import UTC, datetime
 from importlib.metadata import version
 from itertools import islice
@@ -86,6 +87,25 @@ class TransformerFitError(Exception):
         self.details = details
 
 
+@dataclass(frozen=True)
+class FitPreparation:
+    root: Path
+    manifest: Mapping[str, Any]
+    split_sha256: str
+    report_path: Path
+    artifact_directory: Path
+    commit_sha: str
+    trained_at: datetime
+    database_settings: DatabaseSettings
+    torch: Any
+    tokenizer: Any
+    class_weights: tuple[float, ...]
+    configuration: BatchConfiguration
+    probe_result: Mapping[str, Any]
+    probe_attempts: list[dict[str, Any]]
+    optimizer_steps_per_epoch: int
+
+
 def safe_transformer_fit_error(error: TransformerFitError) -> dict[str, Any]:
     return {
         "status": "error",
@@ -127,6 +147,164 @@ def train_transformer(
         _verify_report_artifacts(root, report)
         return report
 
+    prepared = _prepare_fit(
+        root=root,
+        manifest=manifest,
+        split_sha256=split_sha256,
+        report_path=report_path,
+        artifact_directory=artifact_directory,
+        settings=settings,
+        lineage_reader=lineage_reader,
+        clock=clock,
+        progress=progress,
+    )
+    history, selected_epoch, stopped_early, peak_cuda_bytes = _run_training_epochs(
+        prepared, progress
+    )
+    return _publish_fit(
+        prepared,
+        history=history,
+        selected_epoch=selected_epoch,
+        stopped_early=stopped_early,
+        peak_cuda_bytes=peak_cuda_bytes,
+        progress=progress,
+    )
+
+
+def _run_training_epochs(
+    prepared: FitPreparation, progress: ProgressReporter | None
+) -> tuple[list[dict[str, Any]], int | None, bool, int]:
+    torch = prepared.torch
+    total_optimizer_steps = prepared.optimizer_steps_per_epoch * MAXIMUM_EPOCHS
+    model, optimizer, scheduler, scaler, history, start_epoch, monitor_best = _initialize_or_resume(
+        prepared.root,
+        prepared.artifact_directory,
+        prepared.split_sha256,
+        prepared.commit_sha,
+        prepared.configuration,
+        prepared.class_weights,
+        total_optimizer_steps,
+        torch,
+    )
+    weight_tensor = torch.tensor(prepared.class_weights, dtype=torch.float32, device="cuda")
+    loss_function = torch.nn.CrossEntropyLoss(weight=weight_tensor)
+    selected_epoch = int(select_epoch(history)["epoch"]) if history else None
+    non_improving_epochs = 0
+    if history:
+        non_improving_epochs = int(history[-1]["early_stopping"]["non_improving_epochs"])
+    peak_cuda_bytes = int(prepared.probe_result["peak_cuda_bytes"])
+    stopped_early = non_improving_epochs >= EARLY_STOPPING_PATIENCE
+    try:
+        for epoch in range(start_epoch, MAXIMUM_EPOCHS + 1):
+            if non_improving_epochs >= EARLY_STOPPING_PATIENCE:
+                stopped_early = True
+                break
+            training = _train_epoch(
+                model,
+                optimizer,
+                scheduler,
+                scaler,
+                loss_function,
+                prepared.manifest,
+                prepared.database_settings,
+                prepared.tokenizer,
+                prepared.configuration,
+                epoch,
+                torch,
+                progress,
+            )
+            validation = _evaluate_validation(
+                model,
+                loss_function,
+                prepared.manifest,
+                prepared.database_settings,
+                prepared.tokenizer,
+                prepared.configuration,
+                torch,
+            )
+            _reconcile_epoch(
+                training, validation, prepared.manifest, prepared.optimizer_steps_per_epoch
+            )
+            peak_cuda_bytes = max(
+                peak_cuda_bytes,
+                int(training["peak_cuda_bytes"]),
+                int(validation["peak_cuda_bytes"]),
+            )
+            macro_f1 = float(validation["metrics"]["macro_f1"])
+            monitor_best, non_improving_epochs, improved = update_early_stopping(
+                macro_f1, monitor_best, non_improving_epochs
+            )
+            epoch_result = {
+                "epoch": epoch,
+                "training": training,
+                "validation": validation,
+                "early_stopping": {
+                    "minimum_improvement_met": improved,
+                    "monitored_best_macro_f1": monitor_best,
+                    "non_improving_epochs": non_improving_epochs,
+                },
+            }
+            history.append(epoch_result)
+            newly_selected = int(select_epoch(history)["epoch"])
+            if newly_selected != selected_epoch:
+                _save_safetensors_model(
+                    model, prepared.artifact_directory / "best-model.safetensors", torch
+                )
+                selected_epoch = newly_selected
+            _save_latest_checkpoint(
+                prepared.root,
+                prepared.artifact_directory,
+                model,
+                optimizer,
+                scheduler,
+                scaler,
+                epoch,
+                history,
+                monitor_best,
+                prepared.split_sha256,
+                prepared.commit_sha,
+                prepared.configuration,
+                prepared.class_weights,
+                torch,
+            )
+            _emit(
+                progress,
+                {
+                    "event": "transformer_fit_epoch_completed",
+                    "epoch": epoch,
+                    "train_record_count": training["record_count"],
+                    "validation_record_count": validation["record_count"],
+                    "validation_macro_f1": macro_f1,
+                    "validation_worst_class_recall": validation["metrics"]["worst_class_recall"],
+                    "selected_epoch": selected_epoch,
+                    "test_accessed": False,
+                },
+            )
+            if non_improving_epochs >= EARLY_STOPPING_PATIENCE:
+                stopped_early = True
+                break
+    except TransformerDatasetError as error:
+        raise TransformerFitError(error.code, **error.details) from error
+    except torch.OutOfMemoryError as error:
+        raise TransformerFitError("transformer_fit_cuda_out_of_memory") from error
+    finally:
+        del model, optimizer, scheduler, scaler, weight_tensor, loss_function
+        _release_cuda(torch)
+    return history, selected_epoch, stopped_early, peak_cuda_bytes
+
+
+def _prepare_fit(
+    *,
+    root: Path,
+    manifest: Mapping[str, Any],
+    split_sha256: str,
+    report_path: Path,
+    artifact_directory: Path,
+    settings: DatabaseSettings | None,
+    lineage_reader: LineageReader,
+    clock: Clock,
+    progress: ProgressReporter | None,
+) -> FitPreparation:
     commit_sha, clean = lineage_reader(root)
     if not SHA40_PATTERN.fullmatch(commit_sha) or not clean:
         raise TransformerFitError("transformer_fit_requires_clean_commit")
@@ -161,143 +339,59 @@ def train_transformer(
             "test_accessed": False,
         },
     )
-
-    train_count = int(manifest["split_counts"]["train"])
-    optimizer_steps_per_epoch = _optimizer_steps_per_epoch(train_count, configuration)
-    total_optimizer_steps = optimizer_steps_per_epoch * MAXIMUM_EPOCHS
-    model, optimizer, scheduler, scaler, history, start_epoch, monitor_best = _initialize_or_resume(
-        root,
-        artifact_directory,
-        split_sha256,
-        commit_sha,
-        configuration,
-        class_weights,
-        total_optimizer_steps,
-        torch,
+    optimizer_steps_per_epoch = _optimizer_steps_per_epoch(
+        int(manifest["split_counts"]["train"]), configuration
     )
-    weight_tensor = torch.tensor(class_weights, dtype=torch.float32, device="cuda")
-    loss_function = torch.nn.CrossEntropyLoss(weight=weight_tensor)
-    selected_epoch = select_epoch(history)["epoch"] if history else None
-    non_improving_epochs = 0
-    if history:
-        non_improving_epochs = int(history[-1]["early_stopping"]["non_improving_epochs"])
-    peak_cuda_bytes = int(probe_result["peak_cuda_bytes"])
-    stopped_early = non_improving_epochs >= EARLY_STOPPING_PATIENCE
-    try:
-        for epoch in range(start_epoch, MAXIMUM_EPOCHS + 1):
-            if non_improving_epochs >= EARLY_STOPPING_PATIENCE:
-                stopped_early = True
-                break
-            training = _train_epoch(
-                model,
-                optimizer,
-                scheduler,
-                scaler,
-                loss_function,
-                manifest,
-                database_settings,
-                tokenizer,
-                configuration,
-                epoch,
-                torch,
-                progress,
-            )
-            validation = _evaluate_validation(
-                model,
-                loss_function,
-                manifest,
-                database_settings,
-                tokenizer,
-                configuration,
-                torch,
-            )
-            _reconcile_epoch(training, validation, manifest, optimizer_steps_per_epoch)
-            peak_cuda_bytes = max(
-                peak_cuda_bytes,
-                int(training["peak_cuda_bytes"]),
-                int(validation["peak_cuda_bytes"]),
-            )
-            macro_f1 = float(validation["metrics"]["macro_f1"])
-            monitor_best, non_improving_epochs, improved = update_early_stopping(
-                macro_f1, monitor_best, non_improving_epochs
-            )
-            epoch_result = {
-                "epoch": epoch,
-                "training": training,
-                "validation": validation,
-                "early_stopping": {
-                    "minimum_improvement_met": improved,
-                    "monitored_best_macro_f1": monitor_best,
-                    "non_improving_epochs": non_improving_epochs,
-                },
-            }
-            history.append(epoch_result)
-            newly_selected = int(select_epoch(history)["epoch"])
-            if newly_selected != selected_epoch:
-                _save_safetensors_model(model, artifact_directory / "best-model.safetensors", torch)
-                selected_epoch = newly_selected
-            _save_latest_checkpoint(
-                root,
-                artifact_directory,
-                model,
-                optimizer,
-                scheduler,
-                scaler,
-                epoch,
-                history,
-                monitor_best,
-                split_sha256,
-                commit_sha,
-                configuration,
-                class_weights,
-                torch,
-            )
-            _emit(
-                progress,
-                {
-                    "event": "transformer_fit_epoch_completed",
-                    "epoch": epoch,
-                    "train_record_count": training["record_count"],
-                    "validation_record_count": validation["record_count"],
-                    "validation_macro_f1": macro_f1,
-                    "validation_worst_class_recall": validation["metrics"]["worst_class_recall"],
-                    "selected_epoch": selected_epoch,
-                    "test_accessed": False,
-                },
-            )
-            if non_improving_epochs >= EARLY_STOPPING_PATIENCE:
-                stopped_early = True
-                break
-    except TransformerDatasetError as error:
-        raise TransformerFitError(error.code, **error.details) from error
-    except torch.OutOfMemoryError as error:
-        raise TransformerFitError("transformer_fit_cuda_out_of_memory") from error
-    finally:
-        del model, optimizer, scheduler, scaler, weight_tensor, loss_function
-        _release_cuda(torch)
+    return FitPreparation(
+        root=root,
+        manifest=manifest,
+        split_sha256=split_sha256,
+        report_path=report_path,
+        artifact_directory=artifact_directory,
+        commit_sha=commit_sha,
+        trained_at=trained_at,
+        database_settings=database_settings,
+        torch=torch,
+        tokenizer=tokenizer,
+        class_weights=class_weights,
+        configuration=configuration,
+        probe_result=probe_result,
+        probe_attempts=probe_attempts,
+        optimizer_steps_per_epoch=optimizer_steps_per_epoch,
+    )
 
+
+def _publish_fit(
+    prepared: FitPreparation,
+    *,
+    history: list[dict[str, Any]],
+    selected_epoch: int | None,
+    stopped_early: bool,
+    peak_cuda_bytes: int,
+    progress: ProgressReporter | None,
+) -> dict[str, Any]:
     if not history or selected_epoch is None:
         raise TransformerFitError("transformer_fit_no_eligible_epoch")
     selected = select_epoch(history)
-    artifacts = _collect_artifacts(root, artifact_directory)
+    artifacts = _collect_artifacts(prepared.root, prepared.artifact_directory)
     report = _build_report(
-        manifest,
-        split_sha256,
-        commit_sha,
-        trained_at,
-        configuration,
-        probe_attempts,
-        class_weights,
-        optimizer_steps_per_epoch,
+        prepared.manifest,
+        prepared.split_sha256,
+        prepared.commit_sha,
+        prepared.trained_at,
+        prepared.configuration,
+        prepared.probe_attempts,
+        prepared.class_weights,
+        prepared.optimizer_steps_per_epoch,
         history,
         selected,
         stopped_early,
         peak_cuda_bytes,
         artifacts,
-        torch,
+        prepared.torch,
     )
     _validate_report(report)
-    _atomic_json(report_path, report)
+    _atomic_json(prepared.report_path, report)
     _emit(
         progress,
         {

@@ -12,6 +12,7 @@ from complaint_triage.transformer_fit import (
     ARTIFACT_VERSION,
     REPORT_VERSION,
     RETENTION,
+    FitPreparation,
     TransformerFitError,
     _artifact_metadata,
     _build_linear_scheduler,
@@ -21,7 +22,9 @@ from complaint_triage.transformer_fit import (
     _load_restricted_training_state,
     _load_safetensors_model,
     _optimizer_steps_per_epoch,
+    _prepare_fit,
     _prune_superseded_resume_files,
+    _publish_fit,
     _save_safetensors_model,
     _train_epoch,
     _validate_report,
@@ -162,6 +165,102 @@ def test_checkpoint_pruning_keeps_only_current_verified_generation(tmp_path: Pat
     assert current_state.is_file()
     assert not old_model.exists()
     assert not old_state.exists()
+
+
+def test_fit_preparation_is_a_bounded_identity_and_runtime_phase(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    class TokenBundle:
+        tokenizer = object()
+
+    fake_torch = object()
+    attempts = [{"status": "passed"}]
+    progress: list[dict[str, object]] = []
+    monkeypatch.setattr(transformer_fit, "_import_fit_torch", lambda: fake_torch)
+    monkeypatch.setattr(transformer_fit, "_validate_fit_hardware", lambda torch: None)
+    monkeypatch.setattr(transformer_fit, "_set_reproducibility", lambda: None)
+    monkeypatch.setattr(transformer_fit, "load_pinned_tokenizer", lambda root: TokenBundle())
+    monkeypatch.setattr(
+        transformer_fit, "square_root_balanced_weights", lambda counts: tuple(1.0 for _ in LABELS)
+    )
+    monkeypatch.setattr(
+        transformer_fit,
+        "_synthetic_batch_probe",
+        lambda root, configuration, weights, torch: {"peak_cuda_bytes": 123},
+    )
+
+    def select(probe):
+        configuration = BatchConfiguration(16, 2, False)
+        return configuration, probe(configuration), attempts
+
+    monkeypatch.setattr(transformer_fit, "select_batch_configuration", select)
+    manifest = {
+        "split_counts": {"train": 33},
+        "class_counts_by_split": {"train": {label: 3 for label in LABELS}},
+    }
+    prepared = _prepare_fit(
+        root=tmp_path,
+        manifest=manifest,
+        split_sha256="a" * 64,
+        report_path=tmp_path / "report.json",
+        artifact_directory=tmp_path / "artifacts/cfpb/transformer/run",
+        settings=object(),
+        lineage_reader=lambda root: ("b" * 40, True),
+        clock=lambda: datetime(2026, 7, 25, tzinfo=UTC),
+        progress=progress.append,
+    )
+
+    assert prepared.commit_sha == "b" * 40
+    assert prepared.torch is fake_torch
+    assert prepared.optimizer_steps_per_epoch == 2
+    assert prepared.probe_result == {"peak_cuda_bytes": 123}
+    assert progress[0]["event"] == "transformer_fit_started"
+
+
+def test_fit_publishing_is_a_bounded_aggregate_phase(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    configuration = BatchConfiguration(16, 2, False)
+    prepared = FitPreparation(
+        root=tmp_path,
+        manifest={"run_id": "synthetic"},
+        split_sha256="a" * 64,
+        report_path=tmp_path / "report.json",
+        artifact_directory=tmp_path / "artifacts/cfpb/transformer/run",
+        commit_sha="b" * 40,
+        trained_at=datetime(2026, 7, 25, tzinfo=UTC),
+        database_settings=object(),
+        torch=object(),
+        tokenizer=object(),
+        class_weights=tuple(1.0 for _ in LABELS),
+        configuration=configuration,
+        probe_result={"peak_cuda_bytes": 123},
+        probe_attempts=[{"status": "passed"}],
+        optimizer_steps_per_epoch=2,
+    )
+    epoch = _epoch(1)
+    report = {"report_version": REPORT_VERSION, "privacy": {"contains_row_values": False}}
+    written: list[tuple[Path, object]] = []
+    progress: list[dict[str, object]] = []
+    monkeypatch.setattr(transformer_fit, "_collect_artifacts", lambda root, directory: {})
+    monkeypatch.setattr(transformer_fit, "_build_report", lambda *args: report)
+    monkeypatch.setattr(transformer_fit, "_validate_report", lambda value: None)
+    monkeypatch.setattr(
+        transformer_fit, "_atomic_json", lambda path, value: written.append((path, value))
+    )
+
+    actual = _publish_fit(
+        prepared,
+        history=[epoch],
+        selected_epoch=1,
+        stopped_early=False,
+        peak_cuda_bytes=123,
+        progress=progress.append,
+    )
+
+    assert actual is report
+    assert written == [(prepared.report_path, report)]
+    assert progress[0]["event"] == "transformer_fit_completed"
 
 
 def test_resume_state_uses_restricted_loader_and_supports_existing_numpy_rng(
