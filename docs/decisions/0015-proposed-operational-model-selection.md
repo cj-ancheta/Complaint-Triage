@@ -261,3 +261,20 @@ The approval was recorded before the CPU benchmark implementation or real-data
 timing run. Selective accuracy remains covered as an explicitly deferred
 dimension because CT-306 selects the candidate model before Phase 4 declares
 and evaluates an abstention policy.
+
+## Outcome
+
+The governed benchmark ran on 2026-07-25 from clean implementation commit
+`7f713740a88f6cd2c3ff201bb9dd960e597952ea`. Calibrated MiniLM passed all six
+gates. Its warmed CPU p95 latency was `83.9696 ms`, maximum latency was
+`111.1995 ms`, load time was `4.187569 s`, peak process working set was
+`1,003,794,432` bytes, and retained model-plus-calibrator footprint was
+`133,481,428` bytes.
+
+Calibrated MiniLM is therefore selected as the operational candidate for later
+abstention, test, API, and governance work. This outcome does not authorize test
+access, an abstention threshold, deployment, or public metric promotion. The
+accepted aggregate report SHA-256 is
+`e4ca24d08a327f2336c006777774142d3b32d120170c50d81ab01dbde54748a7`.
+Charles accepted the CT-306 evidence and operational-candidate decision on
+2026-07-25.

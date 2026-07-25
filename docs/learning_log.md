@@ -1063,3 +1063,63 @@ privacy.
 - What explainability, deployment-cost, and operational-complexity evidence is
   sufficient before selecting the final model?
 - Abstention-threshold selection remains a later explicitly approved decision.
+
+---
+
+## CT-306: governed operational model selection
+
+**Date:** 2026-07-25
+
+**Status:** Accepted by Charles on 2026-07-25.
+
+**What the AI generated**
+
+An accepted six-gate utility ADR; a deterministic validation-only CPU workload;
+fresh-process TF-IDF and calibrated MiniLM inference workers; Windows peak-memory
+measurement; a closed aggregate report schema; artifact, source-lineage,
+privacy, replay, and fallback controls; a CLI command; and synthetic tests for
+both the MiniLM selection path and the TF-IDF fallback path.
+
+**How I verified it**
+
+The implementation was committed before timing as
+`7f713740a88f6cd2c3ff201bb9dd960e597952ea`. Each model scored the same 512
+October validation narratives individually for three warmed passes. MiniLM's
+p95 latency was 83.9696 ms, maximum latency 111.1995 ms, load time 4.187569 s,
+peak working set 1,003,794,432 bytes, and model-plus-calibrator footprint
+133,481,428 bytes. Every predeclared quality, calibration, CPU, explainability,
+complexity, and cost gate passed. The report contains no narratives,
+fingerprints, predictions, or per-row timings; test access and portfolio
+promotion remain false. The report replay is stable and its SHA-256 is
+`e4ca24d08a327f2336c006777774142d3b32d120170c50d81ab01dbde54748a7`.
+The transformer environment passed 270 tests with six intentional PostgreSQL
+integration skips before the evidence run.
+
+**What can fail in production**
+
+Changed reports or artifact hashes, a dirty implementation, unavailable retained
+data, fingerprint-order or sample-count drift, invalid probability contracts,
+unsupported memory measurement, worker failure, partial writes, and schema drift
+fail closed. The laptop benchmark does not represent concurrency, cloud CPU
+throttling, container cold starts, or provider cost. MiniLM uses about 3.54 times
+the measured peak working set and 74.22 times the p95 latency of TF-IDF despite
+remaining within the approved absolute demo ceilings. Global temperature scaling
+also retains its documented class-specific calibration limitations.
+
+**What Charles should be able to explain in an interview**
+
+Why the utility rule and ceilings were committed before measurement; why a gated
+decision is clearer than an arbitrary weighted score; why absolute latency
+ceilings matter more than the ratio to an exceptionally fast baseline; how fresh
+subprocesses make peak-memory comparison fairer; why material rare-class gains
+can justify operational complexity; and why selecting a candidate still does not
+authorize test access, abstention, deployment, or a public impact claim.
+
+**Questions still open**
+
+- Which validation-only abstention trade-off should govern confidence threshold
+  selection in Phase 4?
+- How should global coverage and selective accuracy be constrained by per-class
+  coverage and recall so rare labels are not silently routed entirely to review?
+- What frozen-test procedure and public-claim review should follow the accepted
+  threshold without reopening model or policy tuning?

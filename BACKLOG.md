@@ -44,7 +44,7 @@ This backlog converts `SPEC.md` into bounded delivery issues. Status values are 
 | CT-303 | Train and track the compact transformer candidate | complete | Accepted epoch-3 validation selection, aggregate report, and hashed local safetensors artifact |
 | CT-304 | Compare baseline and transformer on validation evidence | complete | Accepted aggregate validation comparison advances MiniLM to CT-305; test remains untouched and final selection remains deferred |
 | CT-305 | Calibrate the selected candidate probabilities | complete | Accepted temperature-scaling report and governed calibrator advance calibrated MiniLM probabilities to CT-306; test remains untouched |
-| CT-306 | Record the baseline-versus-transformer decision | in progress | Accepted utility ADR covering quality, calibration, latency, memory, explainability, complexity, and cost |
+| CT-306 | Record the baseline-versus-transformer decision | complete | Accepted six-gate report selects calibrated MiniLM within the approved CPU, memory, artifact, explainability, complexity, and cost boundaries |
 
 Later serving, deployment, and governance phases remain defined in `SPEC.md` and
 will be expanded only after the Phase 3 evidence is accepted.
@@ -81,7 +81,8 @@ aggregate report advances MiniLM to CT-305 calibration but does not select a
 final operational model or access test. CT-305 is complete: its accepted
 temperature-scaling report passes every fixed eligibility gate and advances
 calibrated MiniLM probabilities to CT-306, without selecting a threshold, final
-model, or accessing test. CT-306 is in progress: ADR 0015 accepts its six-gate
-utility rule, deterministic validation-only CPU benchmark, TF-IDF fallback, and
-continued test prohibition. The implementation requires review and a clean
-commit before the real benchmark can select the operational candidate.
+model, or accessing test. CT-306 is complete: its accepted deterministic
+validation-only CPU benchmark passes every predeclared gate and selects
+calibrated MiniLM as the operational candidate. Test remains untouched; the
+Phase 4 abstention policy, threshold analysis, final test boundary, governance
+pack, deployment, and public metric promotion remain separate gates.

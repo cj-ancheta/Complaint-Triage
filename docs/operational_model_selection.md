@@ -71,6 +71,32 @@ artifacts, workload, environment identity, or prediction contracts fail closed.
 
 ## Current evidence status
 
-The utility rule is accepted and the implementation is awaiting its clean-commit
-real run. No CT-306 timing, memory result, or operational candidate is accepted
-until that report is reviewed.
+The governed run completed from clean implementation commit
+`7f713740a88f6cd2c3ff201bb9dd960e597952ea` on 2026-07-25. Both candidates
+scored the same deterministic 512-row workload for 1,536 warmed predictions.
+Every utility gate passed, so calibrated MiniLM is the accepted operational
+candidate for Phase 4.
+
+| CPU measurement | TF-IDF | Calibrated MiniLM | MiniLM ceiling |
+|---|---:|---:|---:|
+| load time | 1.611204 s | 4.187569 s | 30 s |
+| p50 warmed latency | 0.5814 ms | 48.2386 ms | diagnostic |
+| p95 warmed latency | 1.1314 ms | 83.9696 ms | 750 ms |
+| maximum warmed latency | 2.3176 ms | 111.1995 ms | 1,500 ms |
+| peak process working set | 283,615,232 bytes | 1,003,794,432 bytes | 2 GiB |
+| retained serving artifacts | 19,625,755 bytes | 133,481,428 bytes | 256 MiB |
+
+MiniLM is substantially slower and larger than TF-IDF, but it remains well
+inside every predeclared ceiling for the intended single-reviewer CPU demo. Its
+material macro-F1 and worst-class-recall gains, accepted calibration, and usable
+CPU measurements therefore justify the added dependency and maintenance surface
+under ADR 0015.
+
+The accepted report SHA-256 is
+`e4ca24d08a327f2336c006777774142d3b32d120170c50d81ab01dbde54748a7`.
+Charles accepted the report and calibrated MiniLM decision on 2026-07-25.
+
+This remains validation-only evidence from one Windows laptop. It does not
+represent concurrency, container cold starts, cloud throttling, or provider
+cost. Test remains untouched; an abstention threshold, deployment, and public
+metric promotion remain unapproved.

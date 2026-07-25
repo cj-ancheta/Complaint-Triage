@@ -1,0 +1,270 @@
+{
+  "assessment": {
+    "complexity_and_cost": {
+      "distributed_orchestration_required": false,
+      "external_model_request_required": false,
+      "gate_passed": true,
+      "gpu_required": false,
+      "paid_inference_required": false,
+      "provider_price_assessed": false,
+      "transformer_has_larger_dependency_and_maintenance_surface": true
+    },
+    "explainability": {
+      "baseline": "inspectable_sparse_coefficients_with_noncausal_wording",
+      "class_specific_calibration_limitation_carried_forward": true,
+      "gate_passed": true,
+      "local_transformer_reason_codes": "not_authorized",
+      "transformer": "global_per_class_and_example_based_evidence_only"
+    },
+    "selective_accuracy_after_abstention": {
+      "operational_threshold_selected": false,
+      "reason": "ct306_selects_the_candidate_before_threshold_analysis",
+      "status": "deferred_to_phase_4_under_separate_approved_policy"
+    }
+  },
+  "benchmarks": {
+    "baseline": {
+      "artifact_bytes": 19625755,
+      "candidate": "baseline",
+      "environment": {
+        "architecture": "AMD64",
+        "cpu": "Intel(R) Core(TM) Ultra 7 255HX",
+        "gpu_used": false,
+        "logical_processors": 20,
+        "network_model_loading_enabled": false,
+        "operating_system": "Windows",
+        "operating_system_release": "11",
+        "python": "3.12.10",
+        "pytorch_interop_threads": null,
+        "pytorch_intraop_threads": null,
+        "software": {
+          "joblib": "1.5.3",
+          "numpy": "2.5.1",
+          "python": "3.12.10",
+          "scikit-learn": "1.9.0",
+          "scipy": "1.18.0"
+        },
+        "total_physical_memory_bytes": 33752997888
+      },
+      "latency": {
+        "maximum": 2.3176,
+        "mean": 0.640933,
+        "measurement_count": 1536,
+        "p50": 0.5814,
+        "p95": 1.1314,
+        "quantile_method": "nearest_rank",
+        "unit": "milliseconds"
+      },
+      "load_seconds": 1.611204,
+      "peak_working_set_bytes": 283615232,
+      "workload": {
+        "character_length": {
+          "maximum": 7280,
+          "mean": 1230.5625,
+          "minimum": 49,
+          "p50": 978,
+          "p95": 3367,
+          "unit": "unicode_code_points"
+        },
+        "measured_passes": 3,
+        "measured_prediction_count": 1536,
+        "sample_count": 512,
+        "warmup_count": 16
+      }
+    },
+    "relative_ratios": {
+      "transformer_to_baseline_artifact_bytes": 6.80134,
+      "transformer_to_baseline_load_time": 2.599031,
+      "transformer_to_baseline_p50_latency": 82.969728,
+      "transformer_to_baseline_p95_latency": 74.21743,
+      "transformer_to_baseline_peak_working_set": 3.539283
+    },
+    "transformer": {
+      "artifact_bytes": 133481428,
+      "candidate": "transformer",
+      "environment": {
+        "architecture": "AMD64",
+        "cpu": "Intel(R) Core(TM) Ultra 7 255HX",
+        "gpu_used": false,
+        "logical_processors": 20,
+        "network_model_loading_enabled": false,
+        "operating_system": "Windows",
+        "operating_system_release": "11",
+        "python": "3.12.10",
+        "pytorch_interop_threads": 1,
+        "pytorch_intraop_threads": 4,
+        "software": {
+          "numpy": "2.5.1",
+          "python": "3.12.10",
+          "safetensors": "0.8.0",
+          "tokenizers": "0.22.2",
+          "torch": "2.13.0+cu130",
+          "transformers": "5.14.1"
+        },
+        "total_physical_memory_bytes": 33752997888
+      },
+      "latency": {
+        "maximum": 111.1995,
+        "mean": 49.933609,
+        "measurement_count": 1536,
+        "p50": 48.2386,
+        "p95": 83.9696,
+        "quantile_method": "nearest_rank",
+        "unit": "milliseconds"
+      },
+      "load_seconds": 4.187569,
+      "peak_working_set_bytes": 1003794432,
+      "workload": {
+        "character_length": {
+          "maximum": 7280,
+          "mean": 1230.5625,
+          "minimum": 49,
+          "p50": 978,
+          "p95": 3367,
+          "unit": "unicode_code_points"
+        },
+        "measured_passes": 3,
+        "measured_prediction_count": 1536,
+        "sample_count": 512,
+        "warmup_count": 16
+      }
+    }
+  },
+  "calibration": {
+    "class_specific_calibration_limitation": true,
+    "eligibility_checks": {
+      "argmax_unchanged": true,
+      "evaluation_brier_guard_passed": true,
+      "evaluation_nll_improved": true,
+      "optimizer_converged_away_from_bounds": true,
+      "partition_counts_reconcile": true,
+      "probabilities_valid": true,
+      "top_2_membership_unchanged": true
+    },
+    "gate_passed": true,
+    "method": "scalar_temperature_scaling",
+    "temperature": 1.041049944456901
+  },
+  "claims": {
+    "deployment_authorized": false,
+    "final_test_access_authorized": false,
+    "operational_candidate_selected": true,
+    "operational_threshold_selected": false,
+    "portfolio_promotion_approved": false,
+    "production_performance_claimed": false
+  },
+  "created_at_utc": "2026-07-25T10:11:15.358741Z",
+  "data": {
+    "benchmark_end_exclusive": "2024-11-01",
+    "benchmark_start_inclusive": "2024-10-01",
+    "evaluation_split": "validation",
+    "feature_input": "consumer_complaint_narrative_only",
+    "labels": [
+      "Checking or savings account",
+      "Credit card",
+      "Credit reporting or other personal consumer reports",
+      "Debt collection",
+      "Debt or credit management",
+      "Money transfer, virtual currency, or money service",
+      "Mortgage",
+      "Payday loan, title loan, personal loan, or advance loan",
+      "Prepaid card",
+      "Student loan",
+      "Vehicle loan or lease"
+    ],
+    "measured_passes": 3,
+    "measured_predictions_per_candidate": 1536,
+    "sample_count": 512,
+    "selection_method": "lowest_normalized_narrative_fingerprint",
+    "test_accessed": false,
+    "warmup_count": 16
+  },
+  "decision": {
+    "all_gates_passed": true,
+    "failed_gates": [],
+    "fallback_applied": false,
+    "gate_results": {
+      "complexity_and_cost_boundary": true,
+      "cpu_service_usability": true,
+      "evidence_and_lineage": true,
+      "explainability_boundary": true,
+      "material_validation_quality": true,
+      "probability_calibration": true
+    },
+    "next_gate": "phase_4_abstention_and_governance_evaluation",
+    "selected_operational_candidate": "calibrated_minilm"
+  },
+  "privacy": {
+    "contains_complaint_ids": false,
+    "contains_fingerprints": false,
+    "contains_narratives": false,
+    "contains_per_row_timings": false,
+    "contains_predictions": false,
+    "git_tracking_allowed": true
+  },
+  "quality": {
+    "checks": {
+      "accuracy_not_lower": true,
+      "at_most_one_class_f1_loss": true,
+      "macro_f1_delta_at_least_0p020": true,
+      "weighted_f1_not_lower": true,
+      "worst_class_recall_delta_at_least_0p050": true
+    },
+    "class_f1_wins": {
+      "baseline": 1,
+      "tie": 0,
+      "transformer": 10
+    },
+    "gate_passed": true,
+    "metrics": {
+      "accuracy": {
+        "baseline": 0.883692,
+        "delta_transformer_minus_baseline": 0.002160923745555099,
+        "transformer": 0.8858529237455551
+      },
+      "macro_f1": {
+        "baseline": 0.699661,
+        "delta_transformer_minus_baseline": 0.036085105687456376,
+        "transformer": 0.7357461056874564
+      },
+      "weighted_f1": {
+        "baseline": 0.879291,
+        "delta_transformer_minus_baseline": 0.0074011404292962935,
+        "transformer": 0.8866921404292963
+      },
+      "worst_class_recall": {
+        "baseline": 0.057269,
+        "delta_transformer_minus_baseline": 0.14977945814977972,
+        "transformer": 0.20704845814977973
+      }
+    }
+  },
+  "report_version": "operational-model-selection-1.0.0",
+  "run_id": "cfpb-run-20260722T130728Z-2b7815d4c850",
+  "source": {
+    "baseline_report_sha256": "c2bc40bda7c17168de6a01157fe4a4cdcd555afe5de200d47df50be936c1ae6e",
+    "calibration_report_sha256": "faa1125b99e5dbc9421628102b21e330940700952bbc501bee2cd2bdc46e655e",
+    "comparison_report_sha256": "9623346c2feb6489b7a8637157142692e6b847bbcc11ea3809ea4b4c5aca04a3",
+    "selection_implementation_commit_sha": "7f713740a88f6cd2c3ff201bb9dd960e597952ea",
+    "split_manifest_sha256": "8685eefd10d764d813dee2891e930323c22592850d537b0571956f390afe554b",
+    "transformer_report_sha256": "b55188c31a9d28d0eaa424a1208578a9454368098cc803d3aebb87f8a2bd8cef"
+  },
+  "utility_rule": {
+    "adr": "docs/decisions/0015-proposed-operational-model-selection.md",
+    "cpu_ceilings": {
+      "artifact_bytes": 268435456,
+      "load_seconds": 30.0,
+      "maximum_latency_ms": 1500.0,
+      "p95_latency_ms": 750.0,
+      "peak_working_set_bytes": 2147483648
+    },
+    "method": "all_gates_required_with_tfidf_fallback",
+    "quality_floors": {
+      "accuracy_may_decrease": false,
+      "macro_f1_delta": 0.02,
+      "maximum_classes_with_lower_f1": 1,
+      "weighted_f1_may_decrease": false,
+      "worst_class_recall_delta": 0.05
+    }
+  }
+}
