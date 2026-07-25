@@ -21,7 +21,7 @@ threshold changes, or metric promotion.
 | 7 | QA-107 restore schema drift checks — accepted | QA-DB-001 | authoritative eight-table metadata and multi-schema Alembic gate | run 30163564539 passes empty upgrades and `alembic check` twice | resolved |
 | 8 | QA-108 establish static typing — accepted | QA-TYPE-001 | strict four-module Mypy baseline and target-Python locked CI gate | run 30164122886 passes both profiles | resolved |
 | 9 | QA-109 automate retention checkpoint — accepted | QA-DATA-001 | aggregate-only deadline guard/reminder and deletion runbook | boundary tests and run 30164562588; no raw values or uploads | resolved; deletion remains due by 2026-11-19 |
-| 10 | QA-110 harden artifact trust boundary | QA-SERIAL-001 | documented trusted-local boundary and safer resume serialization decision | malicious/untrusted path tests remain rejected | non-blocking |
+| 10 | QA-110 harden artifact trust boundary — accepted | QA-SERIAL-001 | exact trusted-local paths and restricted resume deserialization | malicious paths/globals rejected; run 30164993961 passes | resolved |
 | 11 | QA-111 split orchestration modules | QA-MAINT-001 | smaller handlers/pure functions with unchanged interfaces and reports | characterization tests and full suites pass | non-blocking |
 
 ## QA-101 acceptance notes
@@ -109,6 +109,16 @@ local cleanup. It neither discovers nor reads the governed files, connects to
 PostgreSQL, nor uploads evidence. Run 30164562588 passes all three required
 checks. Resolution closes the missing operational reminder; it does not claim
 the future deletion has already occurred.
+
+## QA-110 acceptance notes
+
+All stateful/executable loads now share an exact-prefix, canonical relative-path
+resolver that rejects traversal and symbolic links. Transformer resume uses
+`weights_only=True` with only the narrow NumPy RNG compatibility types required
+by the accepted state; the real epoch-3 local checkpoint remains readable and
+a non-allowlisted payload fails closed. Joblib remains a documented local-only
+exception after path, byte-count, digest, software, pipeline, and named-step
+verification. Run 30164993961 passes all required checks.
 
 ## Research-paper handoff checklist
 

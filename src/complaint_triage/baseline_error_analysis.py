@@ -23,6 +23,7 @@ from jsonschema import Draft202012Validator, FormatChecker
 from sklearn.pipeline import Pipeline
 
 from complaint_triage.analytical_population import POPULATION_VERSION
+from complaint_triage.artifact_trust import TrustedArtifactPathError, resolve_trusted_artifact
 from complaint_triage.db import DatabaseSettings
 from complaint_triage.live_extraction import read_git_lineage
 from complaint_triage.real_extraction import PROJECT_ROOT
@@ -233,10 +234,12 @@ def load_verified_pipeline(
     """Verify identity, size, hash, and software before deserialization."""
 
     metadata = model_report["artifact"]
-    path = (root / metadata["relative_path"]).resolve()
-    artifact_root = (root / "artifacts").resolve()
-    if artifact_root not in path.parents:
-        raise BaselineErrorAnalysisError("unsafe_error_analysis_artifact_path")
+    try:
+        path = resolve_trusted_artifact(
+            root, metadata["relative_path"], "artifacts/cfpb/tfidf-logreg"
+        )
+    except (KeyError, TrustedArtifactPathError) as error:
+        raise BaselineErrorAnalysisError("unsafe_error_analysis_artifact_path") from error
     if not path.is_file() or path.stat().st_size != metadata["byte_count"]:
         raise BaselineErrorAnalysisError("error_analysis_artifact_missing_or_changed")
     if _file_sha256(path) != metadata["sha256"]:

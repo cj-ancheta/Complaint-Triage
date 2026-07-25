@@ -197,6 +197,20 @@
       "finding_ids": ["QA-SERIAL-001", "QA-DATA-001"]
     },
     {
+      "check_id": "CHECK-ARTIFACTS-002",
+      "category": "data_artifacts",
+      "result": "pass",
+      "summary": "QA-110 enforces the trusted-local artifact and restricted-deserialization boundary.",
+      "details": [
+        "one shared resolver rejects traversal, absolute paths, prefix lookalikes, backslash aliases, and symbolic links",
+        "transformer resume uses weights_only=true with only accepted NumPy RNG compatibility globals",
+        "the governed epoch-3 resume remains readable and a non-allowlisted class fails closed",
+        "joblib remains confined to the exact ignored baseline directory after size, hash, software, and estimator checks",
+        "GitHub Actions run 30164993961 passes standard, transformer-cpu, and security"
+      ],
+      "finding_ids": ["QA-SERIAL-001"]
+    },
+    {
       "check_id": "CHECK-MLEVIDENCE-001",
       "category": "ml_evidence",
       "result": "pass",

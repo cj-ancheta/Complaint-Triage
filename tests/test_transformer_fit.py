@@ -18,6 +18,7 @@ from complaint_triage.transformer_fit import (
     _build_optimizer,
     _build_report,
     _evaluate_validation,
+    _load_restricted_training_state,
     _load_safetensors_model,
     _optimizer_steps_per_epoch,
     _prune_superseded_resume_files,
@@ -30,6 +31,10 @@ from complaint_triage.transformer_fit import (
     update_early_stopping,
 )
 from complaint_triage.transformer_training import BatchConfiguration
+
+
+class UntrustedPayload:
+    pass
 
 
 def _metrics(
@@ -157,6 +162,33 @@ def test_checkpoint_pruning_keeps_only_current_verified_generation(tmp_path: Pat
     assert current_state.is_file()
     assert not old_model.exists()
     assert not old_state.exists()
+
+
+def test_resume_state_uses_restricted_loader_and_supports_existing_numpy_rng(
+    tmp_path: Path,
+) -> None:
+    torch = pytest.importorskip("torch")
+    state_path = tmp_path / "state.pt"
+    state = {
+        "tensor": torch.tensor([1, 2, 3]),
+        "numpy_rng": transformer_fit._capture_rng_state(torch)["numpy"],
+    }
+    torch.save(state, state_path)
+
+    loaded = _load_restricted_training_state(state_path, torch)
+
+    assert loaded["tensor"].tolist() == [1, 2, 3]
+    assert loaded["numpy_rng"][1].dtype.name == "uint32"
+
+
+def test_resume_state_rejects_non_allowlisted_pickle_global(tmp_path: Path) -> None:
+    torch = pytest.importorskip("torch")
+
+    state_path = tmp_path / "untrusted.pt"
+    torch.save({"payload": UntrustedPayload()}, state_path)
+
+    with pytest.raises(TransformerFitError, match="transformer_fit_resume_state_unreadable"):
+        _load_restricted_training_state(state_path, torch)
 
 
 @pytest.mark.gpu

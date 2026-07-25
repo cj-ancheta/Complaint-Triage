@@ -312,6 +312,7 @@ and [setuptools sdist advisory](https://github.com/advisories/GHSA-h35f-9h28-mq5
 
 #### QA-SERIAL-001 — Trusted-local artifacts use executable serialization
 
+- Status: resolved and accepted under QA-110
 - Confidence: medium
 - Observed: the baseline uses `joblib.load`; transformer resume state uses
   `torch.load(..., weights_only=False)`. Paths, byte counts, and hashes are
@@ -321,6 +322,13 @@ and [setuptools sdist advisory](https://github.com/advisories/GHSA-h35f-9h28-mq5
 - Remediation: document the trusted-local-only boundary, never accept uploaded
   artifacts, prefer non-executable formats where practical, and consider
   `weights_only=True`/a split state format for resume data.
+- Resolution evidence: every stateful/executable load now uses an exact-prefix
+  canonical resolver that rejects traversal and links. Transformer resume uses
+  `weights_only=True` with a narrow compatibility list for the accepted NumPy
+  RNG representation; the governed epoch-3 state loads and a non-allowlisted
+  class fails closed. Joblib remains a documented ignored-local exception only
+  after size, hash, software, type, and named-step checks. Run 30164993961
+  passes all required jobs.
 
 #### QA-WARN-001 — Test runs emit dependency deprecation warnings
 
@@ -363,7 +371,7 @@ means the project correctly refuses to make a claim its protocol cannot support.
 | Validation metrics | Strong | independent 119/119 aggregate replay; class-aware confusion evidence | eligible for an internal draft only after QA-pack acceptance |
 | Dependency safety | Strong | accepted patched constraints; strict target-platform audits and privacy-bounded CycloneDX SBOMs run in required CI; hardened PostgreSQL passes actionable HIGH/CRITICAL scanning | review weekly updates, regenerate locks on target platforms, and clear or renew no Trivy exception without fresh evidence |
 | Reproducibility | Strong | accepted commit/data/artifact identities plus twelve exact-digest locks; clean Windows and Linux standard/transformer replays; isolated hash-enforced CUDA and CPU wheels | dependency changes require target-platform regeneration, audit, and replay |
-| Software quality | Improving | Ruff/format/schema/link checks; coverage/warning gates; multi-schema Alembic check; strict six-module Mypy gate | expand typing incrementally and complete QA-111 orchestration refactor |
+| Software quality | Improving | Ruff/format/schema/link checks; coverage/warning gates; multi-schema Alembic check; strict seven-module Mypy gate; restricted artifact path/load controls | expand typing incrementally and complete QA-111 orchestration refactor |
 | Frozen-test performance | Bounded—not evaluated | split identity and aggregate test count only; no predictions or metrics | do not report or imply performance; new policy approval is required before access |
 | Operational automation | Bounded—manual only | no validation threshold passed every class-aware gate | present the negative selective-classification result; do not imply routing authorization |
 | Fairness | Bounded—not assessed | fairness limitation and prohibited claim are documented | do not claim demographic fairness; any future study needs approved attributes and governance |
