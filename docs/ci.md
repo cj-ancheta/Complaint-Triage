@@ -99,3 +99,8 @@ triggered by NumPy 2.5 during the governed local artifact round trip. The
 scikit-learn LogisticRegression penalty warning was removed by expressing L2
 regularization through `l1_ratio=0.0`. Dependency review should remove the
 joblib exception once the locked stack no longer emits it.
+
+GitHub Actions run
+[`30163081497`](https://github.com/cj-ancheta/Complaint-Triage/actions/runs/30163081497)
+passes both independent floors plus `security` on commit
+`8250f5ce12b6198f979272edae6bb5ab508d9716`.

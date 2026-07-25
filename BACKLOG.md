@@ -68,7 +68,7 @@ expanded only after the Phase 4 evidence gates are accepted.
 | QA-103 | Add bounded transformer CI coverage | complete | Accepted GitHub Actions run 30161131645 passes required `standard` and `transformer-cpu` jobs after matching local replays |
 | QA-104 | Protect the main evidence branch | complete | GitHub API verifies strict required `standard`/`transformer-cpu` checks, PR delivery, admin enforcement, linear history, and no force-push/deletion |
 | QA-105 | Add security and supply-chain gates | complete | Run 30162536790 passes redacted secret, strict dependency, SBOM, and container gates; `security` is required on protected `main` |
-| QA-106 | Ratchet critical-path coverage and warnings | pending | Focused tests pass an explicit non-decreasing coverage and warning policy |
+| QA-106 | Ratchet critical-path coverage and warnings | complete | Run 30163081497 passes independent 69% floors, focused subprocess failures, and zero-unexpected-warning policy |
 | QA-107 | Restore Alembic schema-drift detection | pending | `alembic check` and disposable upgrades pass in CI |
 | QA-108 | Establish incremental static type checking | pending | Configured type checker passes its protected scope |
 | QA-109 | Automate the local retention deadline checkpoint | pending | Safe reminder/preflight and deletion evidence flow is tested before 2026-11-19 |
@@ -83,7 +83,9 @@ QA-105 resolves QA-SEC-002 and QA-GOV-001 through required redacted secret,
 dependency, SBOM, and container gates plus explicit security, ownership,
 licensing, and dependency-update metadata. Five medium and two low findings
 remain open. The frozen-test and manual-review-only boundaries remain unchanged.
-QA-106, ratcheting critical-path coverage and warnings, is next.
+QA-106 resolves the coverage and warning findings with independent remote
+floors and focused model-selection failure tests. Four medium and one low
+finding remain open. QA-107, restoring Alembic schema-drift detection, is next.
 
 CT-401 is complete. Its accepted 41,831-record October validation report
 reproduces the calibrated evidence, finds no eligible global threshold, and

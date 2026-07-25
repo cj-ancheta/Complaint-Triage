@@ -208,6 +208,12 @@ and [setuptools sdist advisory](https://github.com/advisories/GHSA-h35f-9h28-mq5
   failed check.
 - Remediation: add focused unit/subprocess/artifact-failure tests and introduce
   a ratcheting coverage floor that cannot decrease.
+- Resolution evidence: QA-106 adds focused CPU-offline subprocess success,
+  timeout, non-zero exit, and malformed-output tests, raising
+  `model_selection.py` from 49% to 53%. Standard and Linux CPU-transformer CI
+  independently fail below 69%; local results are 69.36% and 70.74% for the
+  standard and CUDA-transformer profiles, while remote CPU-transformer is
+  69.02%. GitHub Actions run 30163081497 passes both floors.
 
 #### QA-DB-001 — Alembic cannot detect model-to-migration drift
 
@@ -310,6 +316,10 @@ and [setuptools sdist advisory](https://github.com/advisories/GHSA-h35f-9h28-mq5
   eventual compatibility break.
 - Remediation: identify the originating call path, upgrade or patch the bounded
   dependency combination, and add a warning budget after resolution.
+- Resolution evidence: QA-106 treats every unexpected warning as an error,
+  removes the scikit-learn penalty deprecation at source, and narrowly
+  acknowledges only the exact upstream joblib/NumPy 2.5 warning. Local full
+  profiles and run 30163081497 pass without unexpected warnings.
 
 #### QA-GOV-001 — Standard public-repository security metadata is incomplete
 
@@ -339,7 +349,7 @@ means the project correctly refuses to make a claim its protocol cannot support.
 | Validation metrics | Strong | independent 119/119 aggregate replay; class-aware confusion evidence | eligible for an internal draft only after QA-pack acceptance |
 | Dependency safety | Strong | accepted patched constraints; strict target-platform audits and privacy-bounded CycloneDX SBOMs run in required CI; hardened PostgreSQL passes actionable HIGH/CRITICAL scanning | review weekly updates, regenerate locks on target platforms, and clear or renew no Trivy exception without fresh evidence |
 | Reproducibility | Strong | accepted commit/data/artifact identities plus ten exact-digest locks; clean Windows and Linux standard/transformer replays; isolated hash-enforced CUDA and CPU wheels | dependency changes require target-platform regeneration, audit, and replay |
-| Software quality | Improving | Ruff/format/schema/link checks; Windows suites; separate hash-locked Linux jobs; remote run 30161131645; protected PR delivery requiring both checks | QA-106 coverage ratchet, QA-107 schema drift, and QA-108 typing remain open |
+| Software quality | Improving | Ruff/format/schema/link checks; independent 69% coverage floors; focused subprocess failure paths; zero-unexpected-warning policy; run 30163081497 | QA-107 schema drift, QA-108 typing, and QA-111 orchestration refactor remain open |
 | Frozen-test performance | Bounded—not evaluated | split identity and aggregate test count only; no predictions or metrics | do not report or imply performance; new policy approval is required before access |
 | Operational automation | Bounded—manual only | no validation threshold passed every class-aware gate | present the negative selective-classification result; do not imply routing authorization |
 | Fairness | Bounded—not assessed | fairness limitation and prohibited claim are documented | do not claim demographic fairness; any future study needs approved attributes and governance |
@@ -348,10 +358,10 @@ means the project correctly refuses to make a claim its protocol cannot support.
 ## Recommended disposition
 
 QA-SEC-001 and QA-REPRO-001 are accepted and resolved by QA-101 and QA-102.
-QA-103 through QA-105 now protect the selected-model path, evidence branch, and
-software supply chain. Add the QA-106 coverage/warning ratchet next, then restore
-Alembic drift detection under QA-107. Lower-priority refactoring should wait
-until those behaviors are protected.
+QA-103 through QA-106 now protect the selected-model path, evidence branch,
+software supply chain, and coverage/warning baseline. Restore Alembic drift
+detection under QA-107 next. Lower-priority refactoring should wait until those
+behaviors are protected.
 
 The audit report should be marked accepted only after the owner confirms the
 finding inventory and remediation order. Paper literature research and drafting

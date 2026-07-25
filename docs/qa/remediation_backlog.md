@@ -17,7 +17,7 @@ threshold changes, or metric promotion.
 | 3 | QA-103 add transformer CI — accepted | QA-CI-001 | independent hash-locked Linux standard/CPU-transformer jobs; offline synthetic CPU evidence; GPU acceptance explicitly excluded | local replays and GitHub Actions run 30161131645 pass both jobs | resolved |
 | 4 | QA-104 protect evidence workflow — accepted | QA-GIT-001 | protected `main` with strict required CI, PR delivery, admin enforcement, linear history, and no force-push/deletion | GitHub branch API reports every accepted control | resolved |
 | 5 | QA-105 add security supply-chain gates — accepted | QA-SEC-002, QA-GOV-001 | redacted secret scan, strict dependency audit/update automation, privacy-bounded SBOM, container scan, Action SHA pins, security/ownership/reuse policy | run 30162536790 passes all three jobs; protected `main` requires them | resolved |
-| 6 | QA-106 ratchet coverage | QA-TEST-001, QA-WARN-001 | focused orchestration/error tests, warning cleanup, non-decreasing coverage floor | both jobs meet explicit floor without unexpected warnings | recommended |
+| 6 | QA-106 ratchet coverage — accepted | QA-TEST-001, QA-WARN-001 | focused subprocess error tests, unexpected-warning errors, independent 69% floors | run 30163081497 passes both profiles and security | resolved |
 | 7 | QA-107 restore schema drift checks | QA-DB-001 | authoritative SQLAlchemy metadata and passing Alembic drift gate | `alembic check` plus disposable upgrade tests pass | recommended |
 | 8 | QA-108 establish static typing | QA-TYPE-001 | scoped checker baseline and CI gate | configured checker passes protected scope | non-blocking |
 | 9 | QA-109 automate retention checkpoint | QA-DATA-001 | local-only deadline guard/reminder and deletion runbook | safe time-bound tests; no raw values or uploads | blocking by 2026-11-19 |
@@ -91,6 +91,14 @@ percentage:
 Set the first branch floor at or below the newly demonstrated value, then allow
 only increases. Keep standard and transformer coverage reports separate so one
 cannot hide the other's gaps.
+
+QA-106 sets independent 69% floors after demonstrating 69.36% locally for the
+standard profile and 69.02% remotely for the Linux CPU-transformer profile. The
+local CUDA-transformer suite reaches 70.74%; its GPU path remains explicitly
+outside ordinary CI. Focused tests raise `model_selection.py` from 49% to 53%
+and cover offline execution, timeout, non-zero exit, and malformed output.
+Unexpected warnings fail; the exact upstream joblib/NumPy warning is the sole
+reviewed exception. Run 30163081497 passes all three jobs.
 
 ## Research-paper handoff checklist
 

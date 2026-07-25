@@ -225,6 +225,8 @@ def test_check_references_resolve_to_unique_findings() -> None:
     assert statuses["QA-REPRO-001"] == "resolved"
     assert statuses["QA-SEC-002"] == "resolved"
     assert statuses["QA-GOV-001"] == "resolved"
+    assert statuses["QA-TEST-001"] == "resolved"
+    assert statuses["QA-WARN-001"] == "resolved"
     assert all(
         status == "open"
         for finding_id, status in statuses.items()
@@ -236,6 +238,8 @@ def test_check_references_resolve_to_unique_findings() -> None:
             "QA-REPRO-001",
             "QA-GIT-001",
             "QA-GOV-001",
+            "QA-TEST-001",
+            "QA-WARN-001",
         }
     )
     assert {item["finding_id"] for item in findings["findings"]} == {

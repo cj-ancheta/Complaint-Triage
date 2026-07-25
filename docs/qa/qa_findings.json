@@ -79,15 +79,16 @@
       "confidence": "high",
       "category": "testing",
       "title": "Coverage gaps are measured but not enforced",
-      "status": "open",
+      "status": "resolved",
       "evidence": [
-        "full transformer branch coverage is 71 percent",
-        "model_selection.py is 49 percent, transformer_fit.py 41 percent, transformer_training.py 35 percent, and abstention_analysis.py 63 percent",
-        "CI defines no coverage fail-under threshold"
+        "the standard and Linux CPU-transformer jobs independently fail below 69 percent combined statement and branch coverage",
+        "focused offline, timeout, non-zero exit, and malformed-output tests raise model_selection.py coverage from 49 to 53 percent",
+        "local standard coverage is 69.36 percent, local CUDA-transformer coverage is 70.74 percent, and remote Linux CPU-transformer coverage is 69.02 percent",
+        "GitHub Actions run 30163081497 passes both independent floors"
       ],
       "impact": "Critical orchestration and error branches can lose coverage without failing CI.",
       "remediation": "Add focused failure-path tests and a non-decreasing branch-coverage ratchet for both environments.",
-      "verification": "Both CI jobs meet explicit coverage floors and protected modules increase from the audited baseline.",
+      "verification": "Verified in local profile reports and GitHub Actions run 30163081497.",
       "paper_gate": false
     },
     {
@@ -220,14 +221,16 @@
       "confidence": "high",
       "category": "warnings",
       "title": "Test runs emit dependency deprecation warnings",
-      "status": "open",
+      "status": "resolved",
       "evidence": [
-        "the standard full suite emitted five joblib and NumPy deprecation warnings",
-        "the transformer full suite emitted the same five warnings"
+        "pytest treats every unexpected warning as an error in both profiles",
+        "the scikit-learn penalty deprecation was removed by using the supported l1_ratio equals zero L2 expression",
+        "the sole exact joblib NumPy 2.5 shape-assignment warning class is acknowledged pending an upstream-compatible locked release",
+        "local full suites and GitHub Actions run 30163081497 pass with zero unexpected warnings"
       ],
       "impact": "Warning noise can hide future actionable warnings and foreshadow dependency incompatibility.",
       "remediation": "Identify and resolve the originating dependency path, then establish a warning budget.",
-      "verification": "Both full suites run without unexpected warnings.",
+      "verification": "Both full suites and all required remote jobs run without unexpected warnings.",
       "paper_gate": false
     },
     {
