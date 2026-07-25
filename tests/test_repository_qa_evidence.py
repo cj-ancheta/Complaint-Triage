@@ -175,6 +175,7 @@ def test_qa_103_ci_requires_offline_hash_locked_cpu_transformer_evidence() -> No
 
 def test_qa_104_branch_protection_record_preserves_required_controls() -> None:
     policy = (PROJECT_ROOT / "docs/branch_protection.md").read_text(encoding="utf-8")
+    normalized_policy = " ".join(policy.split())
 
     for required in (
         "`standard` and `transformer-cpu`",
@@ -186,7 +187,7 @@ def test_qa_104_branch_protection_record_preserves_required_controls() -> None:
         "deletion disabled",
         "Zero mandatory approvals is deliberate for this single-owner portfolio",
     ):
-        assert required in policy
+        assert required in normalized_policy
 
 
 def test_check_references_resolve_to_unique_findings() -> None:
