@@ -156,7 +156,7 @@
       "title": "No static type-checking gate exists",
       "status": "resolved",
       "evidence": [
-        "Mypy 2.3.0 runs in strict mode over four explicit stable control modules without suppressions",
+        "Mypy 2.3.0 runs in strict mode over six explicit stable control modules without suppressions",
         "separate hash-locked Python 3.12 and 3.13 type-tool profiles protect the checker itself",
         "both runtime jobs execute the same protected scope",
         "GitHub Actions run 30164122886 passes standard, transformer-cpu, and security"
@@ -189,15 +189,17 @@
       "confidence": "high",
       "category": "data_governance",
       "title": "Retention deletion is governed but operationally manual",
-      "status": "open",
+      "status": "resolved",
       "evidence": [
         "ADR 0009 requires local deletion by 2026-11-19 end of day Asia/Singapore",
         "the tested cleanup command and deletion evidence format exist",
-        "no scheduled reminder or automated deadline preflight is tracked"
+        "an aggregate-only weekly checkpoint reports scheduled, due-soon, and overdue states without reading local data",
+        "boundary tests cover 30 days, the exact deadline, and the first overdue second",
+        "GitHub Actions run 30164562588 passes standard, transformer-cpu, and security"
       ],
       "impact": "Maintainer omission could retain sensitive source narratives beyond the approved local period.",
       "remediation": "Add a local-only deadline guard and runbook checkpoint without uploading or backing up the data.",
-      "verification": "Time-bound tests prove reminders and expiry rejection, and cleanup emits aggregate-only deletion evidence.",
+      "verification": "Verified: time-bound tests prove escalation and the scheduled checkpoint fails from 30 days before expiry without reading or uploading local data.",
       "paper_gate": false
     },
     {

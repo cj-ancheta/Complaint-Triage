@@ -1,6 +1,6 @@
 # Local retention deadline checkpoint
 
-Status: QA-109 implementation complete; remote acceptance pending
+Status: QA-109 accepted; GitHub Actions run 30164562588 passed
 
 ADR 0009 requires deletion of covered local CFPB narratives and the PostgreSQL
 volume by the end of 2026-11-19 Asia/Singapore (`2026-11-19T15:59:59Z`). The
@@ -43,3 +43,8 @@ verify the deletion manifest, confirm the ignored raw directories contain no
 covered artifacts, and record owner acceptance without reopening the frozen
 test or model-selection workflow.
 
+GitHub Actions run
+[`30164562588`](https://github.com/cj-ancheta/Complaint-Triage/actions/runs/30164562588)
+passed the standard, CPU-transformer, and security gates on the implementation
+commit. The deadline remains an operational obligation until aggregate local
+deletion evidence is recorded.
