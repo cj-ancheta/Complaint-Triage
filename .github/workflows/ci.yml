@@ -135,15 +135,18 @@ jobs:
         run: |
           python -m pip install --require-hashes -r requirements/locks/bootstrap.lock.txt
           python -m pip install --require-hashes -r requirements/locks/transformer-py312-linux-x86_64.lock.txt
-          python -m pip install --require-hashes --no-deps -r requirements/locks/torch-cpu-py312-linux-x86_64.lock.txt
           python -m pip install --require-hashes -r requirements/locks/audit-tool-py312-linux-x86_64.lock.txt
           python -m pip check
 
-      - name: Audit dependencies and validate SBOM
+      - name: Strictly audit PyPI dependencies
+        run: python -m pip_audit --local --strict
+
+      - name: Install locked CPU wheel and validate SBOM
         run: |
-          python -m pip_audit --local --strict
+          python -m pip install --require-hashes --no-deps -r requirements/locks/torch-cpu-py312-linux-x86_64.lock.txt
+          python -m pip check
           python -m pip_audit --local --format cyclonedx-json --output sbom-transformer.cdx.json
-          python -c "import json,pathlib; f=pathlib.Path('sbom-transformer.cdx.json'); raw=f.read_text(); p=json.loads(raw); assert p['bomFormat']=='CycloneDX' and p['components']; assert '/home/runner' not in raw and 'POSTGRES_PASSWORD' not in raw"
+          python -c "import json,pathlib; f=pathlib.Path('sbom-transformer.cdx.json'); raw=f.read_text(); p=json.loads(raw); names={c.get('name') for c in p['components']}; assert p['bomFormat']=='CycloneDX' and 'torch' in names; assert '/home/runner' not in raw and 'POSTGRES_PASSWORD' not in raw"
 
       - name: Install reviewed project source
         run: |

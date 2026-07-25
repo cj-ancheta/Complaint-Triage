@@ -27,10 +27,13 @@ target-Python, Linux x86-64, hash-enforced tool lock. `pip-audit --local
 distribution. The editable project is reviewed Git source rather than a
 package-index artifact, so it is installed only after this third-party audit.
 
-Each job audits the hash-locked third-party environment before installing the
-reviewed editable project; this makes strict mode fail on every skipped or
-unresolved distribution instead of treating the intentional editable source as
-an audit error. The project source is protected by Git review, Ruff, and tests.
+Each job audits the hash-locked PyPI environment before installing the reviewed
+editable project; this makes strict mode fail on every skipped or unresolved
+PyPI distribution instead of treating the intentional editable source as an
+audit error. The non-PyPI CPU Torch wheel is installed afterward from its
+isolated hash lock: OSV cannot resolve its `+cpu` identity, so it is included in
+the SBOM but remains the explicit advisory-database boundary recorded by ADR
+0017. The project source is protected by Git review, Ruff, and tests.
 
 Each job also generates a CycloneDX JSON SBOM from that third-party environment.
 The workflow validates that the document contains dependency components and
