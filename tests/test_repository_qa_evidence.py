@@ -95,7 +95,7 @@ def test_qa_102_lock_artifacts_preserve_reviewed_digests_and_source_boundaries()
 
     assert {path.name for path in lock_directory.glob("*.lock.txt")} == set(LOCK_DIGESTS)
     for filename, expected_digest in LOCK_DIGESTS.items():
-        content = (lock_directory / filename).read_bytes()
+        content = (lock_directory / filename).read_bytes().replace(b"\r\n", b"\n")
         assert hashlib.sha256(content).hexdigest() == expected_digest
         contents[filename] = content.decode("utf-8")
         assert "--hash=sha256:" in contents[filename]
@@ -198,6 +198,18 @@ def test_qa_104_branch_protection_record_preserves_required_controls() -> None:
         assert required in normalized_policy
 
 
+def test_qa_106_coverage_and_warning_ratchets_are_explicit() -> None:
+    workflow = (PROJECT_ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
+    configuration = tomllib.loads((PROJECT_ROOT / "pyproject.toml").read_text(encoding="utf-8"))
+
+    assert workflow.count("--cov-fail-under=69") == 2
+    warning_policy = configuration["tool"]["pytest"]["ini_options"]["filterwarnings"]
+    assert warning_policy[0] == "error"
+    assert len(warning_policy) == 2
+    assert "joblib\\.numpy_pickle" in warning_policy[1]
+    assert "NumPy 2\\.5" in warning_policy[1]
+
+
 def test_check_references_resolve_to_unique_findings() -> None:
     evidence = _load_json(EVIDENCE_PATH)
     findings = _load_json(FINDINGS_PATH)
@@ -213,6 +225,8 @@ def test_check_references_resolve_to_unique_findings() -> None:
     assert statuses["QA-REPRO-001"] == "resolved"
     assert statuses["QA-SEC-002"] == "resolved"
     assert statuses["QA-GOV-001"] == "resolved"
+    assert statuses["QA-TEST-001"] == "resolved"
+    assert statuses["QA-WARN-001"] == "resolved"
     assert all(
         status == "open"
         for finding_id, status in statuses.items()
@@ -224,6 +238,8 @@ def test_check_references_resolve_to_unique_findings() -> None:
             "QA-REPRO-001",
             "QA-GIT-001",
             "QA-GOV-001",
+            "QA-TEST-001",
+            "QA-WARN-001",
         }
     )
     assert {item["finding_id"] for item in findings["findings"]} == {

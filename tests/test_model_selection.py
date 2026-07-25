@@ -1,5 +1,6 @@
 import json
 import os
+import subprocess
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -11,6 +12,7 @@ from complaint_triage.model_selection import (
     ModelSelectionError,
     _windows_process_memory,
     _windows_total_physical_memory,
+    run_subprocess_benchmarks,
     safe_model_selection_error,
     select_operational_model,
     summarize_latencies,
@@ -216,6 +218,63 @@ def test_latency_summary_uses_nearest_rank() -> None:
     assert result["p50"] == 768.0
     assert result["p95"] == 1460.0
     assert result["maximum"] == 1536.0
+
+
+def test_subprocess_benchmarks_are_offline_cpu_only(monkeypatch, tmp_path: Path) -> None:
+    calls = []
+
+    def run(command, **kwargs):
+        calls.append((command, kwargs))
+        candidate = command[command.index("--ct306-worker") + 1]
+        return subprocess.CompletedProcess(command, 0, stdout=json.dumps({"candidate": candidate}))
+
+    monkeypatch.setattr("complaint_triage.model_selection.subprocess.run", run)
+
+    result = run_subprocess_benchmarks(repository_root=tmp_path, run_id="run-123")
+
+    assert result == {
+        "baseline": {"candidate": "baseline"},
+        "transformer": {"candidate": "transformer"},
+    }
+    assert len(calls) == 2
+    for command, kwargs in calls:
+        assert command[0] == os.sys.executable
+        assert kwargs["cwd"] == tmp_path
+        assert kwargs["timeout"] == 1_800
+        assert kwargs["check"] is False
+        assert kwargs["env"]["CUDA_VISIBLE_DEVICES"] == "-1"
+        assert kwargs["env"]["HF_HUB_OFFLINE"] == "1"
+        assert kwargs["env"]["TRANSFORMERS_OFFLINE"] == "1"
+
+
+@pytest.mark.parametrize(
+    ("outcome", "expected_code"),
+    [
+        (
+            subprocess.TimeoutExpired(cmd="worker", timeout=1_800),
+            "model_selection_worker_execution_failed",
+        ),
+        (subprocess.CompletedProcess([], 7, stdout=""), "model_selection_worker_failed"),
+        (
+            subprocess.CompletedProcess([], 0, stdout="not-json"),
+            "model_selection_worker_output_invalid",
+        ),
+    ],
+)
+def test_subprocess_benchmark_failures_are_safe(
+    monkeypatch, tmp_path: Path, outcome, expected_code: str
+) -> None:
+    def run(*args, **kwargs):
+        if isinstance(outcome, BaseException):
+            raise outcome
+        return outcome
+
+    monkeypatch.setattr("complaint_triage.model_selection.subprocess.run", run)
+
+    with pytest.raises(ModelSelectionError, match=expected_code) as error:
+        run_subprocess_benchmarks(repository_root=tmp_path, run_id="run-123")
+
+    assert error.value.details == {"candidate": "baseline"}
 
 
 @pytest.mark.skipif(os.name != "nt", reason="CT-306 reference implementation is Windows-only")

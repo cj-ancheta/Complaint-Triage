@@ -283,6 +283,22 @@
       "finding_ids": ["QA-SEC-002", "QA-GOV-001"]
     },
     {
+      "check_id": "CHECK-COVERAGE-001",
+      "category": "tests",
+      "result": "pass",
+      "summary": "QA-106 enforces independent non-decreasing coverage and unexpected-warning gates.",
+      "details": [
+        "standard reaches 69.36 percent combined statement and branch coverage with 305 tests passed and two bounded skips",
+        "the local CUDA-transformer profile reaches 70.74 percent with 306 tests passed and one bounded CPU-CI skip",
+        "the Linux CPU-transformer profile reaches 69.02 percent because it excludes the explicit GPU acceptance path; both CI profiles independently fail below 69 percent",
+        "focused model-selection subprocess tests cover offline environment enforcement, success, timeout, non-zero exit, malformed JSON, and privacy-safe candidate detail",
+        "model_selection.py rises from the audited 49 percent to 53 percent coverage",
+        "pytest fails every unexpected warning; the scikit-learn warning is fixed and only the exact upstream joblib NumPy 2.5 warning is acknowledged",
+        "GitHub Actions run 30163081497 passes standard, transformer-cpu, and security on commit 8250f5ce12b6198f979272edae6bb5ab508d9716"
+      ],
+      "finding_ids": ["QA-TEST-001", "QA-WARN-001"]
+    },
+    {
       "check_id": "CHECK-GOVERNANCE-001",
       "category": "governance_docs",
       "result": "pass",

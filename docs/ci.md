@@ -82,3 +82,25 @@ GitHub Actions run
 passed `standard`, `transformer-cpu`, and `security` on commit
 `41daa8b16861b5dad9ef71ff0dd78fe7c6dac2cc`. Protected `main` now requires all
 three exact contexts in strict mode.
+
+## QA-106 coverage and warning ratchet
+
+The standard and transformer jobs each fail below 69% combined statement/branch
+coverage, but enforce the floor independently against separate reports. The
+initial floor sits below the demonstrated 69.36% Windows standard and 69.02%
+Linux CPU-transformer results so platform variation does not create a false
+gate, while any material regression fails. The local CUDA-capable transformer
+suite reaches 70.74%; its GPU-only path is intentionally absent from ordinary
+CPU CI. Raising one profile's floor does not lower the other.
+
+Pytest treats every unexpected warning as an error. The only acknowledged
+exception is the exact joblib `numpy_pickle` shape-assignment deprecation
+triggered by NumPy 2.5 during the governed local artifact round trip. The
+scikit-learn LogisticRegression penalty warning was removed by expressing L2
+regularization through `l1_ratio=0.0`. Dependency review should remove the
+joblib exception once the locked stack no longer emits it.
+
+GitHub Actions run
+[`30163081497`](https://github.com/cj-ancheta/Complaint-Triage/actions/runs/30163081497)
+passes both independent floors plus `security` on commit
+`8250f5ce12b6198f979272edae6bb5ab508d9716`.

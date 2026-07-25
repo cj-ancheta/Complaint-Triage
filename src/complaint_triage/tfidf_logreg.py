@@ -283,7 +283,7 @@ def build_estimator(spec: CandidateSpec) -> LogisticRegression:
         C=spec.c,
         class_weight=spec.class_weight,
         solver="saga",
-        penalty="l2",
+        l1_ratio=0.0,
         random_state=RANDOM_SEED,
         max_iter=MAX_ITER,
         tol=TOLERANCE,

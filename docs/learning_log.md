@@ -1535,3 +1535,46 @@ locks are separate; why strict audit rejects an editable distribution; why the
 CPU Torch SBOM component needs an explicit advisory boundary; why a base-image
 digest still needs OS upgrades; and why required security checks turn a useful
 scanner into a merge control.
+
+---
+
+## QA-106: ratchet coverage and unexpected warnings
+
+**Date:** 2026-07-25
+
+**Status:** Accepted; GitHub Actions run 30163081497 passed.
+
+**What the AI generated**
+
+The standard and CPU-transformer jobs now enforce separate 69% combined
+statement/branch coverage floors. Focused model-selection tests prove offline
+CPU environment settings and fail-closed behavior for timeouts, non-zero exits,
+and malformed subprocess output, lifting that module from 49% to 53%. Pytest
+turns every unexpected warning into an error. The scikit-learn deprecation was
+fixed using the supported L2 expression; one exact upstream joblib/NumPy 2.5
+warning remains a narrow, reviewable exception. Linux lock digests are also
+line-ending-stable across Windows and CI.
+
+**How to verify it**
+
+Run both workflow pytest commands with their `--cov-fail-under=69` flags. The
+local standard profile passed 305 tests with two bounded skips at 69.36%; the
+local CUDA-transformer profile passed 306 tests with one bounded skip at 70.74%.
+Remote Linux CPU-transformer coverage is 69.02% because GPU acceptance is
+deliberately deselected. Run 30163081497 passes `standard`, `transformer-cpu`,
+and `security` on commit `8250f5ce12b6198f979272edae6bb5ab508d9716`.
+
+**What can fail in production or CI**
+
+A project-wide percentage can still hide weak modules, so future work must add
+focused tests and ratchet upward rather than treating 69% as a target. The
+joblib exception can become stale or overly broad if its exact message/module
+changes. GPU-only behavior remains an explicit local acceptance boundary.
+
+**What Charles should be able to explain in an interview**
+
+Why separate profiles need separate coverage reports; why the first floor sits
+just below demonstrated platform evidence; why subprocess timeout and malformed
+output tests matter more than cosmetic lines; why warning-as-error prevents new
+noise; and why a narrowly scoped upstream warning exception is technical debt,
+not a silent pass.

@@ -68,7 +68,9 @@ def test_audit_tool_locks_and_security_policy_are_closed() -> None:
         ),
     }
     for filename, digest in expected.items():
-        content = (PROJECT_ROOT / "requirements/locks" / filename).read_bytes()
+        content = (
+            (PROJECT_ROOT / "requirements/locks" / filename).read_bytes().replace(b"\r\n", b"\n")
+        )
         assert hashlib.sha256(content).hexdigest() == digest
         assert b"pip-audit==2.10.1" in content
         assert b"--hash=sha256:" in content
