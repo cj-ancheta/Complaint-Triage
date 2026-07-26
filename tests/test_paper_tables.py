@@ -1,5 +1,7 @@
 from pathlib import Path
+from xml.etree import ElementTree
 
+from complaint_triage.paper_figures import render_figures
 from complaint_triage.paper_tables import (
     MANIFEST_PATH,
     MANUSCRIPT_PATH,
@@ -95,3 +97,41 @@ def test_remaining_planned_tables_are_generated_from_aggregate_sources() -> None
     assert "| Medium | 7 |" in qa
     assert "| Low | 3 |" in qa
     assert "| security | 2 | resolved |" in qa
+
+
+def test_all_planned_figures_are_safe_deterministic_svg() -> None:
+    figures = render_figures()
+    assert set(figures) == {
+        "f1-governed-pipeline.svg",
+        "f2-class-support.svg",
+        "f3-per-class-f1-delta.svg",
+        "f4-october-reliability.svg",
+        "f5-risk-coverage.svg",
+        "f6-qa-timeline.svg",
+    }
+    for filename, content in figures.items():
+        assert content == render_figures()[filename]
+        assert "<script" not in content.lower()
+        assert "complaint_id" not in content.lower()
+        assert "consumer complaint narrative" not in content.lower()
+        assert ElementTree.fromstring(content).tag.endswith("svg")
+        assert (TABLES_PATH.parent / filename).read_text(encoding="utf-8") == content
+
+    for filename in (
+        "f2-class-support.svg",
+        "f3-per-class-f1-delta.svg",
+        "f4-october-reliability.svg",
+        "f5-risk-coverage.svg",
+    ):
+        assert "validation-only" in figures[filename].lower()
+
+
+def test_figure_evidence_preserves_rare_class_and_negative_policy_result() -> None:
+    figures = render_figures()
+    assert "Debt/credit management" in figures["f2-class-support.svg"]
+    assert "1,173" in figures["f2-class-support.svg"]
+    assert "227" in figures["f2-class-support.svg"]
+    assert "Mortgage" in figures["f3-per-class-f1-delta.svg"]
+    assert "-0.0028" in figures["f3-per-class-f1-delta.svg"]
+    assert "no threshold passed" in figures["f5-risk-coverage.svg"].lower()
+    assert "13 findings resolved" in figures["f6-qa-timeline.svg"]

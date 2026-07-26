@@ -3,7 +3,13 @@
   "manifest_version": "1.0.0",
   "outputs": [
     "paper/generated/result_tables.md",
-    "paper/manuscript.md"
+    "paper/manuscript.md",
+    "paper/generated/f1-governed-pipeline.svg",
+    "paper/generated/f2-class-support.svg",
+    "paper/generated/f3-per-class-f1-delta.svg",
+    "paper/generated/f4-october-reliability.svg",
+    "paper/generated/f5-risk-coverage.svg",
+    "paper/generated/f6-qa-timeline.svg"
   ],
   "privacy": {
     "contains_complaint_ids": false,

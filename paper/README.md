@@ -44,6 +44,8 @@ part of the empirical method.
 - [`generated/result_tables.md`](generated/result_tables.md) and its source
   manifest are deterministic aggregate-only outputs. Regenerate them with
   `python paper/scripts/generate.py`.
+- [`publication_readiness.md`](publication_readiness.md) records completed
+  checks and the remaining owner/public-release boundary.
 
 ## Drafting workflow
 

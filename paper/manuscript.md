@@ -247,6 +247,8 @@ source, not hidden as generic cleaning loss.
 
 The canonical cohort is divided chronologically:
 
+![Governed aggregate evidence pipeline with sealed test boundary](generated/f1-governed-pipeline.svg)
+
 | Partition | Inclusive start | Exclusive end | Records | Authorized use |
 |---|---|---|---:|---|
 | Train | 2023-09-01 | 2024-09-01 | 394,564 | Model fitting |
@@ -266,6 +268,8 @@ support ranges from 227 to 54,012. The rarest validation class therefore has
 approximately 238 times fewer records than the majority class. This imbalance
 motivates class-equal and worst-class measures and makes a class-complete
 abstention policy materially harder than aggregate risk reduction.
+
+![Validation-only log-scale class support](generated/f2-class-support.svg)
 
 Raw narratives and row-level derivatives remain local, are excluded from Git,
 CI, cloud storage, and the public web application, and have a governed deletion
@@ -385,6 +389,8 @@ differences answer RQ1 more meaningfully than the accuracy difference alone.
 | Worst-class recall | 0.000000 | 0.057269 | 0.207048 | +0.149779 |
 <!-- GENERATED:model-comparison:end -->
 
+![Validation-only per-class MiniLM minus TF-IDF F1](generated/f3-per-class-f1-delta.svg)
+
 MiniLM has higher observed per-class F1 for ten of eleven classes. TF-IDF
 retains a small F1 lead for Mortgage: 0.8763 compared with 0.8736. The comparison
 is therefore not a claim that one architecture dominates every class.
@@ -422,6 +428,8 @@ and October predicted labels and accuracies are unchanged.
 | Equal-mass ECE, 15 bins | 0.023598 | 0.017946 | -0.005652 |
 <!-- GENERATED:calibration:end -->
 
+![Validation-only October reliability before and after temperature scaling](generated/f4-october-reliability.svg)
+
 Every declared aggregate October probability diagnostic improves in its intended
 direction, answering the first part of RQ2. The conclusion remains deliberately
 qualified. September selected the temperature and therefore gives in-sample fit
@@ -455,6 +463,8 @@ classes. The transition is visible in two diagnostic thresholds:
 | 0.75 | 0.856279 | 0.143721 | 0.936402 | 0.054457 | false suggestions exceed 0.05; least-suggested class has 4 cases |
 | 0.80 | 0.825440 | 0.174560 | 0.945032 | 0.045373 | least-suggested class has 0 cases; predicted-class precision gate fails |
 <!-- GENERATED:abstention:end -->
+
+![Validation-only risk-coverage curve with all thresholds ineligible](generated/f5-risk-coverage.svg)
 
 At 0.75, selective accuracy passes but the false-suggestion rate does not, and a
 predicted class has too little evidence. At 0.80, the global accuracy and false-
@@ -492,6 +502,8 @@ content hashes, locked environments, independent CPU execution, database and
 privacy controls, a resolved finding register, and an explicit owner acceptance
 record. These controls establish what was checked and reproducible; they do not
 prove the absence of all defects, bias, or future regressions.
+
+![Repository QA remediation and acceptance timeline](generated/f6-qa-timeline.svg)
 
 ## 6. Discussion
 

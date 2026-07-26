@@ -13,6 +13,7 @@ PAPER_FILES = {
 }
 LITERATURE_FILES = {"claim_source_matrix.md", "references.md"}
 DRAFT_FILES = {"manuscript.md"}
+READINESS_FILES = {"publication_readiness.md"}
 
 
 def _read(filename: str) -> str:
@@ -20,15 +21,15 @@ def _read(filename: str) -> str:
 
 
 def test_paper_planning_package_is_complete_and_links_resolve() -> None:
-    assert PAPER_FILES | LITERATURE_FILES | DRAFT_FILES <= {
+    assert PAPER_FILES | LITERATURE_FILES | DRAFT_FILES | READINESS_FILES <= {
         path.name for path in PAPER_ROOT.glob("*.md")
     }
 
     readme = _read("README.md")
     local_links = re.findall(r"\[[^]]+\]\(([^)]+\.md)\)", readme)
-    assert set(local_links) == ((PAPER_FILES | LITERATURE_FILES | DRAFT_FILES) - {"README.md"}) | {
-        "generated/result_tables.md"
-    }
+    assert set(local_links) == (
+        (PAPER_FILES | LITERATURE_FILES | DRAFT_FILES | READINESS_FILES) - {"README.md"}
+    ) | {"generated/result_tables.md"}
     assert all((PAPER_ROOT / link).is_file() for link in local_links)
 
 
@@ -58,7 +59,8 @@ def test_claim_rules_preserve_validation_privacy_and_human_oversight_boundaries(
     outline = _read("outline.md").lower()
     inventory = _read("evidence_inventory.md").lower()
     paper_text = "\n".join(
-        _read(filename) for filename in PAPER_FILES | LITERATURE_FILES | DRAFT_FILES
+        _read(filename)
+        for filename in PAPER_FILES | LITERATURE_FILES | DRAFT_FILES | READINESS_FILES
     ).lower()
 
     for required_phrase in (
@@ -159,3 +161,26 @@ def test_manuscript_is_complete_cited_and_evidence_bounded() -> None:
     assert "frozen_test_access_authorized = true" not in lowered
     assert "deployment_authorized = true" not in lowered
     assert "demographically fair" not in lowered
+
+
+def test_publication_readiness_preserves_release_authority_boundary() -> None:
+    readiness = _read("publication_readiness.md")
+    evidence = (PROJECT_ROOT / "docs" / "qa" / "qa_evidence.json").read_text(encoding="utf-8")
+
+    assert "internal_draft_complete_external_publication_not_authorized" in readiness
+    assert "public_metric_promotion_authorized: false" in readiness
+    assert "| Editorial owner review" in readiness and "| pending |" in readiness
+    assert "| Public metric promotion" in readiness and "| blocked |" in readiness
+    assert '"public_metric_promotion_authorized": false' in evidence
+    assert '"frozen_test_access_authorized": false' in evidence
+    assert '"deployment_authorized": false' in evidence
+
+
+def test_manuscript_embeds_every_generated_figure_with_alt_text() -> None:
+    manuscript = _read("manuscript.md")
+    figure_links = re.findall(r"!\[([^]]+)]\((generated/f\d-[^)]+\.svg)\)", manuscript)
+
+    assert len(figure_links) == 6
+    assert len({path for _, path in figure_links}) == 6
+    assert all(alt.strip() for alt, _ in figure_links)
+    assert all((PAPER_ROOT / path).is_file() for _, path in figure_links)

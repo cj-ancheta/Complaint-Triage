@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1380" height="320" viewBox="0 0 1380 320" role="img">
+<title>Governed evidence pipeline</title>
+<desc>Cohort and split lineage with a sealed test boundary.</desc>
+<rect width="100%" height="100%" fill="white"/>
+<text x="40.0" y="42.0" font-size="24" font-family="Arial, sans-serif" fill="#111827" font-weight="bold">F1. Governed evidence pipeline</text>
+<text x="40.0" y="70.0" font-size="14" font-family="Arial, sans-serif" fill="#6B7280" >Aggregate lineage only; validation-only study</text>
+<rect x="30" y="120" width="170" height="80" rx="10" fill="#F3F4F6" stroke="#1B365D" stroke-width="2"/>
+<text x="115.0" y="166.0" font-size="14" font-family="Arial, sans-serif" fill="#111827" text-anchor="middle">16 source shards</text>
+<line x1="203" y1="160" x2="217" y2="160" stroke="#6B7280" stroke-width="2"/>
+<path d="M 212 154 L 219 160 L 212 166" fill="none" stroke="#6B7280" stroke-width="2"/>
+<rect x="222" y="120" width="170" height="80" rx="10" fill="#F3F4F6" stroke="#1B365D" stroke-width="2"/>
+<text x="307.0" y="166.0" font-size="14" font-family="Arial, sans-serif" fill="#111827" text-anchor="middle">979,995 staged</text>
+<line x1="395" y1="160" x2="409" y2="160" stroke="#6B7280" stroke-width="2"/>
+<path d="M 404 154 L 411 160 L 404 166" fill="none" stroke="#6B7280" stroke-width="2"/>
+<rect x="414" y="120" width="170" height="80" rx="10" fill="#F3F4F6" stroke="#1B365D" stroke-width="2"/>
+<text x="499.0" y="166.0" font-size="14" font-family="Arial, sans-serif" fill="#111827" text-anchor="middle">979,194 English</text>
+<line x1="587" y1="160" x2="601" y2="160" stroke="#6B7280" stroke-width="2"/>
+<path d="M 596 154 L 603 160 L 596 166" fill="none" stroke="#6B7280" stroke-width="2"/>
+<rect x="606" y="120" width="170" height="80" rx="10" fill="#F3F4F6" stroke="#1B365D" stroke-width="2"/>
+<text x="691.0" y="166.0" font-size="14" font-family="Arial, sans-serif" fill="#111827" text-anchor="middle">561,342 canonical</text>
+<line x1="779" y1="160" x2="793" y2="160" stroke="#6B7280" stroke-width="2"/>
+<path d="M 788 154 L 795 160 L 788 166" fill="none" stroke="#6B7280" stroke-width="2"/>
+<rect x="798" y="120" width="170" height="80" rx="10" fill="#F3F4F6" stroke="#1B365D" stroke-width="2"/>
+<text x="883.0" y="166.0" font-size="14" font-family="Arial, sans-serif" fill="#111827" text-anchor="middle">394,564 train</text>
+<line x1="971" y1="160" x2="985" y2="160" stroke="#6B7280" stroke-width="2"/>
+<path d="M 980 154 L 987 160 L 980 166" fill="none" stroke="#6B7280" stroke-width="2"/>
+<rect x="990" y="120" width="170" height="80" rx="10" fill="#F3F4F6" stroke="#1B365D" stroke-width="2"/>
+<text x="1075.0" y="166.0" font-size="14" font-family="Arial, sans-serif" fill="#111827" text-anchor="middle">80,992 validation</text>
+<line x1="1163" y1="160" x2="1177" y2="160" stroke="#6B7280" stroke-width="2"/>
+<path d="M 1172 154 L 1179 160 L 1172 166" fill="none" stroke="#6B7280" stroke-width="2"/>
+<rect x="1182" y="120" width="170" height="80" rx="10" fill="#FFF4E6" stroke="#D55E00" stroke-width="2"/>
+<text x="1267.0" y="166.0" font-size="14" font-family="Arial, sans-serif" fill="#111827" text-anchor="middle">85,786 sealed test</text>
+<text x="40.0" y="250.0" font-size="15" font-family="Arial, sans-serif" fill="#111827" >417,852 duplicate-related exclusions occur before the split.</text>
+<text x="40.0" y="278.0" font-size="15" font-family="Arial, sans-serif" fill="#D55E00" >The sealed test is described by count only; no performance is reported.</text>
+</svg>

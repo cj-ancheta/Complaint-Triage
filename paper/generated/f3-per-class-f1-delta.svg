@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="600" viewBox="0 0 1200 600" role="img">
+<title>Per-class F1 differences</title>
+<desc>Zero-centered per-class validation F1 differences.</desc>
+<rect width="100%" height="100%" fill="white"/>
+<text x="35.0" y="40.0" font-size="24" font-family="Arial, sans-serif" fill="#111827" font-weight="bold">F3. Per-class MiniLM minus TF-IDF F1</text>
+<text x="35.0" y="68.0" font-size="14" font-family="Arial, sans-serif" fill="#6B7280" >Positive values favor MiniLM; orange marks the TF-IDF win</text>
+<line x1="650" y1="70" x2="650" y2="547" stroke="#111827"/>
+<text x="625.0" y="99.0" font-size="13" font-family="Arial, sans-serif" fill="#111827" text-anchor="end">Checking/savings</text>
+<rect x="650.0" y="85" width="21.0" height="18" fill="#0072B2"/>
+<text x="679.0" y="99.0" font-size="12" font-family="Arial, sans-serif" fill="#111827" text-anchor="start">+0.0084</text>
+<text x="625.0" y="141.0" font-size="13" font-family="Arial, sans-serif" fill="#111827" text-anchor="end">Credit card</text>
+<rect x="650.0" y="127" width="17.3" height="18" fill="#0072B2"/>
+<text x="675.3" y="141.0" font-size="12" font-family="Arial, sans-serif" fill="#111827" text-anchor="start">+0.0069</text>
+<text x="625.0" y="183.0" font-size="13" font-family="Arial, sans-serif" fill="#111827" text-anchor="end">Credit reporting</text>
+<rect x="650.0" y="169" width="2.7" height="18" fill="#0072B2"/>
+<text x="660.7" y="183.0" font-size="12" font-family="Arial, sans-serif" fill="#111827" text-anchor="start">+0.0011</text>
+<text x="625.0" y="225.0" font-size="13" font-family="Arial, sans-serif" fill="#111827" text-anchor="end">Debt collection</text>
+<rect x="650.0" y="211" width="71.2" height="18" fill="#0072B2"/>
+<text x="729.2" y="225.0" font-size="12" font-family="Arial, sans-serif" fill="#111827" text-anchor="start">+0.0285</text>
+<text x="625.0" y="267.0" font-size="13" font-family="Arial, sans-serif" fill="#111827" text-anchor="end">Debt/credit management</text>
+<rect x="650.0" y="253" width="425.7" height="18" fill="#0072B2"/>
+<text x="1083.7" y="267.0" font-size="12" font-family="Arial, sans-serif" fill="#111827" text-anchor="start">+0.1703</text>
+<text x="625.0" y="309.0" font-size="13" font-family="Arial, sans-serif" fill="#111827" text-anchor="end">Money transfer</text>
+<rect x="650.0" y="295" width="82.4" height="18" fill="#0072B2"/>
+<text x="740.4" y="309.0" font-size="12" font-family="Arial, sans-serif" fill="#111827" text-anchor="start">+0.0330</text>
+<text x="625.0" y="351.0" font-size="13" font-family="Arial, sans-serif" fill="#111827" text-anchor="end">Mortgage</text>
+<rect x="643.1" y="337" width="6.9" height="18" fill="#D55E00"/>
+<text x="635.1" y="351.0" font-size="12" font-family="Arial, sans-serif" fill="#111827" text-anchor="end">-0.0028</text>
+<text x="625.0" y="393.0" font-size="13" font-family="Arial, sans-serif" fill="#111827" text-anchor="end">Payday/title/personal</text>
+<rect x="650.0" y="379" width="157.4" height="18" fill="#0072B2"/>
+<text x="815.4" y="393.0" font-size="12" font-family="Arial, sans-serif" fill="#111827" text-anchor="start">+0.0629</text>
+<text x="625.0" y="435.0" font-size="13" font-family="Arial, sans-serif" fill="#111827" text-anchor="end">Prepaid card</text>
+<rect x="650.0" y="421" width="136.7" height="18" fill="#0072B2"/>
+<text x="794.7" y="435.0" font-size="12" font-family="Arial, sans-serif" fill="#111827" text-anchor="start">+0.0547</text>
+<text x="625.0" y="477.0" font-size="13" font-family="Arial, sans-serif" fill="#111827" text-anchor="end">Student loan</text>
+<rect x="650.0" y="463" width="5.1" height="18" fill="#0072B2"/>
+<text x="663.1" y="477.0" font-size="12" font-family="Arial, sans-serif" fill="#111827" text-anchor="start">+0.0020</text>
+<text x="625.0" y="519.0" font-size="13" font-family="Arial, sans-serif" fill="#111827" text-anchor="end">Vehicle loan/lease</text>
+<rect x="650.0" y="505" width="79.8" height="18" fill="#0072B2"/>
+<text x="737.8" y="519.0" font-size="12" font-family="Arial, sans-serif" fill="#111827" text-anchor="start">+0.0319</text>
+<text x="35.0" y="578.0" font-size="13" font-family="Arial, sans-serif" fill="#6B7280" >Validation-only differences; no inferential significance test was predeclared.</text>
+</svg>
