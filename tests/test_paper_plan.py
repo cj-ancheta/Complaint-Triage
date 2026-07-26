@@ -19,9 +19,7 @@ def _read(filename: str) -> str:
 
 
 def test_paper_planning_package_is_complete_and_links_resolve() -> None:
-    assert PAPER_FILES | LITERATURE_FILES <= {
-        path.name for path in PAPER_ROOT.glob("*.md")
-    }
+    assert PAPER_FILES | LITERATURE_FILES <= {path.name for path in PAPER_ROOT.glob("*.md")}
 
     readme = _read("README.md")
     local_links = re.findall(r"\[[^]]+\]\(([^)]+\.md)\)", readme)
@@ -54,9 +52,7 @@ def test_claim_rules_preserve_validation_privacy_and_human_oversight_boundaries(
     rules = _read("claim_rules.md").lower()
     outline = _read("outline.md").lower()
     inventory = _read("evidence_inventory.md").lower()
-    paper_text = "\n".join(
-        _read(filename) for filename in PAPER_FILES | LITERATURE_FILES
-    ).lower()
+    paper_text = "\n".join(_read(filename) for filename in PAPER_FILES | LITERATURE_FILES).lower()
 
     for required_phrase in (
         "validation-only",
