@@ -1,18 +1,19 @@
 # When Aggregate Accuracy Is Not Enough
 
-## A Governance-Aware Validation Study of Financial Complaint Triage
+## Decision Impact, Validation Governance, and a Causal Evaluation Blueprint for Financial Complaint Triage
 
 Charles Jr Ancheta
 
-Portfolio research manuscript, validation-only draft
+Public preprint, validation-only empirical study
 
 Evidence snapshot: `2d886756227787b2eed2d5f46754b2ab8fd7745b`
 
-Draft date: 2026-07-26
+Release date: 2026-07-26
 
-> **Evidence boundary.** This manuscript reports internal validation and tuning
-> evidence. It contains no frozen-test performance, does not authorize
-> deployment or automated routing, and makes no demographic-fairness claim.
+> **Evidence boundary.** This manuscript publicly reports validation and tuning
+> evidence. It contains no frozen-test performance, causal-effect estimate, or
+> demographic-fairness claim and does not authorize deployment or automated
+> routing.
 
 ## Abstract
 
@@ -40,11 +41,18 @@ aggregate evidence under protected continuous-integration controls. The study's
 main result is therefore a bounded negative release decision: the compact
 transformer was the stronger validation candidate, but neither aggregate
 accuracy nor improved calibration justified automated routing. The accepted
-outcome remains manual review only.
+outcome remains manual review only. Because the retrospective cohort contains
+no assigned intervention, reviewer behavior, or downstream workflow outcome,
+it cannot estimate whether AI assistance would improve routing or review time.
+We therefore specify a prospective, contamination-aware randomized evaluation
+with intention-to-treat estimands, independent route adjudication, and
+route-specific safety constraints. The practical contribution is both a
+consequential no-go decision now and a falsifiable causal path for evaluating
+human-AI impact later.
 
 **Keywords:** consumer complaints; imbalanced text classification; MiniLM;
 calibration; selective classification; human oversight; reproducible machine
-learning
+learning; causal inference; human-AI decision support
 
 ## 1. Introduction
 
@@ -77,7 +85,16 @@ used for model selection, calibration, and abstention analysis. Results are
 reported as internal validation evidence because repeated decisions on that
 partition make a final-generalization interpretation inappropriate.
 
-The study addresses four research questions:
+Predictive validity and causal impact are different questions. Classification
+metrics describe model behavior against recorded labels under a validation
+distribution. They do not reveal whether showing suggestions to reviewers would
+change final routing accuracy, active review time, escalation, over-reliance,
+consumer outcomes, or harm. The available cohort has no intervention assignment
+or such post-intervention outcomes. Rather than use causal language loosely,
+this paper makes the evidence gap explicit and defines the prospective
+experiment needed to answer it.
+
+The study addresses five research questions:
 
 1. **RQ1:** How do a TF-IDF logistic-regression reference and a compact MiniLM
    classifier compare under duplicate-isolated temporal validation?
@@ -87,13 +104,19 @@ The study addresses four research questions:
    and minimum per-class safeguards?
 4. **RQ4:** Which repository controls are necessary before the evidence is
    credible enough for a portfolio research case study?
+5. **RQ5:** What prospective design and causal estimands would be required to
+   determine whether governed model suggestions improve reviewer decisions
+   without worsening any required route?
 
 The contribution is deliberately narrower than a state-of-the-art claim. It is
 a reproducible case study combining a strong classical reference, a compact
 pretrained transformer, temporal and duplicate controls, multiclass calibration,
 class-aware selective prediction, and software assurance. The negative release
-outcome is part of the contribution: a threshold was not adopted merely because
-its aggregate statistics looked attractive.
+outcome is the immediate decision impact: a threshold was not adopted merely
+because its aggregate statistics looked attractive. The causal protocol is the
+forward-looking contribution. It turns an unsupported claim that AI "helps"
+into a testable intervention, outcome set, estimand, and route-specific success
+rule.
 
 ## 2. Related work
 
@@ -209,6 +232,42 @@ Framework 1.0 further emphasizes lifecycle governance, defined human roles,
 documented testing/evaluation/verification/validation, and explicit go/no-go
 decisions [[NIST-AI-RMF-2023](references.md#nist-ai-rmf-2023)]. These artifacts
 improve traceability; none certifies a model as trustworthy.
+
+### 2.6 Prediction reporting and causal impact
+
+Transparent prediction reporting and causal evaluation serve different
+purposes. TRIPOD+AI asks prediction-model authors to make data, development,
+evaluation, limitations, and intended use explicit; this non-clinical study
+adapts that reporting discipline without claiming clinical applicability or
+formal checklist compliance
+[[TRIPOD-AI-2024](references.md#tripod-ai-2024)]. Prediction reporting still
+cannot establish the effect of putting a model into a workflow.
+
+A causal question is better anchored to the randomized experiment that would
+answer it. Target-trial reasoning specifies eligibility, treatment strategies,
+assignment, follow-up, outcomes, causal contrasts, and analysis before
+estimation [[HERNAN-2016](references.md#hernan-2016)]. The current complaint
+cohort cannot emulate that trial because it contains neither model-assistance
+assignment nor reviewer outcomes.
+
+SPIRIT-AI and CONSORT-AI extend prospective trial protocol and reporting
+guidance to interventions with an AI component, including intended use,
+human-AI interaction, input/output handling, and error analysis. DECIDE-AI adds
+early live-evaluation emphasis on workflow, human factors, safety, and failure
+cases [[SPIRIT-AI-2020](references.md#spirit-ai-2020);
+[CONSORT-AI-2020](references.md#consort-ai-2020);
+[DECIDE-AI-2022](references.md#decide-ai-2022)]. These sources concern clinical
+settings; the present paper borrows design principles, not clinical authority.
+
+Empirical human-AI effects are also setting-specific. A preregistered
+experiment found that uncertainty-aware conformal prediction sets improved
+human accuracy relative to fixed-size sets in its studied tasks
+[[CRESSWELL-2024](references.md#cresswell-2024)], while a workplace field study
+reported heterogeneous productivity effects of AI assistance across worker
+experience groups [[BRYNJOLFSSON-2025](references.md#brynjolfsson-2025)]. Neither
+result transports an effect to financial complaint triage. Together they
+support measuring the interface, users, and workflow prospectively rather than
+inferring operational benefit from standalone model accuracy.
 
 ## 3. Data and governance
 
@@ -370,6 +429,56 @@ An independent QA evidence pack replays aggregate artifacts by hash and schema
 without reading narratives or complaint identifiers. Findings must be resolved
 before owner acceptance of the paper-drafting snapshot.
 
+### 4.7 Prospective causal evaluation design
+
+RQ5 is addressed as a design question because the retrospective cohort cannot
+identify an intervention effect. The causal question is: among eligible
+complaint reviewers handling newly received complaints, what is the effect of
+access to a governed suggestion interface, compared with the existing
+manual-only interface, on independently adjudicated routing correctness and
+active review time, without materially worsening any required route?
+
+The target trial assigns reviewers, teams, or reviewer-period clusters rather
+than individual complaints when exposure could teach persistent model behavior
+and contaminate later control decisions. Assignment is concealed and stratified
+by team/site and reviewer experience where feasible. The control is the current
+manual interface. The intervention is the same interface plus a clearly labelled
+model suggestion, uncertainty display, correction and escalation controls, and
+manual fallback. It never submits a route automatically. Model, calibrator,
+taxonomy, suggestion policy, interface, and failure behavior must be frozen
+before assignment.
+
+Let `A=1` denote randomized access to the suggestion interface and `A=0`
+manual-only review. If `Y(a)` indicates whether the final route would be correct
+under assignment `a`, the primary correctness estimand is the intention-to-treat
+risk difference `E[Y(1)-Y(0)]`. If `T(a)` is active review time, the primary
+time estimand is `E[T(1)-T(0)]`. Route-specific correctness risk differences are
+co-primary safety estimands. Success cannot be declared from the average effect
+alone: it requires a prespecified global benefit criterion and every
+route-specific non-inferiority constraint. Domain owners must set meaningful
+effect sizes, safety margins, and harm weights before power calculation and
+outcome access.
+
+Correctness requires adjudication independent of assignment and model output;
+the consumer-selected database label is not assumed to be trial ground truth.
+Active review time excludes queue delay and unrelated interruptions under a
+prespecified rule. Wrong-suggestion acceptance, omission, correction,
+escalation, model failure, and severe process incidents are safety outcomes.
+The primary analysis respects the assignment unit, reports uncertainty
+intervals, and follows intention to treat. Suggestion visibility, acceptance,
+override, and escalation are post-assignment mediators and are not conditioned
+on in the primary total-effect analysis.
+
+![Prospective causal DAG for AI-assisted complaint triage](generated/f7-causal-dag.svg)
+
+The full protocol specifies eligibility, assignment, estimands, outcome
+adjudication, contamination, missingness, safety stopping, and registration in
+[`prospective_causal_protocol.md`](prospective_causal_protocol.md). It adapts
+target-trial and prospective AI-intervention reporting principles; it is not a
+registered or conducted experiment. No model exposure may occur without a new
+authorized policy, ethics/privacy review, prospective registration, power
+analysis, monitoring charter, and separate deployment decision.
+
 ## 5. Results
 
 ### 5.1 Model comparison
@@ -505,6 +614,28 @@ prove the absence of all defects, bias, or future regressions.
 
 ![Repository QA remediation and acceptance timeline](generated/f6-qa-timeline.svg)
 
+### 5.6 Decision impact and causal evidence gap
+
+The immediate impact is a governed decision, not a claimed downstream effect.
+The evaluation prevented adoption of a globally attractive threshold that would
+have removed a required predicted route. That is consequential evidence for the
+project: the allowed action remains manual review, and the missing class cannot
+be hidden by 94.5% selective accuracy.
+
+| Decision question | Current answer | Evidence required for a stronger claim |
+|---|---|---|
+| Does MiniLM predict recorded product labels better than the TF-IDF reference under this validation design? | Yes on the declared selection order; validation-only | untouched external or newly collected evaluation data |
+| Does any tested global confidence policy preserve the declared aggregate and route-specific safeguards? | No | a new precommitted policy study, not post-hoc relaxation |
+| Does showing suggestions cause reviewers to route more accurately? | Unknown | randomized assignment and independent route adjudication |
+| Does assistance reduce active review time without shifting errors to rare routes? | Unknown | contamination-aware trial with timing and route-specific safety outcomes |
+| Does the system improve consumer resolution or reduce harm? | Unknown and not measured | a separately adequate longitudinal outcome design |
+
+Thus the retrospective study supplies no observed causal effect. It supplies a
+clear no-go result, the mechanisms by which aggregate metrics could mislead a
+release decision, and the target trial required to measure operational impact.
+RQ5 is answered at the protocol level rather than by inventing a causal estimate
+from data that do not contain the intervention or outcomes.
+
 ## 6. Discussion
 
 ### 6.1 Accuracy was a weak decision guide
@@ -572,6 +703,31 @@ missing-class constraint. Here, the failed gate, null selected threshold, and
 manual-only fallback are committed evidence. Governance is therefore part of
 the empirical method, not an appendix added after a favorable result.
 
+### 6.5 Impact requires a causal workflow study
+
+Standalone prediction performance is an input to an intervention, not the
+effect of that intervention. A reviewer may correct a bad suggestion, accept it
+because it appears authoritative, spend extra time verifying it, or learn from
+it in a way that carries into later control cases. Queue conditions and reviewer
+experience can also change both time and accuracy. These pathways explain why a
+causal claim cannot be recovered by relabelling validation accuracy as
+"productivity" or "impact."
+
+The proposed cluster-aware randomized design resolves assignment confounding in
+expectation and makes the total intention-to-treat effect primary. Its DAG also
+prevents a common analytical mistake: conditioning the primary analysis on
+suggestion acceptance or override, which occur after assignment and mediate the
+effect. Independent adjudication addresses a second problem—the original
+consumer-selected product category is useful for predictive development but is
+not automatically the definitive route outcome for a workflow trial.
+
+The route-specific success constraint carries the paper's central empirical
+lesson into the causal design. An average accuracy or time benefit cannot offset
+a material loss for a required route. Effect and non-inferiority margins remain
+unset because choosing them requires operational harm judgments and power inputs
+that this public dataset does not provide. Precommitting those values is more
+credible than selecting them after observing trial outcomes.
+
 ## 7. Threats to validity and limitations
 
 ### 7.1 Construct and source validity
@@ -636,6 +792,14 @@ productivity, time savings, override behavior, appeal, downstream resolution,
 consumer harm, or organizational incentives. Human oversight is a design
 requirement whose real effectiveness remains untested.
 
+The causal protocol is a blueprint, not a preregistered study. Its estimands are
+well defined, but identification would still depend on randomization integrity,
+consistency, positivity, limited interference between clusters, valid outcome
+adjudication, and appropriate handling of missingness and attrition. Proposed
+stratification variables may be unavailable in a real organization. Effect
+margins, intracluster correlation, baseline reviewer accuracy, and timing
+variance are not known, so no sample size or feasibility claim is made here.
+
 ## 8. Ethics, privacy, and human oversight
 
 The application domain involves narratives about financial difficulties and may
@@ -694,6 +858,14 @@ claims map to the accepted sources in
 version should be generated from these records and rechecked for citation,
 privacy, and prohibited-claim compliance.
 
+The prospective causal design is separately recorded in
+[`prospective_causal_protocol.md`](prospective_causal_protocol.md). Its status,
+`design_blueprint_not_registered_not_conducted`, is tested as part of the paper
+package so future edits cannot silently present proposed estimands as observed
+effects. The paper adapts applicable reporting concepts from TRIPOD+AI and
+prospective AI-intervention guidance while explicitly documenting the
+non-clinical scope and deviations.
+
 ## 10. Conclusion
 
 RQ1 asked whether contextual modelling changed the result under
@@ -719,6 +891,14 @@ privacy controls, protected CI, a resolved finding register, and explicit owner
 acceptance. These controls strengthen traceability without converting validation
 results into final or production evidence.
 
+RQ5 asked what would be required to estimate operational impact. The answer is
+a prospectively registered, contamination-aware randomized evaluation of a
+frozen suggestion interface against manual-only review. Its primary estimands
+are intention-to-treat effects on independently adjudicated routing correctness
+and active review time, with route-specific correctness constraints that an
+aggregate benefit cannot override. That trial has not been conducted; the
+present paper reports no causal effect.
+
 The compact transformer is therefore selected only as a validation candidate.
 The system is not authorized for automated routing, deployment, frozen-test
 access, or public promotion of its metrics as final performance. The most
@@ -737,6 +917,10 @@ for deletion.
 **Code availability.** Source code, schemas, documentation, exact environment
 locks, and aggregate evidence are available in the project repository.
 
+**Author contributions.** Charles Jr Ancheta conceived the study, implemented
+the pipeline, curated and analysed the evidence, designed the prospective causal
+protocol, and wrote and approved the manuscript.
+
 **Conflicts of interest.** This is an independently developed portfolio research
 project. No conflict is declared.
 
@@ -745,3 +929,12 @@ analyses public administrative complaint records under a data-minimization and
 no-redistribution policy.
 
 **Funding.** No external funding is declared.
+
+**AI-assisted authoring.** OpenAI Codex was used as an interactive code and
+editorial assistant under the author's direction. The author reviewed the
+sources, computations, claims, code changes, and final text and accepts full
+responsibility for the work. The AI system is not an author.
+
+**License.** Copyright is retained by the author. Access and reuse are governed
+by the repository's `LICENSE`; no rights to complaint narratives or governed
+local artifacts are granted.

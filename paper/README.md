@@ -1,10 +1,10 @@
 # Research paper workspace
 
-Status: full internal validation-only manuscript drafted; publication review
-pending
+Status: publication-ready public preprint authorized; empirical results remain
+validation-only
 
-Working title: **When Aggregate Accuracy Is Not Enough: A Governance-Aware
-Validation Study of Financial Complaint Triage**
+Title: **When Aggregate Accuracy Is Not Enough: Decision Impact, Validation
+Governance, and a Causal Evaluation Blueprint for Financial Complaint Triage**
 
 This workspace turns the accepted repository evidence into a research-style
 case study. The intended contribution is not a state-of-the-art performance
@@ -23,6 +23,9 @@ part of the empirical method.
    minimum per-class safeguards?
 4. Which repository controls are necessary before the resulting evidence is
    credible enough for a portfolio research case study?
+5. What prospective design and causal estimands would be required to determine
+   whether governed model suggestions improve reviewer decisions without
+   worsening any required route?
 
 ## Files
 
@@ -45,7 +48,14 @@ part of the empirical method.
   manifest are deterministic aggregate-only outputs. Regenerate them with
   `python paper/scripts/generate.py`.
 - [`publication_readiness.md`](publication_readiness.md) records completed
-  checks and the remaining owner/public-release boundary.
+  checks and the bounded public-release authorization.
+- [`prospective_causal_protocol.md`](prospective_causal_protocol.md) specifies
+  the target trial, estimands, DAG interpretation, outcomes, analysis, and
+  stopping rules; it is a design blueprint, not a conducted experiment.
+- [`publication_checklist.md`](publication_checklist.md) records the final
+  evidence, causal, privacy, metadata, and release gates.
+- [`impact_statement.md`](impact_statement.md) gives the decision and causal
+  relevance in publication-ready plain language.
 
 ## Drafting workflow
 
@@ -57,9 +67,14 @@ part of the empirical method.
    rewritten after seeing outcomes. **Complete.**
 5. Draft results as validation/tuning evidence, including the unsuccessful
    abstention outcome. **Complete.**
-6. Run citation, schema, link, privacy, and prohibited-claim checks.
-7. Require a separate owner review before calling the document publication-ready.
+6. Run citation, schema, link, privacy, causal-boundary, and prohibited-claim
+   checks. **Complete.**
+7. Require a separate owner review before calling the document
+   publication-ready. **Authorized 2026-07-26.**
+8. Publish the protected, tagged preprint release with the validation-only and
+   not-conducted causal-study boundaries intact.
 
-No step in this workflow authorizes frozen-test access, model retraining, a new
-threshold search, deployment, or public promotion of the validation metrics as
-final performance.
+Publication authorizes the paper and its explicitly labelled validation
+evidence. It does not authorize frozen-test access, model retraining, a new
+threshold search, deployment, or promotion of the validation metrics as final
+performance.

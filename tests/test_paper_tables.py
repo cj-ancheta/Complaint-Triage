@@ -66,7 +66,7 @@ def test_generated_source_manifest_is_aggregate_only() -> None:
     assert '"contains_narratives": false' in manifest
     assert '"contains_complaint_ids": false' in manifest
     assert '"contains_row_values": false' in manifest
-    assert manifest.count('"sha256":') == 7
+    assert manifest.count('"sha256":') == 8
     assert "data/raw" not in manifest
     assert "artifacts/" not in manifest
 
@@ -108,6 +108,7 @@ def test_all_planned_figures_are_safe_deterministic_svg() -> None:
         "f4-october-reliability.svg",
         "f5-risk-coverage.svg",
         "f6-qa-timeline.svg",
+        "f7-causal-dag.svg",
     }
     for filename, content in figures.items():
         assert content == render_figures()[filename]
@@ -135,3 +136,5 @@ def test_figure_evidence_preserves_rare_class_and_negative_policy_result() -> No
     assert "-0.0028" in figures["f3-per-class-f1-delta.svg"]
     assert "no threshold passed" in figures["f5-risk-coverage.svg"].lower()
     assert "13 findings resolved" in figures["f6-qa-timeline.svg"]
+    assert "no causal effect has been estimated" in figures["f7-causal-dag.svg"].lower()
+    assert "post-assignment" in figures["f7-causal-dag.svg"].lower()

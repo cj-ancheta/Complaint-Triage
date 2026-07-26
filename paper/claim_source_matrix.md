@@ -1,7 +1,6 @@
 # Claim-to-source matrix
 
-Status: initial matrix complete; every row must be rechecked against the prose
-draft before release
+Status: publication claim audit complete on 2026-07-26
 
 `Primary` means an original paper, official source, or standard. `Synthesis`
 means the statement is this paper's evidence-bounded interpretation and must be
@@ -32,6 +31,12 @@ supported by project artifacts rather than made to look like a literature fact.
 | C21 | AI risk management benefits from lifecycle governance, documented TEVV, defined human roles, and explicit go/no-go decisions. | NIST-AI-RMF-2023 | Official standard | 3.4, 5.6, 7, 9 | Voluntary framework; version 1.0 is under revision and is not certification. |
 | C22 | The small accuracy delta, larger macro/worst-class gains, improved aggregate calibration, and failed class-aware abstention gates jointly support a stronger research candidate but no automation. | Project aggregate JSON and accepted QA snapshot | Synthesis | 6, 7, 10 | Internal validation-only conclusion; no frozen-test, deployment, or causal claim. |
 | C23 | Resolving repository controls increases the confidence appropriate for the evidence without changing the model's empirical scores. | Accepted QA snapshot | Synthesis | 6.6, 7, 11 | QA cannot prove absence of all defects or bias. |
+| C24 | Transparent prediction-model reporting requires explicit data, methods, evaluation, limitations, and intended-use information. | TRIPOD-AI-2024 | Primary consensus guidance | 2.5, 9 | Clinical guidance adapted for a non-clinical text-routing study; no formal compliance claim. |
+| C25 | A causal question should be specified as a target experiment before attempting estimation from observational data. | HERNAN-2016 | Primary method | 4.7, 6.5, Appendix | The current cohort lacks treatment and reviewer outcomes and cannot emulate the proposed trial. |
+| C26 | Prospective AI-intervention protocols and reports should specify intended use, human-AI interaction, input/output handling, and error analysis. | SPIRIT-AI-2020, CONSORT-AI-2020, DECIDE-AI-2022 | Primary consensus guidance | 2.5, 4.7, Appendix | Clinical reporting principles adapted to a non-clinical setting; the trial has not been conducted. |
+| C27 | Human-AI effects depend on the interface, task, and users and therefore require direct prospective measurement. | CRESSWELL-2024, BRYNJOLFSSON-2025, PARASURAMAN-1997 | Primary experiments + foundational synthesis | 2.5, 6.5, Appendix | No effect size or direction is transported to complaint review. |
+| C28 | The current evidence identifies a consequential no-go decision but no causal effect on reviewer accuracy, speed, consumer outcomes, or harm. | Project aggregate JSON, accepted QA snapshot | Synthesis | Abstract, 6.5, 7, 10 | Impact is decision impact; operational causal impact remains unestimated. |
+| C29 | A future success rule must combine global benefit with prespecified route-specific safety constraints rather than reward an average that erases a required route. | HERNAN-2016, SPIRIT-AI-2020, Project abstention report | Primary method + synthesis | 4.7, 6.5, Appendix | Margins and power inputs must be stakeholder-defined before outcome access. |
 
 ## Coverage audit
 
@@ -41,8 +46,10 @@ supported by project artifacts rather than made to look like a literature fact.
 - Imbalanced metrics and evaluation design: C08-C11.
 - Calibration and selective classification: C12-C17.
 - Human oversight and evidence governance: C18-C21.
-- Project-specific conclusions: C22-C23.
+- Prediction reporting and causal design: C24-C27.
+- Project-specific conclusions and impact boundary: C22-C23, C28-C29.
 
 No row authorizes wording about statistical significance, demographic fairness,
-production performance, frozen-test performance, causal effects, or effective
-human review.
+production performance, frozen-test performance, observed causal effects, or
+effective human review. The proposed causal estimands and trial are a prospective
+design, not empirical findings.

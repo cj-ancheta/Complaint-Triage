@@ -9,7 +9,8 @@
     "paper/generated/f3-per-class-f1-delta.svg",
     "paper/generated/f4-october-reliability.svg",
     "paper/generated/f5-risk-coverage.svg",
-    "paper/generated/f6-qa-timeline.svg"
+    "paper/generated/f6-qa-timeline.svg",
+    "paper/generated/f7-causal-dag.svg"
   ],
   "privacy": {
     "contains_complaint_ids": false,
@@ -44,6 +45,10 @@
     {
       "path": "docs/qa/qa_findings.json",
       "sha256": "061db8098efb22cdbb0d803fc45b3538f0b70662530fc0f3ce97ee13af6f4379"
+    },
+    {
+      "path": "paper/prospective_causal_protocol.md",
+      "sha256": "c3e4b7897bb51b6c515a29dc852fd460bf9f0d934a618d36cd5f2a01e430fc85"
     }
   ]
 }

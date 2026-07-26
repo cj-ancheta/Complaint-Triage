@@ -243,3 +243,90 @@ Official, voluntary risk-management framework supporting lifecycle governance,
 documented test/evaluation/verification/validation, defined human roles, and
 explicit go/no-go decisions. It is not a certification and is currently under
 revision; the manuscript cites version 1.0 only.
+
+## Prediction reporting, causal inference, and human-AI impact
+
+### TRIPOD-AI-2024
+
+Collins, G. S., Moons, K. G. M., Dhiman, P., et al. "TRIPOD+AI statement:
+updated guidance for reporting clinical prediction models that use regression
+or machine learning methods." *BMJ* 385, e078378 (2024).
+[DOI](https://doi.org/10.1136/bmj-2023-078378)
+
+Provides a 27-item framework for transparent reporting of prediction-model
+development and evaluation. This complaint-routing study is not clinical; the
+guidance is adapted for reporting discipline rather than claimed compliance or
+clinical applicability.
+
+### HERNAN-2016
+
+Hernán, M. A., and Robins, J. M. "Using Big Data to Emulate a Target Trial When
+a Randomized Trial Is Not Available." *American Journal of Epidemiology*
+183(8), 758-764 (2016).
+[DOI](https://doi.org/10.1093/aje/kwv254)
+
+Supports specifying the hypothetical experiment, eligibility, treatment
+strategies, assignment, follow-up, outcomes, causal contrast, and analysis
+before attempting causal inference. The present complaint data lack treatment
+and outcome observations and therefore cannot emulate the proposed trial.
+
+### SPIRIT-AI-2020
+
+Cruz Rivera, S., Liu, X., Chan, A.-W., Denniston, A. K., and Calvert, M. J.;
+SPIRIT-AI and CONSORT-AI Working Group. "Guidelines for clinical trial protocols
+for interventions involving artificial intelligence: the SPIRIT-AI
+extension." *Nature Medicine* 26, 1351-1363 (2020).
+[DOI](https://doi.org/10.1038/s41591-020-1037-7)
+
+Supports pre-specifying intended use, users, input/output handling,
+human-AI interaction, and error handling for prospective AI-intervention
+trials. Its clinical scope is not transferred to financial complaint review;
+the protocol adapts relevant design principles.
+
+### CONSORT-AI-2020
+
+Liu, X., Cruz Rivera, S., Moher, D., Calvert, M. J., and Denniston, A. K.;
+SPIRIT-AI and CONSORT-AI Working Group. "Reporting guidelines for clinical trial
+reports for interventions involving artificial intelligence: the CONSORT-AI
+extension." *Nature Medicine* 26, 1364-1374 (2020).
+[DOI](https://doi.org/10.1038/s41591-020-1034-x)
+
+Supports transparent reporting of an AI intervention's intended use,
+human-AI interaction, inputs and outputs, and error analysis. It is a reporting
+guideline for clinical trials, not evidence that the proposed non-clinical
+complaint-routing trial has been conducted.
+
+### DECIDE-AI-2022
+
+Vasey, B., Nagendran, M., Campbell, B., et al. "Reporting guideline for the
+early-stage clinical evaluation of decision support systems driven by
+artificial intelligence: DECIDE-AI." *Nature Medicine* 28, 924-933 (2022).
+[DOI](https://doi.org/10.1038/s41591-022-01772-9)
+
+Motivates explicit reporting of workflow integration, human factors, safety,
+and failure cases during early live evaluation. The paper borrows these
+principles for a proposed non-clinical pilot and does not claim formal
+DECIDE-AI compliance.
+
+### CRESSWELL-2024
+
+Cresswell, J. C., Sui, Y., Kumar, B., and Vouitsis, N. "Conformal Prediction
+Sets Improve Human Decision Making." *Proceedings of the 41st International
+Conference on Machine Learning*, PMLR 235, 9439-9457 (2024).
+[PMLR](https://proceedings.mlr.press/v235/cresswell24a.html)
+
+Reports a preregistered randomized experiment in which uncertainty-aware
+prediction sets improved participant accuracy relative to fixed-size sets in
+the studied tasks. It motivates testing presentation and uncertainty
+experimentally; its effect does not transfer to financial complaint reviewers.
+
+### BRYNJOLFSSON-2025
+
+Brynjolfsson, E., Li, D., and Raymond, L. R. "Generative AI at Work."
+*Quarterly Journal of Economics* 140(2), 889-942 (2025).
+[DOI](https://doi.org/10.1093/qje/qjae044)
+
+Provides field evidence that AI assistance can have heterogeneous effects on
+worker productivity and experience groups. The intervention, work setting,
+outcomes, and identification strategy differ from complaint triage; no effect
+size is transported into this study.

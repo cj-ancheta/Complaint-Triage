@@ -1,0 +1,39 @@
+cff-version: 1.2.0
+message: >-
+  If you use this research artifact, please cite the public preprint using the
+  preferred citation below.
+title: >-
+  When Aggregate Accuracy Is Not Enough: Decision Impact, Validation
+  Governance, and a Causal Evaluation Blueprint for Financial Complaint Triage
+type: article
+authors:
+  - family-names: Ancheta
+    given-names: Charles Jr
+version: 1.0.0
+date-released: 2026-07-26
+repository-code: https://github.com/cj-ancheta/Complaint-Triage
+url: https://github.com/cj-ancheta/Complaint-Triage/blob/main/paper/manuscript.md
+abstract: >-
+  This validation-only study compares TF-IDF logistic regression and compact
+  MiniLM for imbalanced financial complaint routing, evaluates calibration and
+  class-aware abstention, documents a negative manual-review-only release
+  decision, and specifies a prospective randomized causal evaluation of
+  human-AI decision support.
+keywords:
+  - consumer complaints
+  - text classification
+  - selective classification
+  - model governance
+  - causal inference
+  - human-AI decision support
+preferred-citation:
+  type: article
+  title: >-
+    When Aggregate Accuracy Is Not Enough: Decision Impact, Validation
+    Governance, and a Causal Evaluation Blueprint for Financial Complaint Triage
+  authors:
+    - family-names: Ancheta
+      given-names: Charles Jr
+  year: 2026
+  version: 1.0.0
+  url: https://github.com/cj-ancheta/Complaint-Triage/blob/main/paper/manuscript.md

@@ -1,6 +1,8 @@
 # Publication readiness record
 
-Status: `internal_draft_complete_external_publication_not_authorized`
+Status: `publication_ready_public_preprint_authorized`
+
+Release version: `1.0.0`
 
 Review date: 2026-07-26
 
@@ -12,16 +14,19 @@ Accepted research-evidence snapshot:
 | Gate | Evidence | Result |
 |---|---|---|
 | QA evidence accepted | 119 checks replayed; 13 findings resolved; accepted conclusion `pass` | pass |
-| Manuscript complete | 5,000-8,000 words; abstract through declarations; RQ1-RQ4 answered | pass |
-| Literature traceability | 22 verified sources mapped to 23 planned claims with scope caveats | pass |
+| Manuscript complete | 5,000-8,000 words; abstract through declarations; RQ1-RQ5 answered | pass |
+| Literature traceability | 30 verified sources mapped to 29 planned claims with scope caveats | pass |
 | Numerical traceability | T1-T6 generated; main result tables synchronized from seven hashed aggregate sources | pass |
-| Figure traceability | F1-F6 deterministic SVG; aggregate sources only; source manifest committed | pass |
+| Figure traceability | F1-F7 deterministic SVG; aggregate sources or prospective design only; source manifest committed | pass |
 | Citation coverage | every paper-local reference ID cited by the manuscript | pass |
 | Privacy boundary | no narratives, complaint IDs, row values, vocabulary, or row-level predictions | pass |
 | Frozen-test boundary | count may be described; no frozen-test performance is reported | pass |
 | Deployment boundary | no model API, threshold, routing, or deployment is authorized | pass |
-| Editorial owner review | final wording, venue/template, and author presentation not yet approved | pending |
-| Public metric promotion | QA release boundary remains `public_metric_promotion_authorized: false` | blocked |
+| Causal boundary | no observed causal effect is claimed; target trial is explicitly not registered or conducted | pass |
+| Impact communication | plain-language statement separates the consequential no-go result from unmeasured workflow effects | pass |
+| Editorial owner review | owner authorized finalization and publication on 2026-07-26 | pass |
+| Bounded public reporting | paper and validation-labelled metrics authorized for preprint release | pass |
+| Final-performance promotion | QA field remains `public_metric_promotion_authorized: false`; no metric is presented as frozen-test or production performance | pass |
 
 ## Deterministic reproduction
 
@@ -41,12 +46,12 @@ agree.
 
 ## Decision
 
-The research package is complete enough for internal editorial review and a
-portfolio-paper design pass. This record does not authorize external publication
-or reinterpret the validation metrics as final performance. External release
-requires an explicit owner decision that preserves the validation-only banner,
-the negative abstention result, the frozen-test statement, privacy exclusions,
-and all material limitations.
+The owner explicitly authorized external publication as a public preprint on
+2026-07-26. The authorization covers the paper, deterministic figures, causal
+design blueprint, and validation-labelled metrics. It does not reinterpret the
+metrics as final performance or authorize the proposed causal trial.
 
-No deployment, routing, frozen-test access, or new threshold search is required
-to complete editorial review.
+Release must preserve the validation-only banner, negative abstention result,
+frozen-test statement, privacy exclusions, not-conducted causal-study status,
+and all material limitations. No deployment, routing, frozen-test access, model
+exposure, or new threshold search is authorized.
