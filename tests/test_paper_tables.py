@@ -4,6 +4,7 @@ from complaint_triage.paper_tables import (
     MANIFEST_PATH,
     MANUSCRIPT_PATH,
     TABLES_PATH,
+    canonical_sha256,
     generate_assets,
     generate_manuscript,
     render_abstention_table,
@@ -66,6 +67,14 @@ def test_generated_source_manifest_is_aggregate_only() -> None:
     assert manifest.count('"sha256":') == 7
     assert "data/raw" not in manifest
     assert "artifacts/" not in manifest
+
+
+def test_source_hashes_are_line_ending_independent(tmp_path: Path) -> None:
+    linux_path = tmp_path / "linux.json"
+    windows_path = tmp_path / "windows.json"
+    linux_path.write_bytes(b'{\n  "value": 1\n}\n')
+    windows_path.write_bytes(b'{\r\n  "value": 1\r\n}\r\n')
+    assert canonical_sha256(linux_path) == canonical_sha256(windows_path)
 
 
 def test_remaining_planned_tables_are_generated_from_aggregate_sources() -> None:

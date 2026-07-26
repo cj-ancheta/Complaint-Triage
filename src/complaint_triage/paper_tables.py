@@ -285,13 +285,18 @@ def _source_paths() -> list[Path]:
     return [RUN_REPORT_PATH, SPLIT_MANIFEST_PATH, *paths, QA_FINDINGS_PATH]
 
 
+def canonical_sha256(path: Path) -> str:
+    canonical_bytes = path.read_bytes().replace(b"\r\n", b"\n")
+    return hashlib.sha256(canonical_bytes).hexdigest()
+
+
 def render_source_manifest() -> str:
     sources = []
     for path in _source_paths():
         sources.append(
             {
                 "path": path.relative_to(PROJECT_ROOT).as_posix(),
-                "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+                "sha256": canonical_sha256(path),
             }
         )
     manifest = {
