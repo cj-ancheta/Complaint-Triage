@@ -62,7 +62,7 @@ expanded only after the Phase 4 evidence gates are accepted.
 
 | ID | Issue | Status | Exit evidence |
 |---|---|---|---|
-| QA-001 | Execute repository-wide QA and propose the research-paper evidence boundary | review | Owner accepts the schema-valid QA evidence, 13-finding inventory, severity triage, and remediation order |
+| QA-001 | Execute repository-wide QA and propose the research-paper evidence boundary | complete | Owner accepted the schema-valid QA evidence, 13-finding inventory, severity triage, remediation order, and snapshot `2d886756227787b2eed2d5f46754b2ab8fd7745b` |
 | QA-101 | Remediate vulnerable development and build tooling | complete | Accepted source constraints; both installed audits exit zero; 291+1-skip standard and 292-pass transformer suites pass |
 | QA-102 | Lock standard and transformer environments with hashes | complete | Accepted exact-digest lock design; clean deterministic installs, `pip check`, and both complete PostgreSQL-backed suites pass |
 | QA-103 | Add bounded transformer CI coverage | complete | Accepted GitHub Actions run 30161131645 passes required `standard` and `transformer-cpu` jobs after matching local replays |
@@ -71,22 +71,18 @@ expanded only after the Phase 4 evidence gates are accepted.
 | QA-106 | Ratchet critical-path coverage and warnings | complete | Run 30163081497 passes independent 69% floors, focused subprocess failures, and zero-unexpected-warning policy |
 | QA-107 | Restore Alembic schema-drift detection | complete | Run 30163564539 upgrades empty databases and passes multi-schema `alembic check` in both profiles |
 | QA-108 | Establish incremental static type checking | complete | Run 30164122886 passes strict Mypy over four suppression-free control modules in both profiles |
-| QA-109 | Automate the local retention deadline checkpoint | pending | Safe reminder/preflight and deletion evidence flow is tested before 2026-11-19 |
-| QA-110 | Harden the trusted-local artifact boundary | pending | Serialization trust policy and rejection tests are documented and accepted |
-| QA-111 | Refactor concentrated orchestration | pending | Characterization tests prove unchanged outputs after smaller handlers are extracted |
+| QA-109 | Automate the local retention deadline checkpoint | complete | Run 30164562588 passed the aggregate-only reminder/preflight and deletion-evidence controls; deletion remains due by 2026-11-19 |
+| QA-110 | Harden the trusted-local artifact boundary | complete | Run 30164993961 passed the trusted-path, restricted-deserialization, and malicious-input rejection controls |
+| QA-111 | Refactor concentrated orchestration | complete | Run 30165661423 passed characterization and structural-ratchet tests after bounded handlers were extracted |
 
-## Current next issue
+## Current QA status
 
-QA-001 is in review. Its draft report records no critical findings and preserves
-all thirteen original finding severities. QA-101 through QA-105 are accepted.
-QA-105 resolves QA-SEC-002 and QA-GOV-001 through required redacted secret,
-dependency, SBOM, and container gates plus explicit security, ownership,
-licensing, and dependency-update metadata. Five medium and two low findings
-remain open. The frozen-test and manual-review-only boundaries remain unchanged.
-QA-106 resolves the coverage and warning findings; QA-107 resolves schema drift
-with authoritative metadata and disposable upgrades. QA-108 adds a strict,
-hash-locked incremental type gate. Two medium and one low finding remain open.
-QA-109, automating the retention deadline checkpoint, is next.
+QA-001 and QA-101 through QA-111 are accepted. The final remediation snapshot
+`2d886756227787b2eed2d5f46754b2ab8fd7745b` resolves all thirteen findings and
+preserves their original severities in the audit record. The frozen-test,
+manual-review-only, privacy, deployment, and public-promotion boundaries remain
+unchanged. The local raw-data retention action remains due by 2026-11-19; its
+checkpoint and deletion-evidence workflow are already implemented under QA-109.
 
 CT-401 is complete. Its accepted 41,831-record October validation report
 reproduces the calibrated evidence, finds no eligible global threshold, and
