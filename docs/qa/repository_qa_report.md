@@ -1,8 +1,9 @@
 # Repository-wide QA report
 
-Status: draft for owner review  
+Status: owner-accepted on 2026-07-26
 Audit date: 2026-07-25  
 Audited commit: `1b6130793d7b305605115dea255de15e89d2b94f`  
+Accepted remediation snapshot: `2d886756227787b2eed2d5f46754b2ab8fd7745b`
 Release boundary: unchanged; manual review only
 
 ## Executive conclusion
@@ -14,16 +15,11 @@ both complete test environments pass, PostgreSQL aggregate identities agree,
 all referenced raw shards and governed local artifacts match their recorded
 hashes, and 119 independently implemented ML-evidence checks all reproduce.
 
-The repository is not yet a sufficiently controlled paper artifact without an
-explicit remediation decision. The audit opened three high findings affecting
-supply-chain safety, selected-model CI coverage, and fresh-environment
-reproducibility. QA-101 has now technically resolved the supply-chain finding;
-QA-102 resolved fresh-environment reproducibility, and QA-103 resolved the
-selected-model CI gap. No high findings remain open. QA-104 also resolves branch
-protection, leaving six medium and three low findings concerning coverage
-enforcement, schema-drift detection, automated security controls, static typing,
-maintainability, retention operations, trusted local serialization, warnings,
-and repository governance metadata. All resolved findings are owner-accepted.
+The audit opened 13 findings: three high, seven medium, and three low. QA-101
+through QA-111 resolved all 13 with local and protected remote evidence. The
+owner accepted the remediated snapshot on 2026-07-26 for validation-only paper
+drafting. This acceptance does not authorize frozen-test access, automated
+routing, deployment, public metric promotion, or claims of production impact.
 
 Finding totals:
 
@@ -388,13 +384,12 @@ means the project correctly refuses to make a claim its protocol cannot support.
 
 QA-SEC-001 and QA-REPRO-001 are accepted and resolved by QA-101 and QA-102.
 QA-101 through QA-111 are resolved with local and protected remote evidence.
-The QA pack remains in owner review: acceptance of this engineering snapshot,
-paper drafting, and any future frozen-test access are separate explicit gates.
+The QA pack is owner-accepted for validation-only paper drafting. Any future
+frozen-test access remains a separate explicit gate.
 
-The audit report should be marked accepted only after the owner confirms the
-finding inventory and remediation order. Paper literature research and drafting
-then proceed against that accepted snapshot; they do not change the model,
-threshold policy, test boundary, or release decision.
+Paper literature research and drafting may proceed against the accepted
+snapshot. They do not change the model, threshold policy, frozen-test boundary,
+manual-review-only release decision, or prohibition on public metric promotion.
 
 ## Limitations of this audit
 

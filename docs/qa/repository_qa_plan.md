@@ -1,8 +1,9 @@
 # Repository-wide QA plan
 
-Status: executed; findings awaiting owner review  
+Status: executed and owner-accepted on 2026-07-26
 Audit date: 2026-07-25  
 Audited commit: `1b6130793d7b305605115dea255de15e89d2b94f`
+Accepted remediation snapshot: `2d886756227787b2eed2d5f46754b2ab8fd7745b`
 
 ## Purpose
 

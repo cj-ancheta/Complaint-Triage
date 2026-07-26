@@ -1,6 +1,6 @@
 # QA remediation backlog
 
-Status: proposed for owner review  
+Status: accepted and complete on 2026-07-26
 Source: [repository QA report](repository_qa_report.md)
 
 The order protects the accepted evidence before changing maintainability or
@@ -133,13 +133,13 @@ selection rule, or evidence-access authorization.
 
 ## Research-paper handoff checklist
 
-- [ ] Owner accepts the QA finding inventory.
-- [ ] QA-101, QA-102, and QA-103 are resolved or explicitly approved as paper
+- [x] Owner accepts the QA finding inventory.
+- [x] QA-101, QA-102, and QA-103 are resolved or explicitly approved as paper
   limitations.
-- [ ] QA evidence is rerun from a clean, identified commit.
-- [ ] Machine-readable evidence and finding files validate and reconcile.
-- [ ] The paper scope is validation-only and manual-review-only.
-- [ ] No raw narratives, complaint IDs, frozen-test metrics, fairness claims,
+- [x] QA evidence is rerun from a clean, identified commit.
+- [x] Machine-readable evidence and finding files validate and reconcile.
+- [x] The paper scope is validation-only and manual-review-only.
+- [x] No raw narratives, complaint IDs, frozen-test metrics, fairness claims,
   deployment claims, or public metric claims are introduced.
 - [ ] Primary literature sources are collected with a claim-to-source matrix.
 - [ ] Tables and figures are generated only from accepted aggregate evidence.
