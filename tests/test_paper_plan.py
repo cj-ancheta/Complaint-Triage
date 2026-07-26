@@ -12,6 +12,7 @@ PAPER_FILES = {
     "table_figure_plan.md",
 }
 LITERATURE_FILES = {"claim_source_matrix.md", "references.md"}
+DRAFT_FILES = {"manuscript.md"}
 
 
 def _read(filename: str) -> str:
@@ -19,11 +20,13 @@ def _read(filename: str) -> str:
 
 
 def test_paper_planning_package_is_complete_and_links_resolve() -> None:
-    assert PAPER_FILES | LITERATURE_FILES <= {path.name for path in PAPER_ROOT.glob("*.md")}
+    assert PAPER_FILES | LITERATURE_FILES | DRAFT_FILES <= {
+        path.name for path in PAPER_ROOT.glob("*.md")
+    }
 
     readme = _read("README.md")
     local_links = re.findall(r"\[[^]]+\]\(([^)]+\.md)\)", readme)
-    assert set(local_links) == (PAPER_FILES | LITERATURE_FILES) - {"README.md"}
+    assert set(local_links) == (PAPER_FILES | LITERATURE_FILES | DRAFT_FILES) - {"README.md"}
     assert all((PAPER_ROOT / link).is_file() for link in local_links)
 
 
@@ -52,7 +55,9 @@ def test_claim_rules_preserve_validation_privacy_and_human_oversight_boundaries(
     rules = _read("claim_rules.md").lower()
     outline = _read("outline.md").lower()
     inventory = _read("evidence_inventory.md").lower()
-    paper_text = "\n".join(_read(filename) for filename in PAPER_FILES | LITERATURE_FILES).lower()
+    paper_text = "\n".join(
+        _read(filename) for filename in PAPER_FILES | LITERATURE_FILES | DRAFT_FILES
+    ).lower()
 
     for required_phrase in (
         "validation-only",
@@ -110,3 +115,45 @@ def test_literature_matrix_uses_defined_sources_and_records_scope_limits() -> No
     assert len(re.findall(r"^\| C\d{2} \|", matrix, flags=re.MULTILINE)) >= 20
     assert "scope caveat" in matrix.lower()
     assert "initial search is complete" in questions.lower()
+
+
+def test_manuscript_is_complete_cited_and_evidence_bounded() -> None:
+    manuscript = _read("manuscript.md")
+    references = _read("references.md")
+    source_ids = set(re.findall(r"^### ([A-Z][A-Z0-9-]+)$", references, flags=re.MULTILINE))
+    cited_ids = set(re.findall(r"\[([A-Z][A-Z0-9-]+)\]\(references\.md#", manuscript))
+
+    assert 5_000 <= len(manuscript.split()) <= 8_000
+    assert cited_ids == source_ids
+    for section in (
+        "## Abstract",
+        "## 1. Introduction",
+        "## 2. Related work",
+        "## 3. Data and governance",
+        "## 4. Methods",
+        "## 5. Results",
+        "## 6. Discussion",
+        "## 7. Threats to validity and limitations",
+        "## 8. Ethics, privacy, and human oversight",
+        "## 9. Reproducibility and artifact statement",
+        "## 10. Conclusion",
+        "## Declarations",
+    ):
+        assert section in manuscript
+
+    for required in (
+        "0.885853",
+        "0.883692",
+        "0.735746",
+        "0.699661",
+        "0.207048",
+        "0.057269",
+        "manual review only",
+        "no frozen-test performance",
+    ):
+        assert required in manuscript
+
+    lowered = manuscript.lower()
+    assert "frozen_test_access_authorized = true" not in lowered
+    assert "deployment_authorized = true" not in lowered
+    assert "demographically fair" not in lowered
