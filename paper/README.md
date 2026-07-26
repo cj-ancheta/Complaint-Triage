@@ -1,6 +1,7 @@
 # Research paper workspace
 
-Status: evidence planning; internal validation-only draft authorized
+Status: full internal validation-only manuscript drafted; publication review
+pending
 
 Working title: **When Aggregate Accuracy Is Not Enough: A Governance-Aware
 Validation Study of Financial Complaint Triage**
@@ -25,6 +26,7 @@ part of the empirical method.
 
 ## Files
 
+- [`manuscript.md`](manuscript.md) is the full research-style draft.
 - [`evidence_inventory.md`](evidence_inventory.md) maps each planned claim to
   accepted aggregate evidence and its limitations.
 - [`outline.md`](outline.md) defines every paper section, paragraph purpose,
@@ -47,9 +49,9 @@ part of the empirical method.
    related papers.
 3. Generate tables and figures only from committed aggregate JSON.
 4. Draft methods before results so selection and eligibility rules cannot be
-   rewritten after seeing outcomes.
+   rewritten after seeing outcomes. **Complete.**
 5. Draft results as validation/tuning evidence, including the unsuccessful
-   abstention outcome.
+   abstention outcome. **Complete.**
 6. Run citation, schema, link, privacy, and prohibited-claim checks.
 7. Require a separate owner review before calling the document publication-ready.
 
