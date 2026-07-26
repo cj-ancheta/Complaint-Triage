@@ -11,6 +11,7 @@ PAPER_FILES = {
     "outline.md",
     "table_figure_plan.md",
 }
+LITERATURE_FILES = {"claim_source_matrix.md", "references.md"}
 
 
 def _read(filename: str) -> str:
@@ -18,11 +19,11 @@ def _read(filename: str) -> str:
 
 
 def test_paper_planning_package_is_complete_and_links_resolve() -> None:
-    assert {path.name for path in PAPER_ROOT.glob("*.md")} == PAPER_FILES
+    assert PAPER_FILES | LITERATURE_FILES <= {path.name for path in PAPER_ROOT.glob("*.md")}
 
     readme = _read("README.md")
     local_links = re.findall(r"\[[^]]+\]\(([^)]+\.md)\)", readme)
-    assert set(local_links) == PAPER_FILES - {"README.md"}
+    assert set(local_links) == (PAPER_FILES | LITERATURE_FILES) - {"README.md"}
     assert all((PAPER_ROOT / link).is_file() for link in local_links)
 
 
@@ -51,7 +52,7 @@ def test_claim_rules_preserve_validation_privacy_and_human_oversight_boundaries(
     rules = _read("claim_rules.md").lower()
     outline = _read("outline.md").lower()
     inventory = _read("evidence_inventory.md").lower()
-    paper_text = "\n".join(_read(filename) for filename in PAPER_FILES).lower()
+    paper_text = "\n".join(_read(filename) for filename in PAPER_FILES | LITERATURE_FILES).lower()
 
     for required_phrase in (
         "validation-only",
@@ -95,3 +96,17 @@ def test_outline_covers_research_questions_and_complete_paper_structure() -> Non
         assert research_question in outline
     assert "Evidence inputs:" in outline
     assert "Literature needed:" in outline
+
+
+def test_literature_matrix_uses_defined_sources_and_records_scope_limits() -> None:
+    references = _read("references.md")
+    matrix = _read("claim_source_matrix.md")
+    questions = _read("literature_questions.md")
+
+    source_ids = re.findall(r"^### ([A-Z][A-Z0-9-]+)$", references, flags=re.MULTILINE)
+    assert len(source_ids) >= 20
+    assert len(source_ids) == len(set(source_ids))
+    assert all(source_id in matrix for source_id in source_ids)
+    assert len(re.findall(r"^\| C\d{2} \|", matrix, flags=re.MULTILINE)) >= 20
+    assert "scope caveat" in matrix.lower()
+    assert "initial search is complete" in questions.lower()

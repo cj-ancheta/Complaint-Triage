@@ -1,6 +1,7 @@
 # Literature search protocol
 
-Status: queries defined; primary-source search pending
+Status: primary-source search complete for the planned draft; reopen if the
+outline gains a new external factual claim
 
 ## Inclusion rules
 
@@ -44,5 +45,6 @@ Status: queries defined; primary-source search pending
 | `scope_caveat` | what the source does not establish for this project |
 | `quote_checked` | confirmation that wording was verified without copying long text |
 
-The search is complete only when every non-project factual claim in the outline
-has a source or is explicitly marked as the author's synthesis.
+The initial search is complete: every planned non-project factual claim in the
+outline is mapped in `claim_source_matrix.md` or explicitly marked as the
+author's synthesis. Citation checking must be repeated against the prose draft.
