@@ -35,6 +35,10 @@ part of the empirical method.
   and figures without row-level data.
 - [`literature_questions.md`](literature_questions.md) is the search protocol
   for the primary-source claim matrix.
+- [`references.md`](references.md) contains the verified bibliography and a
+  scope note for every source.
+- [`claim_source_matrix.md`](claim_source_matrix.md) maps manuscript claims to
+  those sources and records the limits of each citation.
 
 ## Drafting workflow
 
