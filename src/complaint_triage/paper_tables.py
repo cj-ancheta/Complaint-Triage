@@ -8,6 +8,7 @@ import json
 from pathlib import Path
 from typing import Any
 
+from complaint_triage.paper_figures import render_figures
 from complaint_triage.real_extraction import PROJECT_ROOT
 
 EVALUATION_ROOT = PROJECT_ROOT / "data" / "evaluations" / "cfpb"
@@ -305,6 +306,7 @@ def render_source_manifest() -> str:
         "outputs": [
             TABLES_PATH.relative_to(PROJECT_ROOT).as_posix(),
             MANUSCRIPT_PATH.relative_to(PROJECT_ROOT).as_posix(),
+            *[f"paper/generated/{filename}" for filename in sorted(render_figures())],
         ],
         "privacy": {
             "contains_complaint_ids": False,
@@ -345,6 +347,9 @@ def generate_assets(*, check: bool = False) -> bool:
         TABLES_PATH: render_generated_tables(),
         MANIFEST_PATH: render_source_manifest(),
     }
+    expected_outputs.update(
+        {GENERATED_ROOT / filename: content for filename, content in render_figures().items()}
+    )
     output_matches = all(
         path.is_file() and path.read_text(encoding="utf-8") == expected
         for path, expected in expected_outputs.items()

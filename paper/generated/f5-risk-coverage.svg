@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="650" viewBox="0 0 900 650" role="img">
+<title>Risk coverage curve</title>
+<desc>Coverage and selective accuracy for ten ineligible thresholds.</desc>
+<rect width="100%" height="100%" fill="white"/>
+<text x="35.0" y="40.0" font-size="24" font-family="Arial, sans-serif" fill="#111827" font-weight="bold">F5. Coverage and selective accuracy</text>
+<text x="35.0" y="66.0" font-size="14" font-family="Arial, sans-serif" fill="#6B7280" >X markers: ten ineligible candidates; grey circle: no-abstention reference</text>
+<rect x="100" y="80" width="650" height="460" fill="none" stroke="#111827"/>
+<circle cx="750.0" cy="531.1" r="6" fill="#6B7280"/>
+<text x="758.0" y="523.1" font-size="11" font-family="Arial, sans-serif" fill="#111827" >reference</text>
+<line x1="699.4" y1="455.9" x2="711.4" y2="467.9" stroke="#D55E00" stroke-width="3"/>
+<line x1="699.4" y1="467.9" x2="711.4" y2="455.9" stroke="#D55E00" stroke-width="3"/>
+<text x="713.4" y="453.9" font-size="11" font-family="Arial, sans-serif" fill="#111827" >0.50</text>
+<line x1="674.8" y1="424.4" x2="686.8" y2="436.4" stroke="#D55E00" stroke-width="3"/>
+<line x1="674.8" y1="436.4" x2="686.8" y2="424.4" stroke="#D55E00" stroke-width="3"/>
+<text x="688.8" y="422.4" font-size="11" font-family="Arial, sans-serif" fill="#111827" >0.55</text>
+<line x1="650.4" y1="393.2" x2="662.4" y2="405.2" stroke="#D55E00" stroke-width="3"/>
+<line x1="650.4" y1="405.2" x2="662.4" y2="393.2" stroke="#D55E00" stroke-width="3"/>
+<text x="664.4" y="391.2" font-size="11" font-family="Arial, sans-serif" fill="#111827" >0.60</text>
+<line x1="622.8" y1="363.0" x2="634.8" y2="375.0" stroke="#D55E00" stroke-width="3"/>
+<line x1="622.8" y1="375.0" x2="634.8" y2="363.0" stroke="#D55E00" stroke-width="3"/>
+<text x="636.8" y="361.0" font-size="11" font-family="Arial, sans-serif" fill="#111827" >0.65</text>
+<line x1="592.3" y1="328.7" x2="604.3" y2="340.7" stroke="#D55E00" stroke-width="3"/>
+<line x1="592.3" y1="340.7" x2="604.3" y2="328.7" stroke="#D55E00" stroke-width="3"/>
+<text x="606.3" y="326.7" font-size="11" font-family="Arial, sans-serif" fill="#111827" >0.70</text>
+<line x1="557.2" y1="298.1" x2="569.2" y2="310.1" stroke="#D55E00" stroke-width="3"/>
+<line x1="557.2" y1="310.1" x2="569.2" y2="298.1" stroke="#D55E00" stroke-width="3"/>
+<text x="571.2" y="296.1" font-size="11" font-family="Arial, sans-serif" fill="#111827" >0.75</text>
+<line x1="517.1" y1="262.0" x2="529.1" y2="274.0" stroke="#D55E00" stroke-width="3"/>
+<line x1="517.1" y1="274.0" x2="529.1" y2="262.0" stroke="#D55E00" stroke-width="3"/>
+<text x="531.1" y="260.0" font-size="11" font-family="Arial, sans-serif" fill="#111827" >0.80</text>
+<line x1="463.0" y1="223.1" x2="475.0" y2="235.1" stroke="#D55E00" stroke-width="3"/>
+<line x1="463.0" y1="235.1" x2="475.0" y2="223.1" stroke="#D55E00" stroke-width="3"/>
+<text x="477.0" y="221.1" font-size="11" font-family="Arial, sans-serif" fill="#111827" >0.85</text>
+<line x1="380.4" y1="179.7" x2="392.4" y2="191.7" stroke="#D55E00" stroke-width="3"/>
+<line x1="380.4" y1="191.7" x2="392.4" y2="179.7" stroke="#D55E00" stroke-width="3"/>
+<text x="394.4" y="177.7" font-size="11" font-family="Arial, sans-serif" fill="#111827" >0.90</text>
+<line x1="222.4" y1="120.8" x2="234.4" y2="132.8" stroke="#D55E00" stroke-width="3"/>
+<line x1="222.4" y1="132.8" x2="234.4" y2="120.8" stroke="#D55E00" stroke-width="3"/>
+<text x="236.4" y="118.8" font-size="11" font-family="Arial, sans-serif" fill="#111827" >0.95</text>
+<text x="100.0" y="564.0" font-size="12" font-family="Arial, sans-serif" fill="#111827" text-anchor="middle">0.5</text>
+<text x="230.0" y="564.0" font-size="12" font-family="Arial, sans-serif" fill="#111827" text-anchor="middle">0.6</text>
+<text x="360.0" y="564.0" font-size="12" font-family="Arial, sans-serif" fill="#111827" text-anchor="middle">0.7</text>
+<text x="490.0" y="564.0" font-size="12" font-family="Arial, sans-serif" fill="#111827" text-anchor="middle">0.8</text>
+<text x="620.0" y="564.0" font-size="12" font-family="Arial, sans-serif" fill="#111827" text-anchor="middle">0.9</text>
+<text x="750.0" y="564.0" font-size="12" font-family="Arial, sans-serif" fill="#111827" text-anchor="middle">1.0</text>
+<text x="88.0" y="544.0" font-size="12" font-family="Arial, sans-serif" fill="#111827" text-anchor="end">0.88</text>
+<line x1="100" y1="540.0" x2="750" y2="540.0" stroke="#E5E7EB"/>
+<text x="88.0" y="460.4" font-size="12" font-family="Arial, sans-serif" fill="#111827" text-anchor="end">0.90</text>
+<line x1="100" y1="456.36363636363626" x2="750" y2="456.36363636363626" stroke="#E5E7EB"/>
+<text x="88.0" y="376.7" font-size="12" font-family="Arial, sans-serif" fill="#111827" text-anchor="end">0.92</text>
+<line x1="100" y1="372.7272727272726" x2="750" y2="372.7272727272726" stroke="#E5E7EB"/>
+<text x="88.0" y="293.1" font-size="12" font-family="Arial, sans-serif" fill="#111827" text-anchor="end">0.94</text>
+<line x1="100" y1="289.09090909090935" x2="750" y2="289.09090909090935" stroke="#E5E7EB"/>
+<text x="88.0" y="209.5" font-size="12" font-family="Arial, sans-serif" fill="#111827" text-anchor="end">0.96</text>
+<line x1="100" y1="205.4545454545456" x2="750" y2="205.4545454545456" stroke="#E5E7EB"/>
+<text x="88.0" y="125.8" font-size="12" font-family="Arial, sans-serif" fill="#111827" text-anchor="end">0.98</text>
+<line x1="100" y1="121.81818181818187" x2="750" y2="121.81818181818187" stroke="#E5E7EB"/>
+<text x="425.0" y="600.0" font-size="14" font-family="Arial, sans-serif" fill="#111827" text-anchor="middle">Coverage</text>
+<text x="24.0" y="310.0" font-size="14" font-family="Arial, sans-serif" fill="#111827" transform="rotate(-90 24 310.0)" text-anchor="middle">Selective accuracy</text>
+<text x="35.0" y="636.0" font-size="13" font-family="Arial, sans-serif" fill="#D55E00" >Validation-only: no threshold passed every global and class-aware gate.</text>
+</svg>

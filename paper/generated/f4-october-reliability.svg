@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="820" height="720" viewBox="0 0 820 720" role="img">
+<title>October reliability</title>
+<desc>Before and after temperature scaling reliability curves.</desc>
+<rect width="100%" height="100%" fill="white"/>
+<text x="35.0" y="40.0" font-size="24" font-family="Arial, sans-serif" fill="#111827" font-weight="bold">F4. October reliability before and after scaling</text>
+<text x="35.0" y="68.0" font-size="14" font-family="Arial, sans-serif" fill="#6B7280" >Equal-width bins; empty bins are omitted from lines</text>
+<line x1="100.0" y1="90" x2="100.0" y2="630" stroke="#E5E7EB"/>
+<line x1="100" y1="630.0" x2="640" y2="630.0" stroke="#E5E7EB"/>
+<text x="100.0" y="655.0" font-size="12" font-family="Arial, sans-serif" fill="#111827" text-anchor="middle">0.0</text>
+<text x="88.0" y="634.0" font-size="12" font-family="Arial, sans-serif" fill="#111827" text-anchor="end">0.0</text>
+<line x1="208.0" y1="90" x2="208.0" y2="630" stroke="#E5E7EB"/>
+<line x1="100" y1="522.0" x2="640" y2="522.0" stroke="#E5E7EB"/>
+<text x="208.0" y="655.0" font-size="12" font-family="Arial, sans-serif" fill="#111827" text-anchor="middle">0.2</text>
+<text x="88.0" y="526.0" font-size="12" font-family="Arial, sans-serif" fill="#111827" text-anchor="end">0.2</text>
+<line x1="316.0" y1="90" x2="316.0" y2="630" stroke="#E5E7EB"/>
+<line x1="100" y1="414.0" x2="640" y2="414.0" stroke="#E5E7EB"/>
+<text x="316.0" y="655.0" font-size="12" font-family="Arial, sans-serif" fill="#111827" text-anchor="middle">0.4</text>
+<text x="88.0" y="418.0" font-size="12" font-family="Arial, sans-serif" fill="#111827" text-anchor="end">0.4</text>
+<line x1="424.0" y1="90" x2="424.0" y2="630" stroke="#E5E7EB"/>
+<line x1="100" y1="306.0" x2="640" y2="306.0" stroke="#E5E7EB"/>
+<text x="424.0" y="655.0" font-size="12" font-family="Arial, sans-serif" fill="#111827" text-anchor="middle">0.6</text>
+<text x="88.0" y="310.0" font-size="12" font-family="Arial, sans-serif" fill="#111827" text-anchor="end">0.6</text>
+<line x1="532.0" y1="90" x2="532.0" y2="630" stroke="#E5E7EB"/>
+<line x1="100" y1="198.0" x2="640" y2="198.0" stroke="#E5E7EB"/>
+<text x="532.0" y="655.0" font-size="12" font-family="Arial, sans-serif" fill="#111827" text-anchor="middle">0.8</text>
+<text x="88.0" y="202.0" font-size="12" font-family="Arial, sans-serif" fill="#111827" text-anchor="end">0.8</text>
+<line x1="640.0" y1="90" x2="640.0" y2="630" stroke="#E5E7EB"/>
+<line x1="100" y1="90.0" x2="640" y2="90.0" stroke="#E5E7EB"/>
+<text x="640.0" y="655.0" font-size="12" font-family="Arial, sans-serif" fill="#111827" text-anchor="middle">1.0</text>
+<text x="88.0" y="94.0" font-size="12" font-family="Arial, sans-serif" fill="#111827" text-anchor="end">1.0</text>
+<line x1="100" y1="630" x2="640" y2="90" stroke="#6B7280" stroke-dasharray="6 5"/>
+<polyline points="195.6,630.0 229.0,454.5 264.9,433.6 300.0,449.3 336.4,396.4 371.1,360.3 406.0,348.4 442.1,314.9 478.3,284.8 514.5,251.1 551.5,217.8 588.3,169.8 629.8,105.8" fill="none" stroke="#D55E00" stroke-width="3"/>
+<circle cx="195.6" cy="630.0" r="4" fill="#D55E00"/>
+<circle cx="229.0" cy="454.5" r="4" fill="#D55E00"/>
+<circle cx="264.9" cy="433.6" r="4" fill="#D55E00"/>
+<circle cx="300.0" cy="449.3" r="4" fill="#D55E00"/>
+<circle cx="336.4" cy="396.4" r="4" fill="#D55E00"/>
+<circle cx="371.1" cy="360.3" r="4" fill="#D55E00"/>
+<circle cx="406.0" cy="348.4" r="4" fill="#D55E00"/>
+<circle cx="442.1" cy="314.9" r="4" fill="#D55E00"/>
+<circle cx="478.3" cy="284.8" r="4" fill="#D55E00"/>
+<circle cx="514.5" cy="251.1" r="4" fill="#D55E00"/>
+<circle cx="551.5" cy="217.8" r="4" fill="#D55E00"/>
+<circle cx="588.3" cy="169.8" r="4" fill="#D55E00"/>
+<circle cx="629.8" cy="105.8" r="4" fill="#D55E00"/>
+<polyline points="199.3,522.0 228.8,441.6 264.7,452.8 300.4,431.1 337.2,386.5 370.9,360.8 406.2,348.9 442.2,310.3 478.3,270.5 514.7,248.1 551.6,204.8 588.7,163.8 628.7,104.0" fill="none" stroke="#0072B2" stroke-width="3"/>
+<circle cx="199.3" cy="522.0" r="4" fill="#0072B2"/>
+<circle cx="228.8" cy="441.6" r="4" fill="#0072B2"/>
+<circle cx="264.7" cy="452.8" r="4" fill="#0072B2"/>
+<circle cx="300.4" cy="431.1" r="4" fill="#0072B2"/>
+<circle cx="337.2" cy="386.5" r="4" fill="#0072B2"/>
+<circle cx="370.9" cy="360.8" r="4" fill="#0072B2"/>
+<circle cx="406.2" cy="348.9" r="4" fill="#0072B2"/>
+<circle cx="442.2" cy="310.3" r="4" fill="#0072B2"/>
+<circle cx="478.3" cy="270.5" r="4" fill="#0072B2"/>
+<circle cx="514.7" cy="248.1" r="4" fill="#0072B2"/>
+<circle cx="551.6" cy="204.8" r="4" fill="#0072B2"/>
+<circle cx="588.7" cy="163.8" r="4" fill="#0072B2"/>
+<circle cx="628.7" cy="104.0" r="4" fill="#0072B2"/>
+<text x="370.0" y="685.0" font-size="14" font-family="Arial, sans-serif" fill="#111827" text-anchor="middle">Mean confidence</text>
+<text x="24.0" y="360.0" font-size="14" font-family="Arial, sans-serif" fill="#111827" transform="rotate(-90 24 360.0)" text-anchor="middle">Observed accuracy</text>
+<line x1="670" y1="120" x2="700" y2="120" stroke="#D55E00" stroke-width="3"/>
+<text x="710.0" y="125.0" font-size="13" font-family="Arial, sans-serif" fill="#111827" >Before</text>
+<line x1="670" y1="150" x2="700" y2="150" stroke="#0072B2" stroke-width="3"/>
+<text x="710.0" y="155.0" font-size="13" font-family="Arial, sans-serif" fill="#111827" >After</text>
+<text x="35.0" y="710.0" font-size="13" font-family="Arial, sans-serif" fill="#6B7280" >Validation-only; lower ECE does not establish classwise calibration.</text>
+</svg>

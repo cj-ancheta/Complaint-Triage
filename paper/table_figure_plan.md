@@ -2,6 +2,11 @@
 
 Every value must be generated from the listed committed aggregate source.
 
+Status: implemented on 2026-07-26. T1-T6 are generated in
+`generated/result_tables.md`; F1-F6 are generated as deterministic SVG files in
+`generated/`. `generated/source_manifest.json` records the canonical source
+hashes and complete output set.
+
 ## Main-text tables
 
 | ID | Content | Source | Purpose |
@@ -21,7 +26,7 @@ Every value must be generated from the listed committed aggregate source.
 | F2 | Training/validation class support | split manifest | horizontal log-scale bars with exact counts |
 | F3 | Per-class MiniLM minus TF-IDF F1 | comparison report | zero-centered dot/bar plot; retain Mortgage loss |
 | F4 | October reliability before/after calibration | calibration report | plot committed equal-width bins; show empty bins |
-| F5 | Coverage versus selective accuracy with gate failures | abstention report | label ineligible thresholds; no “optimal” language |
+| F5 | Coverage versus selective accuracy with gate failures | abstention report | label ineligible thresholds; no "optimal" language |
 | F6 | QA remediation timeline | Git/QA evidence | distinguish code controls from model evidence |
 
 ## Appendices
@@ -33,11 +38,11 @@ Every value must be generated from the listed committed aggregate source.
 
 ## Generation requirements
 
-- Add one deterministic script under `paper/scripts/` in the next phase.
+- Use the deterministic entry point `paper/scripts/generate.py`.
 - Read only committed JSON and Markdown metadata; never connect to PostgreSQL or
   inspect `data/raw` or `artifacts`.
-- Emit Markdown/CSV/SVG or PNG under `paper/generated/` with a source manifest.
+- Emit Markdown/CSV/SVG under `paper/generated/` with a source manifest.
 - Sort labels by the immutable taxonomy order and thresholds numerically.
 - Use colorblind-safe palettes and never rely on color alone for pass/fail.
-- Include “validation-only” in captions for every model-result table or figure.
+- Include "validation-only" in captions for every model-result table or figure.
 - Test exact row counts, source hashes, and prohibited fields before generation.

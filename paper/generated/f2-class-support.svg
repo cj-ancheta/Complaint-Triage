@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="620" viewBox="0 0 1200 620" role="img">
+<title>Class support</title>
+<desc>Log-scale training and validation support for eleven product classes.</desc>
+<rect width="100%" height="100%" fill="white"/>
+<text x="35.0" y="40.0" font-size="24" font-family="Arial, sans-serif" fill="#111827" font-weight="bold">F2. Training and validation class support</text>
+<text x="35.0" y="68.0" font-size="14" font-family="Arial, sans-serif" fill="#6B7280" >Log10 bar length; exact counts shown</text>
+<rect x="850" y="28" width="14" height="14" fill="#0072B2"/>
+<text x="870.0" y="40.0" font-size="13" font-family="Arial, sans-serif" fill="#111827" >Train</text>
+<rect x="940" y="28" width="14" height="14" fill="#D55E00"/>
+<text x="960.0" y="40.0" font-size="13" font-family="Arial, sans-serif" fill="#111827" >Validation</text>
+<text x="258.0" y="110.0" font-size="13" font-family="Arial, sans-serif" fill="#111827" text-anchor="end">Checking/savings</text>
+<rect x="270" y="95" width="625.4" height="14" fill="#0072B2"/>
+<rect x="270" y="113" width="520.7" height="14" fill="#D55E00"/>
+<text x="902.4" y="107.0" font-size="11" font-family="Arial, sans-serif" fill="#111827" >27,501</text>
+<text x="797.7" y="125.0" font-size="11" font-family="Arial, sans-serif" fill="#111827" >4,961</text>
+<text x="258.0" y="153.0" font-size="13" font-family="Arial, sans-serif" fill="#111827" text-anchor="end">Credit card</text>
+<rect x="270" y="138" width="631.0" height="14" fill="#0072B2"/>
+<rect x="270" y="156" width="523.5" height="14" fill="#D55E00"/>
+<text x="908.0" y="150.0" font-size="11" font-family="Arial, sans-serif" fill="#111827" >30,122</text>
+<text x="800.5" y="168.0" font-size="11" font-family="Arial, sans-serif" fill="#111827" >5,195</text>
+<text x="258.0" y="196.0" font-size="13" font-family="Arial, sans-serif" fill="#111827" text-anchor="end">Credit reporting</text>
+<rect x="270" y="181" width="760.0" height="14" fill="#0072B2"/>
+<rect x="270" y="199" width="666.7" height="14" fill="#D55E00"/>
+<text x="1037.0" y="193.0" font-size="11" font-family="Arial, sans-serif" fill="#111827" >248,062</text>
+<text x="943.7" y="211.0" font-size="11" font-family="Arial, sans-serif" fill="#111827" >54,012</text>
+<text x="258.0" y="239.0" font-size="13" font-family="Arial, sans-serif" fill="#111827" text-anchor="end">Debt collection</text>
+<rect x="270" y="224" width="650.3" height="14" fill="#0072B2"/>
+<rect x="270" y="242" width="555.6" height="14" fill="#D55E00"/>
+<text x="927.3" y="236.0" font-size="11" font-family="Arial, sans-serif" fill="#111827" >41,325</text>
+<text x="832.6" y="254.0" font-size="11" font-family="Arial, sans-serif" fill="#111827" >8,784</text>
+<text x="258.0" y="282.0" font-size="13" font-family="Arial, sans-serif" fill="#111827" text-anchor="end">Debt/credit management</text>
+<rect x="270" y="267" width="432.5" height="14" fill="#0072B2"/>
+<rect x="270" y="285" width="332.2" height="14" fill="#D55E00"/>
+<text x="709.5" y="279.0" font-size="11" font-family="Arial, sans-serif" fill="#111827" >1,173</text>
+<text x="609.2" y="297.0" font-size="11" font-family="Arial, sans-serif" fill="#111827" >227</text>
+<text x="258.0" y="325.0" font-size="13" font-family="Arial, sans-serif" fill="#111827" text-anchor="end">Money transfer</text>
+<rect x="270" y="310" width="560.2" height="14" fill="#0072B2"/>
+<rect x="270" y="328" width="454.6" height="14" fill="#D55E00"/>
+<text x="837.2" y="322.0" font-size="11" font-family="Arial, sans-serif" fill="#111827" >9,462</text>
+<text x="731.6" y="340.0" font-size="11" font-family="Arial, sans-serif" fill="#111827" >1,684</text>
+<text x="258.0" y="368.0" font-size="13" font-family="Arial, sans-serif" fill="#111827" text-anchor="end">Mortgage</text>
+<rect x="270" y="353" width="575.4" height="14" fill="#0072B2"/>
+<rect x="270" y="371" width="466.2" height="14" fill="#D55E00"/>
+<text x="852.4" y="365.0" font-size="11" font-family="Arial, sans-serif" fill="#111827" >12,136</text>
+<text x="743.2" y="383.0" font-size="11" font-family="Arial, sans-serif" fill="#111827" >2,036</text>
+<text x="258.0" y="411.0" font-size="13" font-family="Arial, sans-serif" fill="#111827" text-anchor="end">Payday/title/personal</text>
+<rect x="270" y="396" width="518.0" height="14" fill="#0072B2"/>
+<rect x="270" y="414" width="416.6" height="14" fill="#D55E00"/>
+<text x="795.0" y="408.0" font-size="11" font-family="Arial, sans-serif" fill="#111827" >4,751</text>
+<text x="693.6" y="426.0" font-size="11" font-family="Arial, sans-serif" fill="#111827" >905</text>
+<text x="258.0" y="454.0" font-size="13" font-family="Arial, sans-serif" fill="#111827" text-anchor="end">Prepaid card</text>
+<rect x="270" y="439" width="504.8" height="14" fill="#0072B2"/>
+<rect x="270" y="457" width="374.2" height="14" fill="#D55E00"/>
+<text x="781.8" y="451.0" font-size="11" font-family="Arial, sans-serif" fill="#111827" >3,830</text>
+<text x="651.2" y="469.0" font-size="11" font-family="Arial, sans-serif" fill="#111827" >452</text>
+<text x="258.0" y="497.0" font-size="13" font-family="Arial, sans-serif" fill="#111827" text-anchor="end">Student loan</text>
+<rect x="270" y="482" width="558.1" height="14" fill="#0072B2"/>
+<rect x="270" y="500" width="446.7" height="14" fill="#D55E00"/>
+<text x="835.1" y="494.0" font-size="11" font-family="Arial, sans-serif" fill="#111827" >9,150</text>
+<text x="723.7" y="512.0" font-size="11" font-family="Arial, sans-serif" fill="#111827" >1,481</text>
+<text x="258.0" y="540.0" font-size="13" font-family="Arial, sans-serif" fill="#111827" text-anchor="end">Vehicle loan/lease</text>
+<rect x="270" y="525" width="542.2" height="14" fill="#0072B2"/>
+<rect x="270" y="543" width="436.6" height="14" fill="#D55E00"/>
+<text x="819.2" y="537.0" font-size="11" font-family="Arial, sans-serif" fill="#111827" >7,052</text>
+<text x="713.6" y="555.0" font-size="11" font-family="Arial, sans-serif" fill="#111827" >1,255</text>
+<text x="35.0" y="595.0" font-size="13" font-family="Arial, sans-serif" fill="#6B7280" >Validation-only cohort; class support is not demographic evidence.</text>
+</svg>
