@@ -15,6 +15,7 @@ FINDINGS_SCHEMA_PATH = PROJECT_ROOT / "contracts/repository-qa-findings.schema.j
 REPORT_PATH = PROJECT_ROOT / "docs/qa/repository_qa_report.md"
 PLAN_PATH = PROJECT_ROOT / "docs/qa/repository_qa_plan.md"
 BACKLOG_PATH = PROJECT_ROOT / "docs/qa/remediation_backlog.md"
+ROOT_BACKLOG_PATH = PROJECT_ROOT / "BACKLOG.md"
 ACCEPTANCE_PATH = PROJECT_ROOT / "docs/qa/qa_acceptance.md"
 AUDITED_COMMIT = "1b6130793d7b305605115dea255de15e89d2b94f"
 ACCEPTED_COMMIT = "2d886756227787b2eed2d5f46754b2ab8fd7745b"
@@ -346,3 +347,15 @@ def test_human_readable_qa_documents_cover_every_finding_and_gate() -> None:
         "public promotion",
     ):
         assert required in acceptance
+
+
+def test_root_backlog_records_every_accepted_qa_item_as_complete() -> None:
+    backlog = ROOT_BACKLOG_PATH.read_text(encoding="utf-8")
+
+    for issue_id in ("QA-001", *(f"QA-{number}" for number in range(101, 112))):
+        matching_rows = [line for line in backlog.splitlines() if f"| {issue_id} |" in line]
+        assert len(matching_rows) == 1
+        assert "| complete |" in matching_rows[0]
+
+    assert "QA-109, automating the retention deadline checkpoint, is next" not in backlog
+    assert "all thirteen findings" in backlog
