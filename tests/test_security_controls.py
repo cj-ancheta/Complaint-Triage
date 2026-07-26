@@ -20,8 +20,8 @@ def test_all_workflow_actions_are_immutable_and_security_gates_are_present() -> 
     assert actions
     assert all(re.fullmatch(r"[0-9a-f]{40}", revision) for _, revision in actions)
     assert set(actions) == {
-        ("actions/checkout", "11d5960a326750d5838078e36cf38b85af677262"),
-        ("actions/setup-python", "a26af69be951a213d495a4c3e4e4022e16d87065"),
+        ("actions/checkout", "3d3c42e5aac5ba805825da76410c181273ba90b1"),
+        ("actions/setup-python", "5fda3b95a4ea91299a34e894583c3862153e4b97"),
         ("aquasecurity/trivy-action", "ed142fd0673e97e23eac54620cfb913e5ce36c25"),
     }
     for required in (
