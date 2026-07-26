@@ -8,6 +8,8 @@
     "evidence_version",
     "audit_date",
     "audited_commit",
+    "accepted_date",
+    "accepted_commit",
     "status",
     "conclusion",
     "scope",
@@ -21,6 +23,8 @@
     "evidence_version": { "const": "repository-qa-evidence-1.0.0" },
     "audit_date": { "type": "string", "format": "date" },
     "audited_commit": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "accepted_date": { "type": "string", "format": "date" },
+    "accepted_commit": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
     "status": { "enum": ["review", "accepted"] },
     "conclusion": { "enum": ["pass", "pass_with_findings", "fail"] },
     "scope": {
@@ -134,7 +138,7 @@
         "frozen_test_access_authorized": { "const": false },
         "deployment_authorized": { "const": false },
         "public_metric_promotion_authorized": { "const": false },
-        "paper_drafting_authorized": { "const": false }
+        "paper_drafting_authorized": { "const": true }
       }
     }
   }

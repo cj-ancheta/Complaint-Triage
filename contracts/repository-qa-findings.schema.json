@@ -8,6 +8,8 @@
     "findings_version",
     "audit_date",
     "audited_commit",
+    "accepted_date",
+    "accepted_commit",
     "status",
     "summary",
     "findings"
@@ -16,6 +18,8 @@
     "findings_version": { "const": "repository-qa-findings-1.0.0" },
     "audit_date": { "type": "string", "format": "date" },
     "audited_commit": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "accepted_date": { "type": "string", "format": "date" },
+    "accepted_commit": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
     "status": { "enum": ["review", "accepted"] },
     "summary": {
       "type": "object",

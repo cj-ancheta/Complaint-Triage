@@ -15,7 +15,9 @@ FINDINGS_SCHEMA_PATH = PROJECT_ROOT / "contracts/repository-qa-findings.schema.j
 REPORT_PATH = PROJECT_ROOT / "docs/qa/repository_qa_report.md"
 PLAN_PATH = PROJECT_ROOT / "docs/qa/repository_qa_plan.md"
 BACKLOG_PATH = PROJECT_ROOT / "docs/qa/remediation_backlog.md"
+ACCEPTANCE_PATH = PROJECT_ROOT / "docs/qa/qa_acceptance.md"
 AUDITED_COMMIT = "1b6130793d7b305605115dea255de15e89d2b94f"
+ACCEPTED_COMMIT = "2d886756227787b2eed2d5f46754b2ab8fd7745b"
 LOCK_DIGESTS = {
     "audit-tool-py312-linux-x86_64.lock.txt": (
         "5ae084ee14392bf862a5e37cd8a208ec9f52fb55a52bfe7a707be008b66e5c09"
@@ -70,7 +72,11 @@ def test_repository_qa_documents_validate_and_reconcile() -> None:
     findings = _load_json(FINDINGS_PATH)
     assert evidence["audited_commit"] == AUDITED_COMMIT
     assert findings["audited_commit"] == AUDITED_COMMIT
-    assert evidence["status"] == findings["status"] == "review"
+    assert evidence["accepted_commit"] == ACCEPTED_COMMIT
+    assert findings["accepted_commit"] == ACCEPTED_COMMIT
+    assert evidence["accepted_date"] == findings["accepted_date"] == "2026-07-26"
+    assert evidence["status"] == findings["status"] == "accepted"
+    assert evidence["conclusion"] == "pass"
 
     counts = Counter(item["severity"] for item in findings["findings"])
     expected = {
@@ -303,7 +309,7 @@ def test_qa_pack_preserves_privacy_and_release_boundaries() -> None:
         "frozen_test_access_authorized": False,
         "deployment_authorized": False,
         "public_metric_promotion_authorized": False,
-        "paper_drafting_authorized": False,
+        "paper_drafting_authorized": True,
     }
 
 
@@ -312,6 +318,7 @@ def test_human_readable_qa_documents_cover_every_finding_and_gate() -> None:
     report = REPORT_PATH.read_text(encoding="utf-8")
     plan = PLAN_PATH.read_text(encoding="utf-8")
     backlog = BACKLOG_PATH.read_text(encoding="utf-8")
+    acceptance = ACCEPTANCE_PATH.read_text(encoding="utf-8")
 
     for finding in findings["findings"]:
         assert finding["finding_id"] in report
@@ -330,3 +337,12 @@ def test_human_readable_qa_documents_cover_every_finding_and_gate() -> None:
         "## Limitations of this audit",
     ):
         assert required in report
+    for required in (
+        ACCEPTED_COMMIT,
+        "validation-only",
+        "manual-review-only",
+        "does not authorize",
+        "frozen-test",
+        "public promotion",
+    ):
+        assert required in acceptance
