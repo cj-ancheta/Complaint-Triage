@@ -3,7 +3,7 @@
 Every value must be generated from the listed committed aggregate source.
 
 Status: implemented on 2026-07-26. T1-T6 are generated in
-`generated/result_tables.md`; F1-F6 are generated as deterministic SVG files in
+`generated/result_tables.md`; F1-F7 are generated as deterministic SVG files in
 `generated/`. `generated/source_manifest.json` records the canonical source
 hashes and complete output set.
 
@@ -28,6 +28,7 @@ hashes and complete output set.
 | F4 | October reliability before/after calibration | calibration report | plot committed equal-width bins; show empty bins |
 | F5 | Coverage versus selective accuracy with gate failures | abstention report | label ineligible thresholds; no "optimal" language |
 | F6 | QA remediation timeline | Git/QA evidence | distinguish code controls from model evidence |
+| F7 | Prospective causal DAG | causal protocol | distinguish baseline variables, assignment, mediators, and outcomes; label not conducted |
 
 ## Appendices
 
@@ -35,6 +36,7 @@ hashes and complete output set.
 - All eleven per-class calibration summaries.
 - All candidate thresholds, counts, Wilson intervals, and six gate results.
 - Exact environment identities, lock filenames, and accepted evidence hashes.
+- Full prospective target-trial protocol, estimands, assumptions, and stopping rules.
 
 ## Generation requirements
 

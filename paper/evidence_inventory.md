@@ -80,4 +80,14 @@ future regression.
 - Demographic attributes: not collected or evaluated.
 - Reviewer outcomes, productivity, overrides, or harms: no deployment or user study.
 - Service throughput, concurrency, uptime, and cloud cost: no service exists.
+- Observed causal effects of model assistance: no treatment assignment,
+  reviewer outcome, or downstream outcome exists in the research cohort.
 - Causal explanations or narrative examples: outside the authorized evidence boundary.
+
+## Prospective causal design boundary
+
+`paper/prospective_causal_protocol.md` is a design artifact, not an empirical
+source. It defines the future intervention, control, assignment, outcomes,
+estimands, assumptions, route-specific success rule, and safety stopping
+conditions. F7 visualizes that proposed structure. Neither artifact adds an
+observation to the accepted evidence snapshot or authorizes a reviewer study.

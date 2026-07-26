@@ -3,6 +3,7 @@ import re
 from complaint_triage.real_extraction import PROJECT_ROOT
 
 PAPER_ROOT = PROJECT_ROOT / "paper"
+CITATION_PATH = PROJECT_ROOT / "CITATION.cff"
 PAPER_FILES = {
     "README.md",
     "claim_rules.md",
@@ -13,7 +14,12 @@ PAPER_FILES = {
 }
 LITERATURE_FILES = {"claim_source_matrix.md", "references.md"}
 DRAFT_FILES = {"manuscript.md"}
-READINESS_FILES = {"publication_readiness.md"}
+READINESS_FILES = {
+    "impact_statement.md",
+    "prospective_causal_protocol.md",
+    "publication_checklist.md",
+    "publication_readiness.md",
+}
 
 
 def _read(filename: str) -> str:
@@ -84,7 +90,7 @@ def test_outline_covers_research_questions_and_complete_paper_structure() -> Non
     research_questions = readme.split("## Research questions", maxsplit=1)[1].split(
         "## Files", maxsplit=1
     )[0]
-    assert len(re.findall(r"^\d+\. ", research_questions, flags=re.MULTILINE)) == 4
+    assert len(re.findall(r"^\d+\. ", research_questions, flags=re.MULTILINE)) == 5
     for section in (
         "## 1. Title page and abstract",
         "## 2. Introduction",
@@ -101,7 +107,7 @@ def test_outline_covers_research_questions_and_complete_paper_structure() -> Non
     ):
         assert section in outline
 
-    for research_question in ("RQ1", "RQ2", "RQ3", "RQ4"):
+    for research_question in ("RQ1", "RQ2", "RQ3", "RQ4", "RQ5"):
         assert research_question in outline
     assert "Evidence inputs:" in outline
     assert "Literature needed:" in outline
@@ -118,7 +124,7 @@ def test_literature_matrix_uses_defined_sources_and_records_scope_limits() -> No
     assert all(source_id in matrix for source_id in source_ids)
     assert len(re.findall(r"^\| C\d{2} \|", matrix, flags=re.MULTILINE)) >= 20
     assert "scope caveat" in matrix.lower()
-    assert "initial search is complete" in questions.lower()
+    assert "publication primary-source search complete" in questions.lower()
 
 
 def test_manuscript_is_complete_cited_and_evidence_bounded() -> None:
@@ -127,7 +133,7 @@ def test_manuscript_is_complete_cited_and_evidence_bounded() -> None:
     source_ids = set(re.findall(r"^### ([A-Z][A-Z0-9-]+)$", references, flags=re.MULTILINE))
     cited_ids = set(re.findall(r"\[([A-Z][A-Z0-9-]+)\]\(references\.md#", manuscript))
 
-    assert 5_000 <= len(manuscript.split()) <= 8_000
+    assert 5_000 <= len(manuscript.split()) <= 8_500
     assert cited_ids == source_ids
     for section in (
         "## Abstract",
@@ -167,10 +173,12 @@ def test_publication_readiness_preserves_release_authority_boundary() -> None:
     readiness = _read("publication_readiness.md")
     evidence = (PROJECT_ROOT / "docs" / "qa" / "qa_evidence.json").read_text(encoding="utf-8")
 
-    assert "internal_draft_complete_external_publication_not_authorized" in readiness
+    assert "publication_ready_public_preprint_authorized" in readiness
     assert "public_metric_promotion_authorized: false" in readiness
-    assert "| Editorial owner review" in readiness and "| pending |" in readiness
-    assert "| Public metric promotion" in readiness and "| blocked |" in readiness
+    assert "| Editorial owner review" in readiness and "| pass |" in readiness
+    assert "| Bounded public reporting" in readiness and "| pass |" in readiness
+    normalized_readiness = re.sub(r"\s+", " ", readiness)
+    assert "does not reinterpret the metrics as final performance" in normalized_readiness
     assert '"public_metric_promotion_authorized": false' in evidence
     assert '"frozen_test_access_authorized": false' in evidence
     assert '"deployment_authorized": false' in evidence
@@ -180,7 +188,82 @@ def test_manuscript_embeds_every_generated_figure_with_alt_text() -> None:
     manuscript = _read("manuscript.md")
     figure_links = re.findall(r"!\[([^]]+)]\((generated/f\d-[^)]+\.svg)\)", manuscript)
 
-    assert len(figure_links) == 6
-    assert len({path for _, path in figure_links}) == 6
+    assert len(figure_links) == 7
+    assert len({path for _, path in figure_links}) == 7
     assert all(alt.strip() for alt, _ in figure_links)
     assert all((PAPER_ROOT / path).is_file() for _, path in figure_links)
+
+
+def test_causal_protocol_is_actionable_but_never_presented_as_observed_evidence() -> None:
+    manuscript = _read("manuscript.md")
+    protocol = _read("prospective_causal_protocol.md")
+    checklist = _read("publication_checklist.md")
+
+    for required in (
+        "design_blueprint_not_registered_not_conducted",
+        "ATE_correct = E[Y(1) - Y(0)]",
+        "ATE_time = E[T(1) - T(0)]",
+        "intention-to-treat",
+        "independent",
+        "route-specific",
+        "random assignment",
+    ):
+        assert required.lower() in protocol.lower()
+
+    for prohibited in (
+        "the causal study shows",
+        "the trial demonstrated",
+        "causally improved reviewer",
+    ):
+        assert prohibited not in manuscript.lower()
+        assert prohibited not in protocol.lower()
+
+    assert "present paper reports no causal effect" in manuscript
+    assert "design_blueprint_not_registered_not_conducted" in checklist
+    assert "causal estimate, trial completion" in checklist
+
+
+def test_publication_citation_metadata_matches_the_released_manuscript() -> None:
+    citation = CITATION_PATH.read_text(encoding="utf-8")
+    manuscript = _read("manuscript.md")
+
+    for required in (
+        "cff-version: 1.2.0",
+        "version: 1.0.0",
+        "date-released: 2026-07-26",
+        "family-names: Ancheta",
+        "given-names: Charles Jr",
+        "https://github.com/cj-ancheta/Complaint-Triage",
+    ):
+        assert required in citation
+    assert "Decision Impact, Validation" in citation
+    assert "Decision Impact, Validation" in manuscript
+    assert "TODO" not in citation
+
+
+def test_impact_statement_leads_with_the_decision_and_preserves_causal_limits() -> None:
+    impact = re.sub(r"\s+", " ", _read("impact_statement.md").lower())
+
+    for required in (
+        "no-go decision",
+        "no suggestions for one required category",
+        "manual review only",
+        "cannot show that ai assistance",
+        "prospective target-trial blueprint",
+        "intention-to-treat",
+        "route-specific safety constraints",
+    ):
+        assert required in impact
+    assert "causally improves" not in impact
+
+
+def test_all_paper_local_links_resolve() -> None:
+    for document in PAPER_ROOT.glob("*.md"):
+        text = document.read_text(encoding="utf-8")
+        for target in re.findall(r"\[[^]]*]\(([^)]+)\)", text):
+            if target.startswith(("https://", "http://", "mailto:")):
+                continue
+            path_text = target.split("#", maxsplit=1)[0]
+            if not path_text:
+                continue
+            assert (document.parent / path_text).is_file(), f"broken link in {document}: {target}"

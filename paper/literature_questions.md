@@ -1,7 +1,7 @@
 # Literature search protocol
 
-Status: primary-source search complete for the planned draft; reopen if the
-outline gains a new external factual claim
+Status: publication primary-source search complete, including prediction
+reporting, target-trial design, and prospective human-AI evaluation
 
 ## Inclusion rules
 
@@ -31,6 +31,12 @@ outline gains a new external factual claim
    support the engineering-evidence framing?
 9. What official CFPB caveats constrain representativeness, label meaning,
    narrative publication, and longitudinal comparisons?
+10. Which prediction-model reporting items improve transparency without being
+    misrepresented as evidence of operational impact?
+11. How should a target trial specify assignment, estimands, outcomes, and
+    analysis before causal estimation?
+12. What prospective AI-intervention and human-AI studies demonstrate about the
+    need to measure workflow effects rather than transport them?
 
 ## Planned claim-to-source matrix columns
 
@@ -45,6 +51,7 @@ outline gains a new external factual claim
 | `scope_caveat` | what the source does not establish for this project |
 | `quote_checked` | confirmation that wording was verified without copying long text |
 
-The initial search is complete: every planned non-project factual claim in the
-outline is mapped in `claim_source_matrix.md` or explicitly marked as the
-author's synthesis. Citation checking must be repeated against the prose draft.
+The publication search is complete: every non-project factual claim in the
+manuscript and causal protocol is mapped in `claim_source_matrix.md` or
+explicitly marked as the author's synthesis. Citation IDs, links, and scope
+caveats are tested against the final prose.

@@ -1,9 +1,10 @@
 # Detailed paper outline
 
 Research-question map: model comparison (RQ1), calibration (RQ2), selective
-classification and abstention (RQ3), and repository assurance (RQ4). Each
-results subsection must answer its mapped question using only the evidence
-listed below.
+classification and abstention (RQ3), repository assurance (RQ4), and a
+prospective causal evaluation of reviewer impact (RQ5). Each empirical results
+subsection must use only the evidence listed below; RQ5 is answered as a design,
+not an observed effect.
 
 Evidence inputs: committed aggregate manifests and evaluation reports,
 governance documents, the accepted QA snapshot, and primary literature entered
@@ -11,7 +12,7 @@ through the claim-to-source matrix. Literature needed: source context,
 classification methods and metrics, calibration, selective prediction,
 human-AI oversight, and reproducible research.
 
-Target form: 6,000–8,000 word portfolio research paper plus appendices.
+Target form: 6,000–8,500 word public preprint plus causal-protocol appendix.
 
 ## 1. Title page and abstract
 
@@ -29,7 +30,7 @@ reproducible ML.
 2. Explain why majority-dominated accuracy can conceal weak rare-class behavior.
 3. Motivate the combined question: model quality, confidence quality, coverage,
    and evidence trustworthiness.
-4. State the four research questions from `README.md`.
+4. State the five research questions from `README.md`.
 5. State contributions narrowly: governed dataset construction, classical versus
    compact-transformer validation, calibration/selective-classification
    analysis, and repository assurance.
@@ -59,6 +60,12 @@ risk–coverage trade-offs, and class-aware failure under imbalance.
 
 Distinguish advisory decision support from automation. Connect reproducibility,
 documentation, and software assurance to the credibility of empirical results.
+
+### 3.5 Prediction reporting and causal impact
+
+Separate transparent predictive evaluation from intervention effects. Introduce
+target-trial reasoning, prospective AI-intervention reporting principles, and
+why external human-AI effect sizes do not transport to complaint review.
 
 ## 4. Data and governance
 
@@ -119,6 +126,13 @@ Describe exact locks, independent standard/CPU-transformer jobs, PostgreSQL
 schema controls, coverage/warning ratchets, security gates, strict typing,
 artifact trust, and independent aggregate evidence replay.
 
+### 5.7 Prospective causal evaluation
+
+Specify the reviewer-level causal question, contamination-aware randomization,
+manual-only control, suggestion-interface intervention, intention-to-treat
+estimands, independent adjudication, route-specific constraints, and the
+not-conducted boundary.
+
 ## 6. Results
 
 ### 6.1 Cohort and class imbalance
@@ -153,6 +167,11 @@ Present the risk/coverage curve and gate failures. Explain thresholds 0.75 and
 Summarize 13 findings, remediation themes, and the independently checked
 evidence snapshot. Keep engineering assurance distinct from model validity.
 
+### 6.7 Decision impact and causal evidence gap
+
+Distinguish the observed no-go decision from unmeasured reviewer, timing, and
+consumer effects. Answer RQ5 at the protocol level.
+
 ## 7. Discussion
 
 1. Accuracy was a weak guide because the majority reference already appeared
@@ -163,6 +182,8 @@ evidence snapshot. Keep engineering assurance distinct from model validity.
 4. A negative deployment decision is a substantive result, not project failure.
 5. Software and governance controls changed the confidence appropriate for the
    evidence, not the underlying metric values.
+6. Operational impact requires prospective randomized workflow evidence; model
+   validation cannot supply the causal effect.
 
 Compare these interpretations with the related-work sources without claiming
 causal mechanisms not measured here.
@@ -174,6 +195,8 @@ duplicates, temporal/taxonomy shift, validation reuse, class imbalance,
 truncation, single-device benchmarking, calibration estimator limitations,
 unmeasured demographic fairness, no reviewer study, no production system, no
 energy measurement, and no frozen-test estimate.
+Also cover the proposed trial's untested assumptions, unknown power inputs,
+interference risk, and outcome-adjudication requirements.
 
 ## 9. Ethics, privacy, and human oversight
 
@@ -183,7 +206,8 @@ required but unevaluated safeguard.
 
 ## 10. Conclusion
 
-Answer each research question directly. End with the evidence-bounded result:
+Answer each research question directly, including RQ5's proposed estimands and
+not-conducted status. End with the evidence-bounded result:
 the compact transformer was the stronger validation candidate, but the fixed
 class-aware policy rejected every threshold, leaving the system manual-only.
 
@@ -202,3 +226,4 @@ calibrator remain local and are scheduled for deletion.
 - E. Complete abstention gate matrix and Wilson intervals.
 - F. QA finding-to-control traceability.
 - G. Claim checklist and evidence hashes.
+- H. Prospective target-trial and causal estimand protocol.

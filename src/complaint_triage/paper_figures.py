@@ -424,6 +424,174 @@ def render_qa_timeline() -> str:
     )
 
 
+def render_causal_dag() -> str:
+    width, height = 1280, 670
+    body = [
+        _text(
+            35,
+            40,
+            "F7. Prospective causal DAG for AI-assisted complaint triage",
+            size=24,
+            font_weight="bold",
+        ),
+        _text(
+            35,
+            68,
+            "Design blueprint only; no causal effect has been estimated",
+            size=14,
+            fill=ORANGE,
+        ),
+        '<defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#6B7280"/></marker></defs>',
+    ]
+
+    def node(
+        x: int,
+        y: int,
+        label: str,
+        detail: str,
+        *,
+        fill: str,
+        stroke: str,
+        width_: int = 210,
+    ) -> None:
+        body.append(
+            f'<rect x="{x}" y="{y}" width="{width_}" height="78" rx="10" fill="{fill}" stroke="{stroke}" stroke-width="2"/>'
+        )
+        body.append(
+            _text(x + width_ / 2, y + 31, label, size=15, text_anchor="middle", font_weight="bold")
+        )
+        body.append(_text(x + width_ / 2, y + 56, detail, size=12, text_anchor="middle", fill=GREY))
+
+    def arrow(x1: int, y1: int, x2: int, y2: int, *, dashed: bool = False) -> None:
+        dash = ' stroke-dasharray="7 5"' if dashed else ""
+        body.append(
+            f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="{GREY}" stroke-width="2" marker-end="url(#arrow)"{dash}/>'
+        )
+
+    node(
+        40,
+        130,
+        "Randomized assignment A",
+        "manual-only vs suggestion",
+        fill="#E8F4FA",
+        stroke=BLUE,
+        width_=230,
+    )
+    node(
+        355,
+        130,
+        "Suggestion exposure S",
+        "visible, missing, or failed",
+        fill="#E8F4FA",
+        stroke=BLUE,
+        width_=230,
+    )
+    node(
+        690,
+        130,
+        "Reviewer response M",
+        "accept, correct, escalate",
+        fill="#FFF4E6",
+        stroke=ORANGE,
+        width_=230,
+    )
+    node(
+        1030,
+        95,
+        "Correct final route Y",
+        "independent adjudication",
+        fill="#E8F7F1",
+        stroke=TEAL,
+        width_=220,
+    )
+    node(
+        1030,
+        205,
+        "Active review time T",
+        "queue delay excluded",
+        fill="#E8F7F1",
+        stroke=TEAL,
+        width_=220,
+    )
+
+    node(
+        170,
+        390,
+        "Case factors C",
+        "true route and complexity",
+        fill="#F3F4F6",
+        stroke=NAVY,
+        width_=230,
+    )
+    node(
+        525,
+        390,
+        "Reviewer factors E",
+        "experience and workload",
+        fill="#F3F4F6",
+        stroke=NAVY,
+        width_=230,
+    )
+    node(
+        870,
+        390,
+        "Calendar/team block W",
+        "case mix and queue context",
+        fill="#F3F4F6",
+        stroke=NAVY,
+        width_=245,
+    )
+
+    arrow(270, 169, 355, 169)
+    arrow(585, 169, 690, 169)
+    arrow(920, 153, 1030, 134)
+    arrow(920, 185, 1030, 237)
+    arrow(400, 390, 440, 208)
+    arrow(400, 429, 690, 208)
+    arrow(400, 430, 1030, 144)
+    arrow(755, 390, 790, 208)
+    arrow(755, 430, 1030, 244)
+    arrow(995, 390, 1080, 283)
+    arrow(995, 390, 1135, 173)
+    arrow(930, 390, 270, 208, dashed=True)
+
+    body.append(_text(35, 535, "Interpretation", size=17, font_weight="bold"))
+    body.append(
+        _text(
+            35,
+            565,
+            "Solid arrows are hypothesized causal paths; the dashed arrow marks stratified assignment by calendar/team block.",
+            size=14,
+        )
+    )
+    body.append(
+        _text(
+            35,
+            594,
+            "M is post-assignment: do not adjust for acceptance or override in the primary intention-to-treat total-effect analysis.",
+            size=14,
+            fill=ORANGE,
+        )
+    )
+    body.append(
+        _text(
+            35,
+            623,
+            "Randomization addresses assignment confounding in expectation; interference, attrition, and outcome validity still require design controls.",
+            size=14,
+            fill=GREY,
+        )
+    )
+
+    return _svg(
+        width,
+        height,
+        "Prospective causal DAG for AI-assisted complaint triage",
+        "Randomized suggestion access affects reviewer response, route correctness, and review time, with baseline case, reviewer, and calendar factors shown explicitly.",
+        body,
+    )
+
+
 def render_figures() -> dict[str, str]:
     return {
         "f1-governed-pipeline.svg": render_pipeline(),
@@ -432,4 +600,5 @@ def render_figures() -> dict[str, str]:
         "f4-october-reliability.svg": render_reliability(),
         "f5-risk-coverage.svg": render_risk_coverage(),
         "f6-qa-timeline.svg": render_qa_timeline(),
+        "f7-causal-dag.svg": render_causal_dag(),
     }

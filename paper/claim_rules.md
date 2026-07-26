@@ -12,6 +12,8 @@
 - State that the frozen November-December 2024 test partition was untouched and
   that **frozen-test** access remains unauthorized.
 - Separate observed repository controls from broader claims about trustworthy AI.
+- Separate observed predictive results from the proposed causal estimands and
+  label the target trial `design_blueprint_not_registered_not_conducted`.
 
 ## Prohibited substitutions
 
@@ -25,6 +27,8 @@
 | "The dataset represents consumers." | "The data are published CFPB complaints and are not population-representative." |
 | "CI proves the system is secure." | "Required CI checks reduce specified software and supply-chain risks." |
 | "Human oversight solves the risk." | "Human review is a required safeguard whose effectiveness was not measured." |
+| "The model improves reviewer accuracy or productivity." | "A prospective randomized workflow study is required to estimate those effects." |
+| "The causal study shows..." | "The proposed causal protocol would estimate...; no trial was conducted." |
 
 ## Numerical rules
 
@@ -37,6 +41,8 @@
 - Do not calculate or imply a frozen-test estimate.
 - Do not infer uncertainty beyond the Wilson intervals already predeclared for
   selective precision; those intervals do not address shift or dependence.
+- Do not invent a causal effect, non-inferiority margin, power calculation, or
+  reviewer baseline from validation metrics.
 
 ## Privacy rules
 

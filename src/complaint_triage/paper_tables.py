@@ -13,6 +13,7 @@ from complaint_triage.real_extraction import PROJECT_ROOT
 
 EVALUATION_ROOT = PROJECT_ROOT / "data" / "evaluations" / "cfpb"
 MANUSCRIPT_PATH = PROJECT_ROOT / "paper" / "manuscript.md"
+CAUSAL_PROTOCOL_PATH = PROJECT_ROOT / "paper" / "prospective_causal_protocol.md"
 GENERATED_ROOT = PROJECT_ROOT / "paper" / "generated"
 TABLES_PATH = GENERATED_ROOT / "result_tables.md"
 MANIFEST_PATH = GENERATED_ROOT / "source_manifest.json"
@@ -283,7 +284,13 @@ def _source_paths() -> list[Path]:
         if len(matches) != 1:
             raise RuntimeError(f"expected one {directory} report, found {len(matches)}")
         paths.append(matches[0])
-    return [RUN_REPORT_PATH, SPLIT_MANIFEST_PATH, *paths, QA_FINDINGS_PATH]
+    return [
+        RUN_REPORT_PATH,
+        SPLIT_MANIFEST_PATH,
+        *paths,
+        QA_FINDINGS_PATH,
+        CAUSAL_PROTOCOL_PATH,
+    ]
 
 
 def canonical_sha256(path: Path) -> str:
