@@ -376,12 +376,14 @@ only 0.0022 accuracy points, but MiniLM's macro-F1 advantage is 0.0361 and its
 worst-class-recall advantage is 0.1498. The larger class-equal and worst-class
 differences answer RQ1 more meaningfully than the accuracy difference alone.
 
+<!-- GENERATED:model-comparison:start -->
 | Metric | Majority reference | TF-IDF | MiniLM | MiniLM - TF-IDF |
 |---|---:|---:|---:|---:|
 | Accuracy | 0.666881 | 0.883692 | 0.885853 | +0.002161 |
 | Macro F1 | 0.072741 | 0.699661 | 0.735746 | +0.036085 |
 | Weighted F1 | 0.533607 | 0.879291 | 0.886692 | +0.007401 |
 | Worst-class recall | 0.000000 | 0.057269 | 0.207048 | +0.149779 |
+<!-- GENERATED:model-comparison:end -->
 
 MiniLM has higher observed per-class F1 for ten of eleven classes. TF-IDF
 retains a small F1 lead for Mortgage: 0.8763 compared with 0.8736. The comparison
@@ -408,15 +410,17 @@ The fitted temperature is 1.041049944456901. A value slightly above one softens
 the predicted distribution. As required by the scalar transformation, September
 and October predicted labels and accuracies are unchanged.
 
+<!-- GENERATED:calibration:start -->
 | October diagnostic | Before | After | Change |
 |---|---:|---:|---:|
-| Accuracy | 0.882121 | 0.882121 | 0.000000 |
+| Accuracy | 0.882121 | 0.882121 | +0.000000 |
 | Mean top-label confidence | 0.905545 | 0.898805 | -0.006739 |
 | Confidence minus accuracy | 0.023424 | 0.016685 | -0.006739 |
 | Negative log likelihood | 0.371454 | 0.369804 | -0.001650 |
 | Multiclass Brier loss | 0.177733 | 0.177053 | -0.000680 |
 | Equal-width ECE, 15 bins | 0.023894 | 0.017336 | -0.006558 |
 | Equal-mass ECE, 15 bins | 0.023598 | 0.017946 | -0.005652 |
+<!-- GENERATED:calibration:end -->
 
 Every declared aggregate October probability diagnostic improves in its intended
 direction, answering the first part of RQ2. The conclusion remains deliberately
@@ -445,10 +449,12 @@ miss aggregate accuracy and false-suggestion requirements. Higher thresholds
 improve aggregate selective accuracy while progressively removing rare predicted
 classes. The transition is visible in two diagnostic thresholds:
 
+<!-- GENERATED:abstention:start -->
 | Threshold | Coverage | Review rate | Selective accuracy | False suggestion rate | Blocking evidence |
 |---:|---:|---:|---:|---:|---|
-| 0.75 | 0.856279 | 0.143721 | 0.936402 | 0.054457 | False suggestions exceed 0.05; least-suggested class has 4 cases |
-| 0.80 | 0.825440 | 0.174560 | 0.945032 | 0.045373 | One predicted class has zero suggestions and cannot meet count or precision gates |
+| 0.75 | 0.856279 | 0.143721 | 0.936402 | 0.054457 | false suggestions exceed 0.05; least-suggested class has 4 cases |
+| 0.80 | 0.825440 | 0.174560 | 0.945032 | 0.045373 | least-suggested class has 0 cases; predicted-class precision gate fails |
+<!-- GENERATED:abstention:end -->
 
 At 0.75, selective accuracy passes but the false-suggestion rate does not, and a
 predicted class has too little evidence. At 0.80, the global accuracy and false-
