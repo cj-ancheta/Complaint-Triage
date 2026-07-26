@@ -26,7 +26,9 @@ def test_paper_planning_package_is_complete_and_links_resolve() -> None:
 
     readme = _read("README.md")
     local_links = re.findall(r"\[[^]]+\]\(([^)]+\.md)\)", readme)
-    assert set(local_links) == (PAPER_FILES | LITERATURE_FILES | DRAFT_FILES) - {"README.md"}
+    assert set(local_links) == ((PAPER_FILES | LITERATURE_FILES | DRAFT_FILES) - {"README.md"}) | {
+        "generated/result_tables.md"
+    }
     assert all((PAPER_ROOT / link).is_file() for link in local_links)
 
 

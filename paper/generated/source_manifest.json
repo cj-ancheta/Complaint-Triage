@@ -1,0 +1,43 @@
+{
+  "generator": "complaint_triage.paper_tables",
+  "manifest_version": "1.0.0",
+  "outputs": [
+    "paper/generated/result_tables.md",
+    "paper/manuscript.md"
+  ],
+  "privacy": {
+    "contains_complaint_ids": false,
+    "contains_narratives": false,
+    "contains_row_values": false
+  },
+  "sources": [
+    {
+      "path": "data/manifests/cfpb/reports/cfpb-run-20260722T130728Z-2b7815d4c850.json",
+      "sha256": "36bae4066aae0cba826b46f24ae2158c9432da231e95bf7eb0a2a70ca25c3b88"
+    },
+    {
+      "path": "data/manifests/cfpb/splits/cfpb-run-20260722T130728Z-2b7815d4c850-split-1.0.0.json",
+      "sha256": "8685eefd10d764d813dee2891e930323c22592850d537b0571956f390afe554b"
+    },
+    {
+      "path": "data/evaluations/cfpb/majority/cfpb-run-20260722T130728Z-2b7815d4c850-majority-baseline-1.0.0.json",
+      "sha256": "13571409bf36493f7aeb67a3e1ad1a4fec3136b319b944dab5ea6151acbbcff1"
+    },
+    {
+      "path": "data/evaluations/cfpb/model-comparison/cfpb-run-20260722T130728Z-2b7815d4c850-validation-model-comparison-1.0.0.json",
+      "sha256": "9623346c2feb6489b7a8637157142692e6b847bbcc11ea3809ea4b4c5aca04a3"
+    },
+    {
+      "path": "data/evaluations/cfpb/calibration/cfpb-run-20260722T130728Z-2b7815d4c850-transformer-temperature-calibration-1.0.0.json",
+      "sha256": "faa1125b99e5dbc9421628102b21e330940700952bbc501bee2cd2bdc46e655e"
+    },
+    {
+      "path": "data/evaluations/cfpb/abstention/cfpb-run-20260722T130728Z-2b7815d4c850-abstention-threshold-analysis-1.0.0.json",
+      "sha256": "73092c7fba0c069ba0d1a8b419e5203db3ffc8ed6f245000685b87e20e526716"
+    },
+    {
+      "path": "docs/qa/qa_findings.json",
+      "sha256": "061db8098efb22cdbb0d803fc45b3538f0b70662530fc0f3ce97ee13af6f4379"
+    }
+  ]
+}

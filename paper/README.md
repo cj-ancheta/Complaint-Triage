@@ -41,6 +41,9 @@ part of the empirical method.
   scope note for every source.
 - [`claim_source_matrix.md`](claim_source_matrix.md) maps manuscript claims to
   those sources and records the limits of each citation.
+- [`generated/result_tables.md`](generated/result_tables.md) and its source
+  manifest are deterministic aggregate-only outputs. Regenerate them with
+  `python paper/scripts/generate.py`.
 
 ## Drafting workflow
 

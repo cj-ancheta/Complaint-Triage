@@ -86,6 +86,9 @@ jobs:
       - name: Check formatting
         run: python -m ruff format --check .
 
+      - name: Check generated paper evidence
+        run: python paper/scripts/generate.py --check
+
       - name: Check protected static types
         run: python -m mypy
 
