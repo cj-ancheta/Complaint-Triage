@@ -58,6 +58,8 @@ part of the empirical method.
   relevance in publication-ready plain language.
 - [`submission/README.md`](submission/README.md) is the DOI-deposit and
   external-submission handoff, including immutable-file and rights checks.
+- [`submission/finalization_status.md`](submission/finalization_status.md)
+  records the one remaining account-bound input and the enforced final gate.
 
 ## Drafting workflow
 
@@ -75,9 +77,11 @@ part of the empirical method.
    publication-ready. **Authorized 2026-07-26.**
 8. Publish the protected, tagged preprint release with the validation-only and
    not-conducted causal-study boundaries intact.
-9. Render the tagged source into self-contained HTML and PDF with
-   `paper/scripts/build_preprint.ps1`, then verify the generated SHA-256
-   manifest before deposit.
+9. Reserve the Zenodo DOI before final publication and place it in the reviewed
+   manuscript, citation, and deposit metadata.
+10. Build the DOI-bearing `paper-v1.0.2` tag with
+    `paper/scripts/build_submission.ps1`; deposit only the exact allowlisted
+    directory after both automated verification passes.
 
 Publication authorizes the paper and its explicitly labelled validation
 evidence. It does not authorize frozen-test access, model retraining, a new

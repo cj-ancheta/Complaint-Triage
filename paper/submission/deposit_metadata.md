@@ -10,15 +10,15 @@ payload.
 | Title | When Aggregate Accuracy Is Not Enough: Decision Impact, Validation Governance, and a Causal Evaluation Blueprint for Financial Complaint Triage |
 | Creator family name | Ancheta |
 | Creator given names | Charles Jr |
-| Publication date | 2026-07-27 |
+| Publication date | 2026-07-26 (date of first public preprint release) |
 | Publisher | Zenodo |
-| Version | 1.0.1 |
+| Version | 1.0.2 |
 | Language | English |
 | File visibility | Public |
 | License/rights | Custom: All rights reserved |
-| Related identifier | `https://github.com/cj-ancheta/Complaint-Triage/releases/tag/paper-v1.0.1` |
+| Related identifier | `https://github.com/cj-ancheta/Complaint-Triage/releases/tag/paper-v1.0.2` |
 | Related-identifier relation | Is supplemented by |
-| DOI | Reserve in Zenodo; do not enter a fabricated or placeholder DOI |
+| DOI status | Awaiting owner reservation; do not publish until the actual DOI replaces this status |
 
 ## Description
 
@@ -59,16 +59,21 @@ remain subject to their own licenses and terms.
 
 ## Files
 
-Upload the exact versioned files below from the `paper-v1.0.1` release:
+Upload the exact versioned files below from
+`paper/release-build/v1.0.2/` after the final gate passes:
 
-1. `when-aggregate-accuracy-is-not-enough-v1.0.1.pdf` — primary preview file.
-2. `when-aggregate-accuracy-is-not-enough-v1.0.1.html` — self-contained
+1. `when-aggregate-accuracy-is-not-enough-v1.0.2.pdf` — primary preview file.
+2. `when-aggregate-accuracy-is-not-enough-v1.0.2.html` — self-contained
    accessible rendering.
-3. `release-artifact-manifest-v1.0.1.json` — source commit and file hashes.
-4. `CITATION.cff` — citation metadata.
-5. `impact-statement-v1.0.1.md` — concise decision relevance.
-6. `prospective-causal-protocol-v1.0.1.md` — not-conducted causal design.
-7. `paper-source-manifest-v1.0.1.json` — aggregate-evidence provenance.
+3. `release-artifact-manifest-v1.0.2.json` — renderer output hashes.
+4. `submission-manifest-v1.0.2.json` — complete deposit allowlist and hashes.
+5. `CITATION-v1.0.2.cff` — citation metadata.
+6. `manuscript-v1.0.2.md` — preservation-friendly paper source.
+7. `impact-statement-v1.0.2.md` — concise decision relevance.
+8. `prospective-causal-protocol-v1.0.2.md` — not-conducted causal design.
+9. `paper-source-manifest-v1.0.2.json` — aggregate-evidence provenance.
+10. `submission-summary-v1.0.2.md` — reviewed archive abstract and boundaries.
+11. `zenodo-deposit-metadata-v1.0.2.md` — this metadata and rights record.
 
 Do not upload raw complaints, complaint identifiers, row-level predictions,
 model artifacts, vocabulary, local explanations, secrets, or ignored raw data.
