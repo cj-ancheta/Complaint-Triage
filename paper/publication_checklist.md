@@ -66,6 +66,12 @@ Authorization date: 2026-07-26
   and a SHA-256 artifact manifest.
 - [x] DOI-deposit metadata, rights instructions, submission summary, and
   immutable-file verification steps are committed.
+- [x] Final-package automation requires tag/version/DOI agreement, copies
+  supplementals from the immutable tag, and hashes every deposited file.
+- [x] PDF hardening validates structure and normalizes metadata time to the
+  tagged source commit.
+- [ ] The owner has reserved the Zenodo DOI and supplied it for inclusion in
+  version 1.0.2 before the final tag is created.
 - [ ] The owner has authenticated to Zenodo, reviewed the reserved DOI and
   record preview, and pressed Publish. This account-bound action cannot be
   delegated and remains outside repository authorization.

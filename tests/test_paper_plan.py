@@ -23,6 +23,7 @@ READINESS_FILES = {
 SUBMISSION_FILES = {
     "README.md",
     "deposit_metadata.md",
+    "finalization_status.md",
     "pre_publish_verification.md",
     "submission_summary.md",
 }
@@ -41,7 +42,11 @@ def test_paper_planning_package_is_complete_and_links_resolve() -> None:
     local_links = re.findall(r"\[[^]]+\]\(([^)]+\.md)\)", readme)
     assert set(local_links) == (
         (PAPER_FILES | LITERATURE_FILES | DRAFT_FILES | READINESS_FILES) - {"README.md"}
-    ) | {"generated/result_tables.md", "submission/README.md"}
+    ) | {
+        "generated/result_tables.md",
+        "submission/README.md",
+        "submission/finalization_status.md",
+    }
     assert all((PAPER_ROOT / link).is_file() for link in local_links)
 
 
@@ -179,7 +184,7 @@ def test_publication_readiness_preserves_release_authority_boundary() -> None:
     readiness = _read("publication_readiness.md")
     evidence = (PROJECT_ROOT / "docs" / "qa" / "qa_evidence.json").read_text(encoding="utf-8")
 
-    assert "publication_ready_public_preprint_authorized" in readiness
+    assert "public_preprint_released_final_deposit_awaiting_reserved_doi" in readiness
     assert "public_metric_promotion_authorized: false" in readiness
     assert "| Editorial owner review" in readiness and "| pass |" in readiness
     assert "| Bounded public reporting" in readiness and "| pass |" in readiness
@@ -257,24 +262,33 @@ def test_submission_package_is_complete_and_preserves_release_boundaries() -> No
     lowered = re.sub(r"\s+", " ", package.lower())
 
     for required in (
-        "package_ready_doi_not_minted",
+        "hardening_complete_awaiting_reserved_doi",
+        "awaiting_owner_reserved_doi",
         "publication / preprint",
         "all rights reserved",
         "validation-only",
         "manual-review-only",
         "design_blueprint_not_registered_not_conducted",
         "no causal effect",
-        "paper-v1.0.1",
+        "paper-v1.0.2",
+        "submission-manifest-v1.0.2.json",
     ):
         assert required in lowered
     assert "10.5281/zenodo." not in lowered
     assert "the causal study shows" not in lowered
     assert "cc by" in lowered and "default cc by license has been removed" in lowered
+    assert "2026-07-26 (date of first public preprint release)" in lowered
 
     readme = (submission_root / "README.md").read_text(encoding="utf-8")
     links = re.findall(r"\[[^]]+]\(([^)]+\.md)\)", readme)
-    assert set(links) == SUBMISSION_FILES - {"README.md"}
+    assert set(links) == SUBMISSION_FILES - {"README.md", "finalization_status.md"}
     assert all((submission_root / link).is_file() for link in links)
+    for script in (
+        "build_submission.ps1",
+        "finalize_submission.py",
+        "harden_pdf.py",
+    ):
+        assert (PAPER_ROOT / "scripts" / script).is_file()
 
 
 def test_impact_statement_leads_with_the_decision_and_preserves_causal_limits() -> None:

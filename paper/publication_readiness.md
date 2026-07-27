@@ -1,6 +1,6 @@
 # Publication readiness record
 
-Status: `publication_ready_public_preprint_authorized`
+Status: `public_preprint_released_final_deposit_awaiting_reserved_doi`
 
 Release version: `1.0.1`
 
@@ -30,6 +30,8 @@ Accepted research-evidence snapshot:
 | Portable publication artifacts | tagged-source HTML/PDF renderer, self-contained figures, and SHA-256 manifest | pass |
 | DOI submission handoff | deposit metadata, rights boundary, file inventory, and final preview checklist | pass |
 | DOI minted | requires the owner's authenticated Zenodo review and Publish action | pending owner action |
+| Final package hardening | DOI-bearing tagged source, exact file allowlist, full-package hashes, PDF normalization, and double verification | pass; gate armed |
+| Reserved DOI embedded | requires owner to reserve the identifier in the Zenodo draft before final tag | pending owner action |
 
 ## Deterministic reproduction
 

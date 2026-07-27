@@ -5,18 +5,19 @@ Complete this check against the Zenodo preview immediately before Publish.
 ## Identity and metadata
 
 - [ ] The title and creator exactly match `CITATION.cff`.
-- [ ] Resource type is Publication / Preprint, version is 1.0.1, and the
-  publication date is 2026-07-27.
-- [ ] The related identifier points to the public `paper-v1.0.1` release.
-- [ ] The reserved DOI shown in the preview is recorded nowhere in the
-  repository until it is actually minted.
+- [ ] Resource type is Publication / Preprint, version is 1.0.2, and the
+  publication date is 2026-07-26, the first public preprint release date.
+- [ ] The related identifier points to the public `paper-v1.0.2` release.
+- [ ] The same reserved DOI appears in the preview, tagged `CITATION.cff`,
+  manuscript title block, deposit metadata, HTML, and submission manifest.
 
 ## Files and provenance
 
 - [ ] Every uploaded filename is listed in `deposit_metadata.md`.
-- [ ] The artifact manifest source tag is `paper-v1.0.1` and its source commit
-  equals `git rev-list -n 1 paper-v1.0.1`.
-- [ ] Local SHA-256 hashes for the PDF and HTML match the artifact manifest.
+- [ ] The artifact and submission manifests identify `paper-v1.0.2` and their
+  source commit equals `git rev-list -n 1 paper-v1.0.2`.
+- [ ] The submission directory contains exactly the eleven allowlisted files.
+- [ ] Every local SHA-256 hash matches `submission-manifest-v1.0.2.json`.
 - [ ] The PDF opens, figures and tables are legible, hyperlinks are sensible,
   and the final release footer is visible.
 - [ ] The HTML opens without a network connection and all seven figures render.
@@ -38,5 +39,6 @@ Complete this check against the Zenodo preview immediately before Publish.
 
 - [ ] The owner has reviewed the complete preview and understands that Zenodo
   permits later metadata edits but not ordinary replacement of published files.
-- [ ] The owner presses Publish while authenticated and then records the actual
-  DOI in a metadata-only repository update.
+- [ ] The owner presses Publish while authenticated, verifies that the reserved
+  DOI resolves, and compares Zenodo's displayed checksums with the submission
+  manifest.

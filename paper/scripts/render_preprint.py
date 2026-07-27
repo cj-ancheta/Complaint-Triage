@@ -188,7 +188,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--source", type=Path, default=DEFAULT_SOURCE)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
-    parser.add_argument("--tag", default="paper-v1.0.0")
+    parser.add_argument("--tag", required=True)
     parser.add_argument(
         "--title",
         default=(

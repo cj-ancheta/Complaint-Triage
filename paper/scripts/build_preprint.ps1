@@ -1,14 +1,27 @@
 param(
-    [string]$Tag = "paper-v1.0.0",
-    [string]$Version = "1.0.0"
+    [Parameter(Mandatory = $true)]
+    [ValidatePattern('^paper-v\d+\.\d+\.\d+$')]
+    [string]$Tag,
+
+    [Parameter(Mandatory = $true)]
+    [ValidatePattern('^\d+\.\d+\.\d+$')]
+    [string]$Version,
+
+    [string]$Doi = ""
 )
 
 $ErrorActionPreference = "Stop"
 $projectRoot = (Resolve-Path (Join-Path $PSScriptRoot "..\..")).Path
 $buildRoot = Join-Path $projectRoot "paper\release-build"
-$htmlPath = Join-Path $buildRoot "when-aggregate-accuracy-is-not-enough-v$Version.html"
-$pdfPath = Join-Path $buildRoot "when-aggregate-accuracy-is-not-enough-v$Version.pdf"
-$manifestPath = Join-Path $buildRoot "release-artifact-manifest-v$Version.json"
+$packageRoot = Join-Path $buildRoot "v$Version"
+$htmlPath = Join-Path $packageRoot "when-aggregate-accuracy-is-not-enough-v$Version.html"
+$pdfPath = Join-Path $packageRoot "when-aggregate-accuracy-is-not-enough-v$Version.pdf"
+$manifestPath = Join-Path $packageRoot "release-artifact-manifest-v$Version.json"
+
+if ($Tag -ne "paper-v$Version") {
+    throw "tag/version mismatch: expected paper-v$Version"
+}
+New-Item -ItemType Directory -Path $packageRoot -Force | Out-Null
 
 $python = Join-Path $projectRoot ".venv\Scripts\python.exe"
 if (-not (Test-Path -LiteralPath $python)) {
@@ -44,6 +57,9 @@ if (-not (Test-Path -LiteralPath $pdfPath) -or (Get-Item -LiteralPath $pdfPath).
     throw "browser PDF rendering failed"
 }
 
+& $python (Join-Path $PSScriptRoot "harden_pdf.py") --tag $Tag --pdf $pdfPath
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
 $commit = (git -C $projectRoot rev-list -n 1 $Tag).Trim()
 $files = foreach ($path in $htmlPath, $pdfPath) {
     $item = Get-Item -LiteralPath $path
@@ -58,7 +74,9 @@ $manifest = [ordered]@{
     paper_version = $Version
     source_tag = $Tag
     source_commit = $commit
+    reserved_doi = $Doi
     evidence_boundary = "validation_only_causal_design_not_conducted"
+    pdf_metadata_time = "normalized_to_source_commit"
     files = @($files)
 }
 $manifest | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $manifestPath -Encoding utf8
