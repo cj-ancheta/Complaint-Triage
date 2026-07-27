@@ -2,7 +2,7 @@
 
 Status: `publication_ready_public_preprint_authorized`
 
-Release version: `1.0.0`
+Release version: `1.0.1`
 
 Review date: 2026-07-26
 
@@ -27,6 +27,9 @@ Accepted research-evidence snapshot:
 | Editorial owner review | owner authorized finalization and publication on 2026-07-26 | pass |
 | Bounded public reporting | paper and validation-labelled metrics authorized for preprint release | pass |
 | Final-performance promotion | QA field remains `public_metric_promotion_authorized: false`; no metric is presented as frozen-test or production performance | pass |
+| Portable publication artifacts | tagged-source HTML/PDF renderer, self-contained figures, and SHA-256 manifest | pass |
+| DOI submission handoff | deposit metadata, rights boundary, file inventory, and final preview checklist | pass |
+| DOI minted | requires the owner's authenticated Zenodo review and Publish action | pending owner action |
 
 ## Deterministic reproduction
 
