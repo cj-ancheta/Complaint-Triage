@@ -8,7 +8,7 @@ Public preprint, validation-only empirical study
 
 Evidence snapshot: `2d886756227787b2eed2d5f46754b2ab8fd7745b`
 
-Release date: 2026-07-26
+Version 1.0.1 (first released 2026-07-26; print package 2026-07-27)
 
 > **Evidence boundary.** This manuscript publicly reports validation and tuning
 > evidence. It contains no frozen-test performance, causal-effect estimate, or

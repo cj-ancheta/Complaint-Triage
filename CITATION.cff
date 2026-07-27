@@ -9,10 +9,10 @@ type: article
 authors:
   - family-names: Ancheta
     given-names: Charles Jr
-version: 1.0.0
-date-released: 2026-07-26
+version: 1.0.1
+date-released: 2026-07-27
 repository-code: https://github.com/cj-ancheta/Complaint-Triage
-url: https://github.com/cj-ancheta/Complaint-Triage/blob/main/paper/manuscript.md
+url: https://github.com/cj-ancheta/Complaint-Triage/releases/tag/paper-v1.0.1
 abstract: >-
   This validation-only study compares TF-IDF logistic regression and compact
   MiniLM for imbalanced financial complaint routing, evaluates calibration and
@@ -35,5 +35,5 @@ preferred-citation:
     - family-names: Ancheta
       given-names: Charles Jr
   year: 2026
-  version: 1.0.0
-  url: https://github.com/cj-ancheta/Complaint-Triage/blob/main/paper/manuscript.md
+  version: 1.0.1
+  url: https://github.com/cj-ancheta/Complaint-Triage/releases/tag/paper-v1.0.1

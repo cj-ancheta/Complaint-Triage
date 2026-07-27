@@ -56,6 +56,8 @@ part of the empirical method.
   evidence, causal, privacy, metadata, and release gates.
 - [`impact_statement.md`](impact_statement.md) gives the decision and causal
   relevance in publication-ready plain language.
+- [`submission/README.md`](submission/README.md) is the DOI-deposit and
+  external-submission handoff, including immutable-file and rights checks.
 
 ## Drafting workflow
 
@@ -73,6 +75,9 @@ part of the empirical method.
    publication-ready. **Authorized 2026-07-26.**
 8. Publish the protected, tagged preprint release with the validation-only and
    not-conducted causal-study boundaries intact.
+9. Render the tagged source into self-contained HTML and PDF with
+   `paper/scripts/build_preprint.ps1`, then verify the generated SHA-256
+   manifest before deposit.
 
 Publication authorizes the paper and its explicitly labelled validation
 evidence. It does not authorize frozen-test access, model retraining, a new

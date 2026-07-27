@@ -1,6 +1,6 @@
 # Public preprint release checklist
 
-Release: `paper-v1.0.0`
+Release: `paper-v1.0.1`
 
 Authorization date: 2026-07-26
 
@@ -61,8 +61,16 @@ Authorization date: 2026-07-26
 - [x] Ruff lint and format checks
 - [x] Protected `standard`, `transformer-cpu`, and `security` jobs
 - [x] Squash merge to protected `main`
-- [x] Annotated or GitHub release tag `paper-v1.0.0`
+- [x] GitHub release tag `paper-v1.0.0` established the public preprint.
+- [x] A reproducible tagged-source renderer produces self-contained HTML, PDF,
+  and a SHA-256 artifact manifest.
+- [x] DOI-deposit metadata, rights instructions, submission summary, and
+  immutable-file verification steps are committed.
+- [ ] The owner has authenticated to Zenodo, reviewed the reserved DOI and
+  record preview, and pressed Publish. This account-bound action cannot be
+  delegated and remains outside repository authorization.
 
-A repository release is the publication venue for version 1.0.0. A later DOI
-deposit or journal submission may cite this immutable release but must not alter
-the evidence interpretation without a new version and review.
+The repository release is the publication venue for version 1.0.1. The DOI
+deposit must use the exact release files and checksums. A later journal
+submission may cite this immutable release but must not alter the evidence
+interpretation without a new version and review.

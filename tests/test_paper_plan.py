@@ -20,6 +20,12 @@ READINESS_FILES = {
     "publication_checklist.md",
     "publication_readiness.md",
 }
+SUBMISSION_FILES = {
+    "README.md",
+    "deposit_metadata.md",
+    "pre_publish_verification.md",
+    "submission_summary.md",
+}
 
 
 def _read(filename: str) -> str:
@@ -35,7 +41,7 @@ def test_paper_planning_package_is_complete_and_links_resolve() -> None:
     local_links = re.findall(r"\[[^]]+\]\(([^)]+\.md)\)", readme)
     assert set(local_links) == (
         (PAPER_FILES | LITERATURE_FILES | DRAFT_FILES | READINESS_FILES) - {"README.md"}
-    ) | {"generated/result_tables.md"}
+    ) | {"generated/result_tables.md", "submission/README.md"}
     assert all((PAPER_ROOT / link).is_file() for link in local_links)
 
 
@@ -229,8 +235,8 @@ def test_publication_citation_metadata_matches_the_released_manuscript() -> None
 
     for required in (
         "cff-version: 1.2.0",
-        "version: 1.0.0",
-        "date-released: 2026-07-26",
+        "version: 1.0.1",
+        "date-released: 2026-07-27",
         "family-names: Ancheta",
         "given-names: Charles Jr",
         "https://github.com/cj-ancheta/Complaint-Triage",
@@ -238,7 +244,37 @@ def test_publication_citation_metadata_matches_the_released_manuscript() -> None
         assert required in citation
     assert "Decision Impact, Validation" in citation
     assert "Decision Impact, Validation" in manuscript
+    assert "Version 1.0.1" in manuscript
     assert "TODO" not in citation
+
+
+def test_submission_package_is_complete_and_preserves_release_boundaries() -> None:
+    submission_root = PAPER_ROOT / "submission"
+    assert SUBMISSION_FILES == {path.name for path in submission_root.glob("*.md")}
+    package = "\n".join(
+        (submission_root / filename).read_text(encoding="utf-8") for filename in SUBMISSION_FILES
+    )
+    lowered = re.sub(r"\s+", " ", package.lower())
+
+    for required in (
+        "package_ready_doi_not_minted",
+        "publication / preprint",
+        "all rights reserved",
+        "validation-only",
+        "manual-review-only",
+        "design_blueprint_not_registered_not_conducted",
+        "no causal effect",
+        "paper-v1.0.1",
+    ):
+        assert required in lowered
+    assert "10.5281/zenodo." not in lowered
+    assert "the causal study shows" not in lowered
+    assert "cc by" in lowered and "default cc by license has been removed" in lowered
+
+    readme = (submission_root / "README.md").read_text(encoding="utf-8")
+    links = re.findall(r"\[[^]]+]\(([^)]+\.md)\)", readme)
+    assert set(links) == SUBMISSION_FILES - {"README.md"}
+    assert all((submission_root / link).is_file() for link in links)
 
 
 def test_impact_statement_leads_with_the_decision_and_preserves_causal_limits() -> None:

@@ -35,3 +35,6 @@ mlruns/
 .vscode/
 .DS_Store
 Thumbs.db
+
+# Locally rendered publication artifacts; distributed through tagged releases.
+paper/release-build/
