@@ -1,10 +1,10 @@
 # Publication readiness record
 
-Status: `public_preprint_released_final_deposit_awaiting_reserved_doi`
+Status: `final_deposit_source_ready_reserved_doi_embedded`
 
-Release version: `1.0.1`
+Release version: `1.0.2`
 
-Review date: 2026-07-26
+Review date: 2026-07-29
 
 Accepted research-evidence snapshot:
 `2d886756227787b2eed2d5f46754b2ab8fd7745b`
@@ -31,7 +31,7 @@ Accepted research-evidence snapshot:
 | DOI submission handoff | deposit metadata, rights boundary, file inventory, and final preview checklist | pass |
 | DOI minted | requires the owner's authenticated Zenodo review and Publish action | pending owner action |
 | Final package hardening | DOI-bearing tagged source, exact file allowlist, full-package hashes, PDF normalization, and double verification | pass; gate armed |
-| Reserved DOI embedded | requires owner to reserve the identifier in the Zenodo draft before final tag | pending owner action |
+| Reserved DOI embedded | `10.5281/zenodo.21670879` appears in citation, manuscript, and deposit metadata | pass |
 
 ## Deterministic reproduction
 

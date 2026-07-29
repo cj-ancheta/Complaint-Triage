@@ -1,6 +1,6 @@
 # Public preprint release checklist
 
-Release: `paper-v1.0.1`
+Release: `paper-v1.0.2`
 
 Authorization date: 2026-07-26
 
@@ -70,13 +70,15 @@ Authorization date: 2026-07-26
   supplementals from the immutable tag, and hashes every deposited file.
 - [x] PDF hardening validates structure and normalizes metadata time to the
   tagged source commit.
-- [ ] The owner has reserved the Zenodo DOI and supplied it for inclusion in
-  version 1.0.2 before the final tag is created.
-- [ ] The owner has authenticated to Zenodo, reviewed the reserved DOI and
-  record preview, and pressed Publish. This account-bound action cannot be
-  delegated and remains outside repository authorization.
+- [x] The owner reserved DOI `10.5281/zenodo.21670879` and supplied it for
+  inclusion in version 1.0.2 before the final tag was created.
+- [x] Final tag `paper-v1.0.2` is created from the reviewed merge commit before
+  any deposit files are built.
+- [ ] The owner has reviewed the final Zenodo record preview and pressed
+  Publish. This account-bound action cannot be delegated and remains outside
+  repository authorization.
 
-The repository release is the publication venue for version 1.0.1. The DOI
+The repository release is the publication venue for version 1.0.2. The DOI
 deposit must use the exact release files and checksums. A later journal
 submission may cite this immutable release but must not alter the evidence
 interpretation without a new version and review.
