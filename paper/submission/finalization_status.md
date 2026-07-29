@@ -1,15 +1,16 @@
 # Finalization status
 
-State: `awaiting_owner_reserved_doi`
+State: `reserved_doi_embedded_final_source_ready`
 
-Current public version: `paper-v1.0.1`
+Reserved DOI: `10.5281/zenodo.21670879`
 
-Planned final deposit version: `paper-v1.0.2`
+Final deposit version: `paper-v1.0.2`
 
 The evidence, prose, figures, causal protocol, rights boundary, portable
-renderer, and final-package verifier are complete. Version 1.0.2 must not be
-tagged or submitted until the owner reserves a DOI in the Zenodo draft and
-provides the exact identifier for inclusion in the paper.
+renderer, and final-package verifier are complete. The owner reserved DOI
+`10.5281/zenodo.21670879`, and it is embedded in the final tagged-source
+candidate. Publication remains pending the immutable tag, verified package,
+Zenodo preview, and the owner's Publish action.
 
 The hard gate intentionally requires all of the following to agree:
 
@@ -24,5 +25,5 @@ The hard gate intentionally requires all of the following to agree:
 - validation-only, manual-review-only, not-conducted causal, and All rights
   reserved boundaries.
 
-Until the DOI is supplied, `build_submission.ps1` must fail. That failure is a
-release control, not an unfinished scientific result.
+`build_submission.ps1` will succeed only after the reviewed source is merged and
+tagged as `paper-v1.0.2`; it then verifies the DOI-bearing package twice.

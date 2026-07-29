@@ -8,7 +8,9 @@ Public preprint, validation-only empirical study
 
 Evidence snapshot: `2d886756227787b2eed2d5f46754b2ab8fd7745b`
 
-Version 1.0.1 (first released 2026-07-26; print package 2026-07-27)
+Version 1.0.2 (first released 2026-07-26; final DOI package 2026-07-29)
+
+DOI: https://doi.org/10.5281/zenodo.21670879
 
 > **Evidence boundary.** This manuscript publicly reports validation and tuning
 > evidence. It contains no frozen-test performance, causal-effect estimate, or

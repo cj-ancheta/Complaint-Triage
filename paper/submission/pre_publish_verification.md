@@ -8,8 +8,9 @@ Complete this check against the Zenodo preview immediately before Publish.
 - [ ] Resource type is Publication / Preprint, version is 1.0.2, and the
   publication date is 2026-07-26, the first public preprint release date.
 - [ ] The related identifier points to the public `paper-v1.0.2` release.
-- [ ] The same reserved DOI appears in the preview, tagged `CITATION.cff`,
-  manuscript title block, deposit metadata, HTML, and submission manifest.
+- [ ] Reserved DOI `10.5281/zenodo.21670879` appears in the preview, tagged
+  `CITATION.cff`, manuscript title block, deposit metadata, HTML, and submission
+  manifest.
 
 ## Files and provenance
 

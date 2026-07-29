@@ -184,7 +184,7 @@ def test_publication_readiness_preserves_release_authority_boundary() -> None:
     readiness = _read("publication_readiness.md")
     evidence = (PROJECT_ROOT / "docs" / "qa" / "qa_evidence.json").read_text(encoding="utf-8")
 
-    assert "public_preprint_released_final_deposit_awaiting_reserved_doi" in readiness
+    assert "final_deposit_source_ready_reserved_doi_embedded" in readiness
     assert "public_metric_promotion_authorized: false" in readiness
     assert "| Editorial owner review" in readiness and "| pass |" in readiness
     assert "| Bounded public reporting" in readiness and "| pass |" in readiness
@@ -240,8 +240,9 @@ def test_publication_citation_metadata_matches_the_released_manuscript() -> None
 
     for required in (
         "cff-version: 1.2.0",
-        "version: 1.0.1",
-        "date-released: 2026-07-27",
+        "version: 1.0.2",
+        "date-released: 2026-07-29",
+        "doi: 10.5281/zenodo.21670879",
         "family-names: Ancheta",
         "given-names: Charles Jr",
         "https://github.com/cj-ancheta/Complaint-Triage",
@@ -249,7 +250,9 @@ def test_publication_citation_metadata_matches_the_released_manuscript() -> None
         assert required in citation
     assert "Decision Impact, Validation" in citation
     assert "Decision Impact, Validation" in manuscript
-    assert "Version 1.0.1" in manuscript
+    assert citation.count("doi: 10.5281/zenodo.21670879") == 2
+    assert "Version 1.0.2" in manuscript
+    assert "https://doi.org/10.5281/zenodo.21670879" in manuscript
     assert "TODO" not in citation
 
 
@@ -262,8 +265,8 @@ def test_submission_package_is_complete_and_preserves_release_boundaries() -> No
     lowered = re.sub(r"\s+", " ", package.lower())
 
     for required in (
-        "hardening_complete_awaiting_reserved_doi",
-        "awaiting_owner_reserved_doi",
+        "final_source_doi_bound",
+        "reserved_doi_embedded_final_source_ready",
         "publication / preprint",
         "all rights reserved",
         "validation-only",
@@ -274,7 +277,7 @@ def test_submission_package_is_complete_and_preserves_release_boundaries() -> No
         "submission-manifest-v1.0.2.json",
     ):
         assert required in lowered
-    assert "10.5281/zenodo." not in lowered
+    assert lowered.count("10.5281/zenodo.21670879") >= 4
     assert "the causal study shows" not in lowered
     assert "cc by" in lowered and "default cc by license has been removed" in lowered
     assert "2026-07-26 (date of first public preprint release)" in lowered

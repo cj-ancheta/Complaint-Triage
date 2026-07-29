@@ -18,7 +18,7 @@ payload.
 | License/rights | Custom: All rights reserved |
 | Related identifier | `https://github.com/cj-ancheta/Complaint-Triage/releases/tag/paper-v1.0.2` |
 | Related-identifier relation | Is supplemented by |
-| DOI status | Awaiting owner reservation; do not publish until the actual DOI replaces this status |
+| DOI | `10.5281/zenodo.21670879` |
 
 ## Description
 

@@ -1,10 +1,10 @@
 # DOI deposit and external-submission handoff
 
-Status: `hardening_complete_awaiting_reserved_doi`
+Status: `final_source_doi_bound`
 
-Current public preprint: `1.0.1`
+Reserved DOI: `10.5281/zenodo.21670879`
 
-Planned final deposit: `1.0.2`
+Final deposit version: `1.0.2`
 
 This folder turns the reviewed paper into a controlled submission package. It
 does not claim that a causal trial was run. The publishable impact is the
@@ -26,12 +26,12 @@ Zenodo. The final package must include the DOI reserved for the Zenodo draft.
 This follows Zenodo's supported reserve-first workflow and avoids publishing a
 PDF whose persistent identifier is missing.
 
-After reserving the DOI and adding it to the reviewed source, the final release
-build is generated locally and intentionally ignored by Git:
+The DOI is reserved and embedded in the reviewed source. After the immutable
+tag is created, the final release build is generated locally and intentionally
+ignored by Git:
 
 ```powershell
-$ReservedDoi = Read-Host "Paste the DOI reserved in the Zenodo draft"
-.\paper\scripts\build_submission.ps1 -Version 1.0.2 -Doi $ReservedDoi
+.\paper\scripts\build_submission.ps1 -Version 1.0.2 -Doi 10.5281/zenodo.21670879
 ```
 
 The command will reject placeholder, missing, or malformed identifiers. It creates
@@ -42,16 +42,13 @@ deposit.
 
 ## Recommended DOI path
 
-1. Create a Zenodo draft with resource type **Publication / Preprint** and fill
-   the reviewed metadata, but do not upload or publish the old package.
-2. Answer **No** when asked whether the upload already has a DOI, then select
-   **Get a DOI now!** Copy the reserved DOI exactly and keep the draft.
-3. Add that DOI to `CITATION.cff`, the manuscript title block, and
-   [`deposit_metadata.md`](deposit_metadata.md); update all three to version
-   1.0.2; review and merge those changes; then create tag `paper-v1.0.2`.
-4. Run the hardened build command above. Upload the PDF as the primary file and
+1. Keep the existing Zenodo draft containing reserved DOI
+   `10.5281/zenodo.21670879`; do not create a second DOI.
+2. Use resource type **Publication / Preprint** and fill the reviewed metadata.
+3. Run the hardened build command above after tag `paper-v1.0.2` exists. Upload
+   the PDF as the primary file and
    the HTML, both manifests,
-`CITATION.cff`, impact statement, prospective causal protocol, and generated
+   `CITATION.cff`, impact statement, prospective causal protocol, and generated
    source manifest as supplementary files. Use public file visibility and the
    custom rights statement in [`deposit_metadata.md`](deposit_metadata.md); do
    not accept Zenodo's default CC BY license because this repository is
